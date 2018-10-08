@@ -30,7 +30,7 @@ require plugin_dir_path(__FILE__) . 'includes/classes/moloni.class.php';
 function moloniRun()
 {
     $moloni = new Moloni();
-    $moloni->run();
+    $moloni->run("Olá");
 }
 
 moloniRun();
