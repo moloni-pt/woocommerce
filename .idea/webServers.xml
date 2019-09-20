@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b818ac3f-eb4b-45f6-801a-e6c009e68d30" name="SpydeskWooCommerce" url="https://lojas.spydesk.com/woocommerce">
+        <fileTransfer host="spydesk.com" port="21" rootFolder="/public_html/lojas.moloni.com/woocommerce/wp-content/plugins/">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
