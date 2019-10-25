@@ -14,6 +14,9 @@
 
 namespace Moloni\Controllers;
 
+use WC_Order;
+use WP_Query;
+
 class PendingOrders
 {
     private static $limit = 50;
@@ -42,20 +45,21 @@ class PendingOrders
             ),
         );
 
-        $query = new \WP_Query($args);
+        $query = new WP_Query($args);
         $orders = $query->posts;
 
         foreach ($orders as $order) {
 
-            $orderDetails = new \WC_Order($order->ID);
-            $meta = self::getPostMeta($orderDetails->get_order_number());
-            $status = get_post_status_object(get_post_status($orderDetails->get_order_number()));
+            $orderDetails = new WC_Order($order->ID);
+            $meta = self::getPostMeta($order->ID);
+            $status = get_post_status_object(get_post_status($order->ID));
 
             if (!isset($meta["_moloni_sent"]) || $meta["_moloni_sent"] == "0") {
                 $ordersList[] = [
                     "info" => $meta,
                     "status" => $status->label,
-                    "id" => $orderDetails->get_order_number()
+                    "number" => $orderDetails->get_order_number(),
+                    "id" => $order->ID
                 ];
             }
         }

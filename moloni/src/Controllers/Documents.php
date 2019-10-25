@@ -14,8 +14,13 @@
 
 namespace Moloni\Controllers;
 
+use Exception;
 use Moloni\Curl;
 use Moloni\Error;
+use Moloni\Tools;
+use WC_Order;
+use WC_Order_Item_Fee;
+use WC_Order_Item_Product;
 
 /**
  * Class Documents
@@ -30,7 +35,7 @@ class Documents
     /** @var int */
     private $orderId = 0;
 
-    /** @var \WC_Order */
+    /** @var WC_Order */
     private $order;
 
     /** @var bool|Error */
@@ -91,14 +96,23 @@ class Documents
     private $status = 0;
     private $products;
 
+    private $documentType = 'invoices';
+
     /**
      * Documents constructor.
      * @param int $orderId
+     * @throws Error
      */
     public function __construct($orderId)
     {
         $this->orderId = $orderId;
-        $this->order = new \WC_Order((int)$orderId);
+        $this->order = new WC_Order((int)$orderId);
+
+        if (!defined("DOCUMENT_TYPE")) {
+            throw new Error(__("Tipo de documento não definido nas opções"));
+        }
+
+        $this->documentType = isset($_GET['document_type']) ? $_GET['document_type'] : DOCUMENT_TYPE;
     }
 
     /**
@@ -112,14 +126,14 @@ class Documents
 
     /**
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function getDocumentId()
     {
         if ((int)$this->documentId > 0) {
             return $this->documentId;
         } else {
-            throw new \Exception(__("Document not found"));
+            throw new Exception(__("Document not found"));
         }
     }
 
@@ -138,13 +152,38 @@ class Documents
             $this->your_reference = "#" . $this->order->get_order_number();
 
             foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
+                /** @var $orderProduct WC_Order_Item_Product */
                 $newOrderProduct = new OrderProduct($orderProduct, $itemIndex);
-                $this->products[] = $newOrderProduct->create()->mapPropsToValues();
+                $newOrderProduct->create();
+
+                $refundedValue = $this->order->get_total_refunded_for_item($orderProduct->get_id());
+                if ((float)$refundedValue > 0) {
+                    $newOrderProduct->setPrice($newOrderProduct->price - (float)$refundedValue);
+                }
+
+                $refundedQty = $this->order->get_qty_refunded_for_item($orderProduct->get_id());
+                if ((float)$refundedQty > 0) {
+                    $newOrderProduct->setQty($newOrderProduct->qty - (float)$refundedQty);
+                }
+
+                $this->products[] = $newOrderProduct->mapPropsToValues();
+
             }
 
             if ($this->order->get_shipping_method()) {
                 $newOrderShipping = new OrderShipping($this->order, count($this->products));
                 $this->products[] = $newOrderShipping->create()->mapPropsToValues();
+            }
+
+            foreach ($this->order->get_fees() as $key => $item) {
+                /** @var $item WC_Order_Item_Fee */
+                $feePrice = abs($item['line_total']);
+
+                if ($feePrice > 0) {
+                    $newOrderFee = new OrderFees($item, count($this->products));
+                    $this->products[] = $newOrderFee->create()->mapPropsToValues();
+
+                }
             }
 
             $this->setShippingInfo();
@@ -163,17 +202,15 @@ class Documents
 
             $document = $this->mapPropsToValues();
 
-            if (!defined("DOCUMENT_TYPE")) {
-                throw new Error(__("Tipo de documento não definido nas opções"));
-            }
 
-            $insertedDocument = Curl::simple(DOCUMENT_TYPE . '/insert', $document);
+            $insertedDocument = Curl::simple($this->documentType . '/insert', $document);
 
             if (!isset($insertedDocument['document_id'])) {
                 throw new Error(__("Atenção, houve um erro ao inserir o documento"));
             }
 
             $this->document_id = $insertedDocument['document_id'];
+            add_post_meta($this->orderId, "_moloni_sent", $this->document_id, true);
 
             $addedDocument = Curl::simple('documents/getOne', ["document_id" => $insertedDocument['document_id']]);
 
@@ -181,7 +218,7 @@ class Documents
             if (defined("DOCUMENT_STATUS") && DOCUMENT_STATUS) {
 
                 // Validate if the document totals match can be closed
-                if ((float)$this->order->get_total() !== (float)$addedDocument['net_value']) {
+                if (((float)$this->order->get_total() - (float)$this->order->get_total_refunded()) !== (float)$addedDocument['net_value']) {
                     $viewUrl = admin_url("admin.php?page=moloni&action=getInvoice&id=" . $this->document_id);
                     throw new Error(
                         __("O documento foi inserido mas os totais não correspondem. ") .
@@ -203,8 +240,9 @@ class Documents
                     ];
                 }
 
-                Curl::simple(DOCUMENT_TYPE . '/update', $closeDocument);
+                Curl::simple($this->documentType . '/update', $closeDocument);
             }
+
 
         } catch (Error $error) {
             $this->document_id = 0;
@@ -239,7 +277,7 @@ class Documents
             $this->company = Curl::simple("companies/getOne", []);
             $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
             if ($this->order->get_shipping_country() == "PT") {
-                $this->delivery_destination_zip_code = \Moloni\Tools::zipCheck($this->delivery_destination_zip_code);
+                $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
             }
 
             $this->delivery_method_id = $this->company['delivery_method_id'];
@@ -252,7 +290,7 @@ class Documents
 
             $this->delivery_destination_address = $this->order->get_shipping_address_1() . " " . $this->order->get_shipping_address_2();
             $this->delivery_destination_city = $this->order->get_shipping_city();
-            $this->delivery_destination_country = \Moloni\Tools::getCountryIdFromCode($this->order->get_shipping_country());
+            $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
         }
     }
 
@@ -275,9 +313,11 @@ class Documents
      */
     public function isReferencedInDatabase()
     {
-        global $wpdb;
-        $dbRow = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "postmeta WHERE meta_key LIKE '_moloni_sent' AND post_id = %s", $this->orderId), ARRAY_A);
-        return !empty($dbRow);
+        // @deprecated
+        // global $wpdb;
+        // $dbRow = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "postmeta WHERE meta_key LIKE '_moloni_sent' AND post_id = %s", $this->orderId), ARRAY_A);
+
+        return $this->order->get_meta("_moloni_sent") ? true : false;
     }
 
     /**

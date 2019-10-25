@@ -1,6 +1,8 @@
 <?php
+
 namespace Moloni\Hooks;
 
+use Exception;
 use Moloni\Log;
 use Moloni\Plugin;
 use Moloni\Start;
@@ -12,7 +14,7 @@ class OrderPaid
     public $parent;
 
     /**
-     * 
+     *
      * @param Plugin $parent
      */
     public function __construct($parent)
@@ -35,7 +37,7 @@ class OrderPaid
                     Log::write("Houve um erro ao gerar o documento: " . strip_tags($newDocument->getError()->getDecodedMessage()));
                 }
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Log::write("Falta error: " . $ex->getMessage());
         }
     }

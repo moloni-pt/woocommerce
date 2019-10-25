@@ -12,13 +12,27 @@
  *
  */
 
+/**
+ *
+ *   Plugin Name:  Moloni
+ *   Plugin URI:   https://plugins.moloni.com/woocommerce
+ *   Description:  Send your orders automatically to your Moloni invoice software
+ *   Version:      0.0.1
+ *   Author:       Moloni.com
+ *   Author URI:   https://moloni.com
+ *   License:      GPL2
+ *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+ *
+ */
+
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Order_Item_Fee;
 
-class OrderShipping
+class OrderFees
 {
 
     /** @var int */
@@ -45,8 +59,8 @@ class OrderShipping
     /** @var float */
     private $discount;
 
-    /** @var \WC_Order */
-    private $order;
+    /** @var WC_Order_Item_Fee */
+    private $fee;
 
     /** @var string */
     private $reference;
@@ -64,12 +78,12 @@ class OrderShipping
 
     /**
      * OrderProduct constructor.
-     * @param \WC_Order $order
+     * @param WC_Order_Item_Fee $fee
      * @param int $index
      */
-    public function __construct($order, $index = 0)
+    public function __construct($fee, $index = 0)
     {
-        $this->order = $order;
+        $this->fee = $fee;
         $this->index = $index;
     }
 
@@ -80,8 +94,8 @@ class OrderShipping
     public function create()
     {
         $this->qty = 1;
-        $this->price = (float)$this->order->get_shipping_total();
-        $this->name = $this->order->get_shipping_method();
+        $this->price = (float)$this->fee['line_total'];
+        $this->name = !empty($this->fee->get_name()) ? $this->fee->get_name() : 'Taxa';
 
         $this
             ->setReference()
@@ -92,13 +106,12 @@ class OrderShipping
         return $this;
     }
 
-
     /**
      * @return $this
      */
     private function setReference()
     {
-        $this->reference = "Portes";
+        $this->reference = "Fee";
         return $this;
     }
 
@@ -108,7 +121,6 @@ class OrderShipping
      */
     private function setProductId()
     {
-
         $searchProduct = Curl::simple("products/getByReference", ["reference" => $this->reference, "exact" => 1]);
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $this->product_id = $searchProduct[0]['product_id'];
@@ -126,7 +138,7 @@ class OrderShipping
             return $this;
         }
 
-        throw new Error("Erro ao inserir portes de envio");
+        throw new Error("Erro ao inserir Taxa da encomenda");
     }
 
     /**
@@ -181,8 +193,7 @@ class OrderShipping
     private function setTaxes()
     {
 
-        $taxRate = round(($this->order->get_shipping_tax() * 100) / $this->order->get_shipping_total());
-
+        $taxRate = round(($this->fee->get_total_tax() * 100) / (float)$this->fee->get_amount());
         if ((float)$taxRate > 0) {
             $this->taxes[] = $this->setTax($taxRate);
         }

@@ -2,6 +2,7 @@
 
 namespace Moloni;
 
+use Exception;
 use Moloni\Controllers\SyncProducts;
 
 /**
@@ -46,7 +47,7 @@ class Crons
                 Log::write("Stock sync disabled in plugin settings");
             }
 
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Log::write("Fatal Errror: " . $ex->getMessage());
         }
 

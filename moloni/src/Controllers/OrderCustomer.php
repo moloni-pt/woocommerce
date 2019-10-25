@@ -18,11 +18,12 @@ namespace Moloni\Controllers;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Order;
 
 class OrderCustomer
 {
     /**
-     * @var \WC_Order
+     * @var WC_Order
      */
     private $order;
 
@@ -50,7 +51,7 @@ class OrderCustomer
 
     /**
      * Documents constructor.
-     * @param \WC_Order $order
+     * @param WC_Order $order
      */
     public function __construct($order)
     {
@@ -59,11 +60,12 @@ class OrderCustomer
 
     /**
      * @return bool|int
-     * @throws \Moloni\Error
+     * @throws Error
      */
     public function create()
     {
         $this->vat = $this->getVatNumber();
+        $this->email = $this->order->get_billing_email();
 
         $values['name'] = $this->getCustomerName();
         $values['language_id'] = $this->getCustomerLanguageId();
@@ -273,12 +275,6 @@ class OrderCustomer
             } else if (!empty($this->email)) {
                 $search['email'] = $this->email;
                 $searchResult = Curl::simple("customers/getByEmail", $search);
-                if (isset($searchResult[0]['customer_id'])) {
-                    $result = $searchResult[0];
-                }
-            } else {
-                $search['number'] = '9999';
-                $searchResult = Curl::simple("customers/getByNumber", $search);
                 if (isset($searchResult[0]['customer_id'])) {
                     $result = $searchResult[0];
                 }

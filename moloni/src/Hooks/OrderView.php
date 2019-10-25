@@ -15,6 +15,9 @@ class OrderView
 
     public $parent;
 
+    /** @var array */
+    private $allowedStatus = ["wc-processing", "wc-completed"];
+
     /**
      *
      * @param Plugin $parent
@@ -32,7 +35,7 @@ class OrderView
 
     function showMoloniView($post)
     {
-        if ($post->post_status == "wc-processing" || $post->post_status == "wc-completed") : ?>
+        if (in_array($post->post_status, $this->allowedStatus)) : ?>
             <?php $documentId = get_post_meta($post->ID, "_moloni_sent", true); ?>
             <?php if ((int)$documentId > 0) : ?>
                 <?= __('O documento já foi gerado no moloni') ?>
@@ -40,16 +43,16 @@ class OrderView
                    class="button button-primary"
                    target="_BLANK"
                    href="<?= admin_url("admin.php?page=moloni&action=getInvoice&id=" . $documentId) ?>"
-                   style="float:right"
+                   style="margin-top: 10px; float:right;"
                 >
                     <?= __('Ver documento') ?>
                 </a>
-
+                <div style="clear:both"></div>
                 <a type="button"
                    class="button"
                    target="_BLANK"
                    href="<?= admin_url("admin.php?page=moloni&action=genInvoice&id=" . $post->ID) ?>"
-                   style="float:right"
+                   style="margin-top: 10px; float:right;"
                 >
                     <?= __('Gerar novamente') ?>
                 </a>

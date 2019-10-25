@@ -16,6 +16,8 @@ namespace Moloni\Controllers;
 
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Order_Item_Product;
+use WC_Tax;
 
 class OrderProduct
 {
@@ -27,7 +29,7 @@ class OrderProduct
     private $order;
 
     /**
-     * @var \WC_Order_Item_Product
+     * @var WC_Order_Item_Product
      */
     private $product;
 
@@ -35,10 +37,10 @@ class OrderProduct
     private $taxes = [];
 
     /** @var float */
-    private $qty;
+    public $qty;
 
     /** @var float */
-    private $price;
+    public $price;
 
     /** @var string */
     private $exemption_reason;
@@ -51,7 +53,7 @@ class OrderProduct
 
     /**
      * OrderProduct constructor.
-     * @param \WC_Order_Item_Product $product
+     * @param WC_Order_Item_Product $product
      * @param int $order
      */
     public function __construct($product, $order = 0)
@@ -66,9 +68,8 @@ class OrderProduct
      */
     public function create()
     {
-
-        $this->qty = (float)$this->product->get_quantity();
-        $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
+        $this->setPrice();
+        $this->setQty();
 
         $this->name = $this->product->get_name();
 
@@ -78,6 +79,30 @@ class OrderProduct
 
 
         return $this;
+    }
+
+    /**
+     * @param null|float $price
+     */
+    public function setPrice($price = null)
+    {
+        if (!is_null($price)) {
+            $this->price = $price;
+        } else {
+            $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
+        }
+    }
+
+    /**
+     * @param null|float $qty
+     */
+    public function setQty($qty = null)
+    {
+        if (!is_null($qty)) {
+            $this->qty = $qty;
+        } else {
+            $this->qty = $this->qty = (float)$this->product->get_quantity();
+        }
     }
 
     /**
@@ -113,7 +138,7 @@ class OrderProduct
         $taxes = $this->product->get_taxes();
         foreach ($taxes['subtotal'] as $taxId => $value) {
             if (!empty($value)) {
-                $taxRate = preg_replace('/[^0-9\.]/', "", \WC_Tax::get_rate_percent($taxId));
+                $taxRate = preg_replace('/[^0-9.]/', "", WC_Tax::get_rate_percent($taxId));
                 if ((float)$taxRate > 0) {
                     $this->taxes[] = $this->setTax($taxRate);
                 }

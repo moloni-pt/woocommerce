@@ -14,6 +14,7 @@
 
 namespace Moloni\Controllers;
 
+use Exception;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Log;
@@ -46,6 +47,7 @@ class SyncProducts
     public function run()
     {
         Log::write("A sincronizar artigos desde " . $this->since);
+        /** @var array $updatedProducts */
         $updatedProducts = $this->getAllMoloniProducts();
         if (!empty($updatedProducts) && is_array($updatedProducts)) {
             $this->found = count($updatedProducts);
@@ -71,7 +73,7 @@ class SyncProducts
                         Log::write("Artigo não encontrado ou sem stock ativo: " . $product['reference']);
                         $this->notFound[$product['reference']] = "Artigo não encontrado no WooCommerce ou sem stock activo";
                     }
-                } catch (\Exception $error) {
+                } catch (Exception $error) {
                     echo "<br>" . $error->getMessage();
                 }
             }

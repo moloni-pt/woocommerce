@@ -29,10 +29,12 @@ class ProductUpdate
         try {
             $product = wc_get_product($productId);
             try {
-                if (Start::login()) {
-                    $productObj = new Product($product);
-                    if (!$productObj->loadByReference()) {
-                        $productObj->create();
+                if ($product->get_status() !== 'draft' && Start::login()) {
+                    if (defined('MOLONI_PRODUCTS_SYNC') && MOLONI_PRODUCTS_SYNC) {
+                        $productObj = new Product($product);
+                        if (!$productObj->loadByReference()) {
+                            $productObj->create();
+                        }
                     }
                 }
             } catch (Error $error) {

@@ -26,8 +26,8 @@
       <paths name="SpydeskWooCommerce">
         <serverdata>
           <mappings>
-            <mapping deploy="/moloni-pt" local="$PROJECT_DIR$/moloni-pt" web="/" />
-            <mapping deploy="/moloni" local="$PROJECT_DIR$/moloni-old" web="/" />
+            <mapping deploy="" local="" web="" />
+            <mapping deploy="/moloni" local="$PROJECT_DIR$/moloni" web="/" />
           </mappings>
         </serverdata>
       </paths>

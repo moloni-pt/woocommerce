@@ -17,6 +17,8 @@ namespace Moloni\Controllers;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Product;
+use WC_Tax;
 
 /**
  * Class Product
@@ -25,7 +27,7 @@ use Moloni\Tools;
 class Product
 {
 
-    /** @var \WC_Product */
+    /** @var WC_Product */
     private $product;
 
     public $product_id;
@@ -43,12 +45,9 @@ class Product
     private $exemption_reason;
     private $taxes;
 
-    private $composition_type;
-    private $child_products = [];
-
     /**
      * Product constructor.
-     * @param \WC_Product $product
+     * @param WC_Product $product
      */
     public function __construct($product)
     {
@@ -189,8 +188,8 @@ class Product
     }
 
     /**
-     * @throws Error
      * @return $this
+     * @throws Error
      */
     private function setUnitId()
     {
@@ -214,7 +213,7 @@ class Product
             // Get taxes based on a tax class of a product
             // If the tax class is empty it means the products uses the shop default
             $productTaxes = $taxes = $this->product->get_tax_class();
-            $taxRates = \WC_Tax::get_base_tax_rates($productTaxes);
+            $taxRates = WC_Tax::get_base_tax_rates($productTaxes);
 
             foreach ($taxRates as $order => $taxRate) {
                 $tax = [];

@@ -106,6 +106,7 @@ class Curl
      * @param $user
      * @param $pass
      * @return array|bool|mixed|object
+     * @throws Error
      */
     public static function login($user, $pass)
     {
@@ -130,8 +131,7 @@ class Curl
         if (!isset($parsed['error'])) {
             return $parsed;
         } else {
-            \base::genError($url, ['username' => $user], $parsed);
-            return (FALSE);
+            throw new Error(__("Ups, foi encontrado um erro...", "A combinação de utilizador/password está errada"));
         }
     }
 
