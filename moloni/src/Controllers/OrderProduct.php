@@ -48,6 +48,9 @@ class OrderProduct
     /** @var string */
     private $name;
 
+    /** @var string */
+    private $summary;
+
     /** @var float */
     private $discount;
 
@@ -73,12 +76,28 @@ class OrderProduct
 
         $this->name = $this->product->get_name();
 
+        $this->setSummary();
         $this->setProductId();
         $this->setDiscount();
         $this->setTaxes();
 
 
         return $this;
+    }
+
+    public function setSummary($summary = null)
+    {
+        if ($summary) {
+            $this->summary = $summary;
+        } else {
+            if ($this->product->get_variation_id() > 0) {
+                $product = wc_get_product($this->product->get_variation_id());
+                $attributes = $product->get_attributes();
+                if (is_array($attributes) && !empty($attributes)) {
+                    $this->summary = wc_get_formatted_variation($attributes, true);
+                }
+            }
+        }
     }
 
     /**
@@ -175,7 +194,7 @@ class OrderProduct
 
         $values["product_id"] = $this->product_id;
         $values["name"] = $this->name;
-        $values["summary"] = "";
+        $values["summary"] = $this->summary;
         $values["qty"] = $this->qty;
         $values["price"] = $this->price;
         $values["discount"] = $this->discount;

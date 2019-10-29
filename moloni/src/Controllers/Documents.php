@@ -153,7 +153,7 @@ class Documents
 
             foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
                 /** @var $orderProduct WC_Order_Item_Product */
-                $newOrderProduct = new OrderProduct($orderProduct, $itemIndex);
+                $newOrderProduct = new OrderProduct($orderProduct, count($this->products));
                 $newOrderProduct->create();
 
                 $refundedValue = $this->order->get_total_refunded_for_item($orderProduct->get_id());
@@ -170,7 +170,7 @@ class Documents
 
             }
 
-            if ($this->order->get_shipping_method()) {
+            if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
                 $newOrderShipping = new OrderShipping($this->order, count($this->products));
                 $this->products[] = $newOrderShipping->create()->mapPropsToValues();
             }
@@ -188,7 +188,6 @@ class Documents
 
             $this->setShippingInfo();
             $this->setNotes();
-
 
             // One last validation
             if ((!isset($_GET['force']) || $_GET['force'] !== 'true')) {

@@ -98,7 +98,7 @@
 
             <tr>
                 <th>
-                    <label for="exemption_reason_shipping"><?= __("Razão de Isenção de Portes") ?></label>
+                    <label for="exemption_reason_shipping"><?= __("Razão de Isenção de Portes/Taxas") ?></label>
                 </th>
                 <td>
                     <select id="exemption_reason_shipping" name='opt[exemption_reason_shipping]' class='inputOut'>

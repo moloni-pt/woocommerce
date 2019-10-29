@@ -2,28 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f9309f-dc00-4f6e-86d3-b90d3d03111d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/moloni.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/moloni_wc_beta.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/moloni.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/moloni.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/SyncProducts.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/SyncProducts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Crons.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Crons.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Curl.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Curl.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/OrderPaid.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/OrderPaid.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/OrderView.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/OrderView.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/ProductUpdate.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/ProductUpdate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/PendingOrders.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/ViewHooks.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/Settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/Settings.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,12 +45,6 @@
       <path value="$PROJECT_DIR$/moloni-pt/vendor/composer" />
       <path value="$PROJECT_DIR$/moloni-pt/vendor/curl/curl" />
     </include_path>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="312" />
-    <option name="y" value="-8" />
-    <option name="width" value="1089" />
-    <option name="height" value="716" />
   </component>
   <component name="ProjectId" id="1SfX4yV5ycLEuBlvtDvdsYtbg8O" />
   <component name="ProjectLevelVcsManager">
@@ -123,6 +102,7 @@
       <workItem from="1568925479632" duration="12832000" />
       <workItem from="1571955441945" duration="144000" />
       <workItem from="1571955602815" duration="7136000" />
+      <workItem from="1572387413417" duration="1084000" />
     </task>
     <servers />
   </component>

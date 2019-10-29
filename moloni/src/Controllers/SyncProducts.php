@@ -30,6 +30,9 @@ class SyncProducts
     private $equal = [];
     private $notFound = [];
 
+    /** @var string Switch this between outofstock or onbackorder */
+    private $outOfStockStatus = 'onbackorder';
+
     public function __construct($since)
     {
         $sinceTime = strtotime($since);
@@ -66,8 +69,8 @@ class SyncProducts
                             Log::write("Artigo com a referência " . $product['reference'] . " foi actualizado de " . $currentStock . " para " . $newStock);
                             $this->updated[$product['reference']] = "Artigo com a referência " . $product['reference'] . " foi actualizado de " . $currentStock . " para " . $newStock;
                             update_post_meta($wcProductId, '_stock', $product['stock']);
-                            update_post_meta($wcProductId, '_stock_status', ($product['stock'] > 0 ? 'instock' : 'outofstock'));
-                            update_post_meta($wcProductId, 'outofstock', ($product['stock'] > 0 ? false : true));
+                            update_post_meta($wcProductId, '_stock_status', ($product['stock'] > 0 ? 'instock' : $this->outOfStockStatus));
+                            update_post_meta($wcProductId, 'outofstock', ($product['stock'] > 0 ? "0" : "1"));
                         }
                     } else {
                         Log::write("Artigo não encontrado ou sem stock ativo: " . $product['reference']);
