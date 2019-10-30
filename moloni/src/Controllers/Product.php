@@ -31,16 +31,16 @@ class Product
     private $product;
 
     public $product_id;
-    private $category_id;
+    public $category_id;
     private $type;
-    private $reference;
-    private $name;
+    public $reference;
+    public $name;
     private $summary = '';
     private $ean = '';
-    private $price;
+    public $price;
     private $unit_id;
-    private $has_stock;
-    private $stock;
+    public $has_stock;
+    public $stock;
     private $at_product_category = 'M';
     private $exemption_reason;
     private $taxes;
@@ -64,7 +64,12 @@ class Product
 
         $searchProduct = Curl::simple("products/getByReference", ["reference" => $this->reference, "exact" => 1]);
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
-            $this->product_id = $searchProduct[0]['product_id'];
+            $product = $searchProduct[0];
+            $this->product_id = $product['product_id'];
+            $this->category_id = $product['category_id'];
+            $this->has_stock = $product['has_stock'];
+            $this->stock = $product['stock'];
+            $this->price = $product['price'];
             return $this;
         }
 

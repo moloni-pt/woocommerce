@@ -17,6 +17,7 @@ class Plugin
     {
         new Menus\Admin($this);
         new Hooks\ProductUpdate($this);
+        new Hooks\ProductView($this);
         new Hooks\OrderView($this);
         new Hooks\OrderPaid($this);
     }
@@ -102,6 +103,11 @@ class Plugin
         }
     }
 
+    /**
+     * @param $orderId
+     * @return Documents
+     * @throws Error
+     */
     private function createDocument($orderId)
     {
         $document = new Documents($orderId);

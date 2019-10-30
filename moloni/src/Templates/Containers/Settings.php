@@ -1,9 +1,21 @@
+<?php $company = \Moloni\Curl::simple("companies/getOne", []); ?>
+
 <form method='POST' action='admin.php?page=moloni&tab=settings' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>
     <div>
         <h2 class="title"><?= __("Documentos") ?></h2>
         <table class="form-table">
             <tbody>
+            <tr>
+                <th>
+                    <label for="company_slug"><?= __("Slug da empresa") ?></label>
+                </th>
+                <td>
+                    <input id="company_slug" name="opt[company_slug]" type="text"
+                           value="<?= $company['slug'] ?>" readonly
+                           style="width: 330px;">
+                </td>
+            </tr>
             <tr>
                 <th>
                     <label for="document_type"><?= __("Tipo de documento") ?></label>

@@ -50,6 +50,15 @@ class Error extends \Exception
         include MOLONI_TEMPLATE_DIR . 'Messages/DocumentError.php';
     }
 
+    public function getError()
+    {
+        ob_start();
+        $this->showError();
+        $result = ob_get_contents();
+        ob_end_clean();
+        return $result;
+    }
+
     /**
      * Returns the default error message from construct
      * Or tries to translate the error from Moloni API

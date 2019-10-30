@@ -5,6 +5,7 @@ namespace Moloni\Hooks;
 use Moloni\Controllers\Product;
 use Moloni\Error;
 use Moloni\Log;
+use Moloni\Notice;
 use Moloni\Plugin;
 use Moloni\Start;
 
@@ -25,24 +26,28 @@ class ProductUpdate
 
     public function productCreateUpdate($productId)
     {
-        Log::setFileName('ProductsCreateUpdate');
         try {
             $product = wc_get_product($productId);
             try {
                 if ($product->get_status() !== 'draft' && Start::login()) {
-                    if (defined('MOLONI_PRODUCTS_SYNC') && MOLONI_PRODUCTS_SYNC) {
+                    if (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC) {
                         $productObj = new Product($product);
                         if (!$productObj->loadByReference()) {
                             $productObj->create();
+
+                            if ($productObj->product_id > 0) {
+                                Notice::addMessageSuccess(__("O artigo foi criado no Moloni"));
+                            }
+                        } else {
+                            Notice::addMessageInfo(__("O artigo já existe no Moloni"));
                         }
                     }
                 }
             } catch (Error $error) {
-                $error->showError();
+                Notice::addMessageCustom(htmlentities($error->getError()));
             }
         } catch (\Exception $ex) {
             Log::write("Fatal error: " . $ex->getMessage());
         }
     }
-
 }

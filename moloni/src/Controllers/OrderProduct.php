@@ -90,14 +90,57 @@ class OrderProduct
         if ($summary) {
             $this->summary = $summary;
         } else {
-            if ($this->product->get_variation_id() > 0) {
-                $product = wc_get_product($this->product->get_variation_id());
-                $attributes = $product->get_attributes();
-                if (is_array($attributes) && !empty($attributes)) {
-                    $this->summary = wc_get_formatted_variation($attributes, true);
+            $this->summary .= $this->getSummaryVariationAttributes();
+
+            if (!empty($this->summary)) {
+                $this->summary .= "\n";
+            }
+
+            $this->summary .= $this->getSummaryExtraProductOptions();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getSummaryVariationAttributes()
+    {
+        $summary = '';
+
+        if ($this->product->get_variation_id() > 0) {
+            $product = wc_get_product($this->product->get_variation_id());
+            $attributes = $product->get_attributes();
+            if (is_array($attributes) && !empty($attributes)) {
+                $summary = wc_get_formatted_variation($attributes, true);
+            }
+        }
+
+        return $summary;
+    }
+
+    /**
+     * @return string
+     */
+    private function getSummaryExtraProductOptions()
+    {
+        $summary = '';
+        $checkEPO = $this->product->get_meta("_tmcartepo_data", true);
+        $extraProductOptions = maybe_unserialize($checkEPO);
+
+        if ($extraProductOptions && is_array($extraProductOptions)) {
+            foreach ($extraProductOptions as $extraProductOption) {
+                if (isset($extraProductOption['name']) && isset($extraProductOption['value'])) {
+
+                    if (!empty($summary)) {
+                        $summary .= "\n";
+                    }
+
+                    $summary .= $extraProductOption['name'] . " " . $extraProductOption['value'];
                 }
             }
         }
+
+        return $summary;
     }
 
     /**

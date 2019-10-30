@@ -19,6 +19,7 @@ class Start
      * Handles session, login and settings
      * @param bool $ajax
      * @return bool
+     * @throws Error
      */
     public static function login($ajax = false)
     {
@@ -48,6 +49,7 @@ class Start
         if ($action == 'save') {
             add_settings_error('general', 'settings_updated', __('Alterações guardadas.'), 'updated');
             $options = $_POST['opt'];
+
             foreach ($options as $option => $value) {
                 Model::setOption($option, $value);
             }
@@ -79,7 +81,7 @@ class Start
 
     /**
      * Shows a login form
-     * @param bool|string $error
+     * @param bool|string $error Is used in include
      */
     public static function loginForm($error = false)
     {

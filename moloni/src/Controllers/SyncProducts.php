@@ -63,7 +63,7 @@ class SyncProducts
                         $newStock = $product['stock'];
 
                         if ($currentStock == $newStock) {
-                            Log::write("Artigo com a referência " . $product['reference'] . " já tem o stock correcto");
+                            Log::write("Artigo com a referência " . $product['reference'] . " já tem o stock correcto " . $currentStock . "|" . $newStock);
                             $this->equal[$product['reference']] = "Artigo com a referência " . $product['reference'] . " já tem o stock correcto";
                         } else {
                             Log::write("Artigo com a referência " . $product['reference'] . " foi actualizado de " . $currentStock . " para " . $newStock);
