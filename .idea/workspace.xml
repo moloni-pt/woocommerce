@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f9309f-dc00-4f6e-86d3-b90d3d03111d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni_wc_beta.zip" beforeDir="false" afterPath="$PROJECT_DIR$/moloni_wc_beta.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/moloni.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/moloni.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -98,6 +97,7 @@
       <workItem from="1571955441945" duration="144000" />
       <workItem from="1571955602815" duration="7136000" />
       <workItem from="1572387413417" duration="3753000" />
+      <workItem from="1572479826057" duration="204000" />
     </task>
     <servers />
   </component>
