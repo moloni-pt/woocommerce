@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni\Controllers;
 
@@ -54,6 +42,9 @@ class OrderProduct
     /** @var float */
     private $discount;
 
+    /** @var int */
+    private $warehouse_id = 0;
+
     /**
      * OrderProduct constructor.
      * @param WC_Order_Item_Product $product
@@ -76,15 +67,20 @@ class OrderProduct
 
         $this->name = $this->product->get_name();
 
-        $this->setSummary();
-        $this->setProductId();
-        $this->setDiscount();
-        $this->setTaxes();
+        $this->setSummary()
+            ->setProductId()
+            ->setDiscount()
+            ->setTaxes()
+            ->setWarehouse();
 
 
         return $this;
     }
 
+    /**
+     * @param null|string $summary
+     * @return $this
+     */
     public function setSummary($summary = null)
     {
         if ($summary) {
@@ -98,6 +94,8 @@ class OrderProduct
 
             $this->summary .= $this->getSummaryExtraProductOptions();
         }
+
+        return $this;
     }
 
     /**
@@ -168,6 +166,7 @@ class OrderProduct
     }
 
     /**
+     * @return $this
      * @throws Error
      */
     private function setProductId()
@@ -179,16 +178,21 @@ class OrderProduct
         }
 
         $this->product_id = $product->getProductId();
+
+        return $this;
     }
 
 
     /**
      * Set the discount in percentage
+     * @return $this
      */
     private function setDiscount()
     {
         $this->discount = (float)(100 - (((float)$this->product->get_total() * 100) / (float)$this->product->get_subtotal()));
         $this->discount = $this->discount < 0 ? 0 : $this->discount > 100 ? 100 : $this->discount;
+
+        return $this;
     }
 
     /**
@@ -229,6 +233,25 @@ class OrderProduct
     }
 
     /**
+     * @param bool|int $warehouseId
+     * @return OrderProduct
+     */
+    private function setWarehouse($warehouseId = false)
+    {
+        if ((int)$warehouseId > 0) {
+            $this->warehouse_id = $warehouseId;
+            return $this;
+        }
+
+        if (defined("MOLONI_PRODUCT_WAREHOUSE") && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
+            $this->warehouse_id = (int)MOLONI_PRODUCT_WAREHOUSE;
+        }
+
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function mapPropsToValues()
@@ -244,6 +267,7 @@ class OrderProduct
         $values["order"] = $this->order;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
+        $values['warehouse_id'] = $this->warehouse_id;
 
         return $values;
     }

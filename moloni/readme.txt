@@ -1,34 +1,33 @@
-NOTICE OF LICENSE
-This file is licenced under the Software License Agreement.
-With the purchase or the installation of the software in your application
-you accept the licence agreement.
+=== Plugin Name ===
+Moloni
+Contributors: molonidevteam
+Tags: Invoicing, Orders
+Stable tag: 5.2.4
+Tested up to: 5.2.4
+Requires PHP: 5.6
+Requires at least: 4.6
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-DISCLAIMER 
---------------------------------------
-@author    Nuno Almeida
-@copyright Moloni
-@license   https://creativecommons.org/licenses/by-nd/4.0/  
+Create all your verified invoices directly in Moloni automatically.
 
-Para qualquer dúvida sobre a instalação/utilização/melhorias do módulo não hesite em entrar em contacto
-via telefone, webchat ou email.
-https://moloni.com
+== Description ==
 
-Passos para a instalação do Plugin Moloni para WooCommerce
-Versão Plugin: 2
+This plugin is used to have a full online store synced with Moloni.
+Moloni is an invoicing cloud based software with stock management features.
 
-INSTALAÇÃO
---------------------------------------
-1º - Descompactar o ficheiro .zip
-2º - Via FTP deverá colocar a pasta "moloni" na pasta "wp-content/plugins"  do seu website
-3º - No backoffice ir ao menu Plugins -> Plugins instalados e activar o plugin "Moloni"
-4º - Ir ao menu "Moloni" e fazer login com as credenciais da sua conta Moloni
-5º - Carregar em "Opções" e pode configurar o módulo a seu gosto para se adaptar à sua loja
+With this plugins you will be able to:
 
+*   Sync your products between the two platforms
+*   Create all your invoices automatically when a order is paid
 
-NOTAS
---------------------------------------
-- Pode obter uma listagem dos passos que tem que realizar para a instalação do plugin na seguinte URL: http://plugins.moloni.com/woocommerce/
-- Para utilizar o contribuinte, terá que adicionar um plugin para permitir a inserção do campo contribuinte. 
-  Irá então ser criado um custom field, e no campo das opções "Contribuinte", deverá seleccionar o custom field
-  relativo ao campo do contribuinte. 
+== Installation ==
 
+1. Upload the plugin files to the `/wp-content/plugins/moloni` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress
+
+== Upgrade Notice ==
+
+= 3.0 =
+Released plugin version 3 Beta.
+New plugin version fully re-written

@@ -12,8 +12,8 @@ namespace Moloni;
  */
 class Start
 {
+    /** @var bool */
     private static $ajax = false;
-
 
     /**
      * Handles session, login and settings
@@ -24,9 +24,9 @@ class Start
     public static function login($ajax = false)
     {
         global $wpdb;
-        $action = trim($_REQUEST['action']);
-        $username = trim($_POST['user']);
-        $password = trim($_POST['pass']);
+        $action = sanitize_text_field(trim($_REQUEST['action']));
+        $username = sanitize_email(trim($_POST['user']));
+        $password = sanitize_text_field(trim($_POST['pass']));
 
         if ($ajax) {
             self::$ajax = true;
@@ -37,7 +37,7 @@ class Start
             if ($login && isset($login['access_token'])) {
                 Model::setTokens($login["access_token"], $login["refresh_token"]);
             } else {
-                self::loginForm("Combinação de utilizador/password errados");
+                self::loginForm(__("Combinação de utilizador/password errados"));
                 return false;
             }
         }
@@ -51,6 +51,9 @@ class Start
             $options = $_POST['opt'];
 
             foreach ($options as $option => $value) {
+                $option = sanitize_text_field($option);
+                $value = sanitize_text_field($value);
+
                 Model::setOption($option, $value);
             }
         }
@@ -59,12 +62,12 @@ class Start
         if (!empty($tokensRow['main_token']) && !empty($tokensRow['refresh_token'])) {
             Model::refreshTokens();
             Model::defineValues();
-            if (defined('COMPANY_ID')) {
+            if (defined('MOLONI_COMPANY_ID')) {
                 Model::defineConfigs();
                 return true;
             } else {
                 if (isset($_GET['company_id'])) {
-                    $wpdb->update("moloni_api", ["company_id" => (int)$_GET['company_id']], ['id' => SESSION_ID]);
+                    $wpdb->update("moloni_api", ["company_id" => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
                     Model::defineValues();
                     Model::defineConfigs();
                     return true;

@@ -19,7 +19,6 @@ class OrderView
     private $allowedStatus = ["wc-processing", "wc-completed"];
 
     /**
-     *
      * @param Plugin $parent
      */
     public function __construct($parent)
@@ -74,12 +73,12 @@ class OrderView
                    href="<?= admin_url("admin.php?page=moloni&action=genInvoice&id=" . $post->ID) ?>"
                    style="float:right"
                 >
-                    Gerar documento moloni
+                    <?= __("Gerar documento moloni") ?>
                 </a>
             <?php endif; ?>
             <div style="clear:both"></div>
         <?php else : ?>
-            A encomenda tem que ser dada como paga para poder ser gerada.
+            <?= __("A encomenda tem que ser dada como paga para poder ser gerada.") ?>
         <?php endif;
     }
 

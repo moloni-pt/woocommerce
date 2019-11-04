@@ -1,21 +1,10 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni;
 
+use Exception;
 
-class Error extends \Exception
+class Error extends Exception
 {
     /** @var array */
     private $request = [];
@@ -25,9 +14,9 @@ class Error extends \Exception
      * @param $message
      * @param bool $request
      * @param int $code
-     * @param \Exception|null $previous
+     * @param Exception|null $previous
      */
-    public function __construct($message, $request = false, $code = 0, \Exception $previous = null)
+    public function __construct($message, $request = false, $code = 0, Exception $previous = null)
     {
         $this->request = $request ? $request : Curl::getLog();
         parent::__construct($message, $code, $previous);
@@ -73,7 +62,6 @@ class Error extends \Exception
                 if (isset($line['description'])) {
                     $errorMessage .= "<br>" . $this->translateMessage($line['description']);
                 }
-
             }
         }
 

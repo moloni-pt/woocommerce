@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni\Controllers;
 

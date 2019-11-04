@@ -45,24 +45,16 @@ class Curl
             }
         }
 
-        if (is_array($values) && defined('COMPANY_ID')) {
-            $values['company_id'] = COMPANY_ID;
+        if (is_array($values) && defined('MOLONI_COMPANY_ID')) {
+            $values['company_id'] = MOLONI_COMPANY_ID;
         }
 
-        $con = curl_init();
-        $url = "https://api.moloni.pt/v1/" . $action . "/?human_errors=true&access_token=" . ACCESS_TOKEN;
-        curl_setopt($con, CURLOPT_URL, $url);
-        curl_setopt($con, CURLOPT_POST, true);
-        curl_setopt($con, CURLOPT_POSTFIELDS, $values ? http_build_query($values) : false);
-        curl_setopt($con, CURLOPT_HEADER, false);
-        curl_setopt($con, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($con, CURLOPT_SSL_VERIFYPEER, false);
+        $url = "https://api.moloni.pt/v1/" . $action . "/?human_errors=true&access_token=" . MOLONI_ACCESS_TOKEN;
 
-        $raw = curl_exec($con);
-        curl_close($con);
+        $response = wp_remote_post($url, ['body' => http_build_query($values)]);
+        $raw = wp_remote_retrieve_body($response);
 
         $parsed = json_decode($raw, true);
-
 
         $log = [
             'url' => $url,
@@ -110,24 +102,17 @@ class Curl
      */
     public static function login($user, $pass)
     {
-        $con = curl_init();
         $url = "https://api.moloni.pt/v1/grant/?grant_type=password";
         $url .= "&client_id=" . self::$moloniClient;
         $url .= "&client_secret=" . self::$moloniSecret;
         $url .= "&username=" . urlencode($user);
         $url .= "&password=" . urlencode($pass);
 
-        curl_setopt($con, CURLOPT_URL, $url);
-        curl_setopt($con, CURLOPT_POST, FALSE);
-        curl_setopt($con, CURLOPT_POSTFIELDS, FALSE);
-        curl_setopt($con, CURLOPT_HEADER, false);
-        curl_setopt($con, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($con, CURLOPT_SSL_VERIFYPEER, false);
-
-        $raw = curl_exec($con);
-        curl_close($con);
+        $response = wp_remote_get($url);
+        $raw = wp_remote_retrieve_body($response);
 
         $parsed = json_decode($raw, true);
+
         if (!isset($parsed['error'])) {
             return $parsed;
         } else {
@@ -142,28 +127,19 @@ class Curl
      */
     public static function refresh($refresh)
     {
-        $con = curl_init();
         $url = "https://api.moloni.pt/v1/grant/?grant_type=refresh_token";
         $url .= "&client_id=" . self::$moloniClient;
         $url .= "&client_secret=" . self::$moloniSecret;
         $url .= "&refresh_token=" . $refresh;
 
-        curl_setopt($con, CURLOPT_URL, $url);
-        curl_setopt($con, CURLOPT_POST, FALSE);
-        curl_setopt($con, CURLOPT_POSTFIELDS, FALSE);
-        curl_setopt($con, CURLOPT_HEADER, false);
-        curl_setopt($con, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($con, CURLOPT_SSL_VERIFYPEER, false);
+        $response = wp_remote_get($url);
+        $raw = wp_remote_retrieve_body($response);
 
-        $res_curl = curl_exec($con);
-        curl_close($con);
-
-        $res_txt = json_decode($res_curl, true);
+        $res_txt = json_decode($raw, true);
         if (!isset($res_txt['error'])) {
             return ($res_txt);
         } else {
-            //base::genError($url, $values, $res_txt);
-            return (false);
+            return false;
         }
     }
 

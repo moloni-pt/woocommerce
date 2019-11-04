@@ -1,29 +1,4 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
-
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni\Controllers;
 
@@ -95,7 +70,9 @@ class OrderFees
     {
         $this->qty = 1;
         $this->price = (float)$this->fee['line_total'];
-        $this->name = !empty($this->fee->get_name()) ? $this->fee->get_name() : 'Taxa';
+
+        $feeName = $this->fee->get_name();
+        $this->name = !empty($feeName) ? $feeName : 'Taxa';
 
         $this
             ->setReference()
@@ -138,7 +115,7 @@ class OrderFees
             return $this;
         }
 
-        throw new Error("Erro ao inserir Taxa da encomenda");
+        throw new Error(__("Erro ao inserir Taxa da encomenda"));
     }
 
     /**
@@ -167,7 +144,7 @@ class OrderFees
         if (defined("MEASURE_UNIT")) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error("Unidade de medida não definida!");
+            throw new Error(__("Unidade de medida não definida!"));
         }
 
         return $this;

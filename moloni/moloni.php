@@ -4,7 +4,7 @@
  *   Plugin Name:  Moloni
  *   Plugin URI:   https://plugins.moloni.com/woocommerce
  *   Description:  A forma mais fácil de ligar a sua loja online com a sua faturação.
- *   Version:      3.0.3
+ *   Version:      3.0.6
  *   Author:       Moloni.com
  *   Author URI:   https://moloni.com
  *   License:      GPL2
@@ -34,6 +34,10 @@ if (!defined('MOLONI_DIR')) {
 
 if (!defined('MOLONI_TEMPLATE_DIR')) {
     define('MOLONI_TEMPLATE_DIR', __DIR__ . "/src/Templates/");
+}
+
+if (!defined('MOLONI_IMAGES_URL')) {
+    define('MOLONI_IMAGES_URL', plugin_dir_url(__FILE__) . "images/");
 }
 
 register_activation_hook(__FILE__, '\Moloni\Activators\Install::run');

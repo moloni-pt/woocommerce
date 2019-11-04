@@ -2,6 +2,7 @@
 
 namespace Moloni\Hooks;
 
+use Exception;
 use Moloni\Controllers\Product;
 use Moloni\Error;
 use Moloni\Plugin;
@@ -28,7 +29,6 @@ class ProductView
     private $allowedPostTypes = ["product"];
 
     /**
-     *
      * @param Plugin $parent
      */
     public function __construct($parent)
@@ -73,7 +73,7 @@ class ProductView
             } else {
                 echo __("Login Moloni inválido");
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
 
         }
     }

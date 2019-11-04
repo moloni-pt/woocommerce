@@ -1,16 +1,4 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni\Controllers;
 
@@ -112,7 +100,7 @@ class Documents
             throw new Error(__("Tipo de documento não definido nas opções"));
         }
 
-        $this->documentType = isset($_GET['document_type']) ? $_GET['document_type'] : DOCUMENT_TYPE;
+        $this->documentType = isset($_GET['document_type']) ? sanitize_text_field($_GET['document_type']) : DOCUMENT_TYPE;
     }
 
     /**
@@ -190,7 +178,7 @@ class Documents
             $this->setNotes();
 
             // One last validation
-            if ((!isset($_GET['force']) || $_GET['force'] !== 'true')) {
+            if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true')) {
                 if ($this->isReferencedInDatabase()) {
                     throw new Error(
                         __("O documento da encomenda " . $this->order->get_order_number() . " já foi gerado anteriormente!") .
@@ -312,10 +300,6 @@ class Documents
      */
     public function isReferencedInDatabase()
     {
-        // @deprecated
-        // global $wpdb;
-        // $dbRow = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "postmeta WHERE meta_key LIKE '_moloni_sent' AND post_id = %s", $this->orderId), ARRAY_A);
-
         return $this->order->get_meta("_moloni_sent") ? true : false;
     }
 
@@ -397,8 +381,13 @@ class Documents
                     break;
             }
 
-            $meInfo = Curl::simple("companies/getOne", []);
-            header("Location: https://moloni.pt/" . $meInfo['slug'] . "/" . $typeName . "/showDetail/" . $invoice['document_id']);
+            if (defined("COMPANY_SLUG")) {
+                $slug = COMPANY_SLUG;
+            } else {
+                $meInfo = Curl::simple("companies/getOne", []);
+                $slug = $meInfo['slug'];
+            }
+            header("Location: https://moloni.pt/" . $slug . "/" . $typeName . "/showDetail/" . $invoice['document_id']);
         }
         exit;
     }

@@ -12,9 +12,6 @@ class Install
      */
     public static function run()
     {
-        global $wpdb;
-        define("TP", $wpdb->prefix);
-
         if (!function_exists('curl_version')) {
             deactivate_plugins(plugin_basename(__FILE__));
             wp_die(esc_html__('cURL library is required for using Moloni Plugin.', 'moloni-pt'));

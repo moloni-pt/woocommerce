@@ -2,6 +2,7 @@
 
 namespace Moloni\Hooks;
 
+use Exception;
 use Moloni\Controllers\Product;
 use Moloni\Error;
 use Moloni\Log;
@@ -15,7 +16,6 @@ class ProductUpdate
     public $parent;
 
     /**
-     *
      * @param Plugin $parent
      */
     public function __construct($parent)
@@ -46,7 +46,7 @@ class ProductUpdate
             } catch (Error $error) {
                 Notice::addMessageCustom(htmlentities($error->getError()));
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Log::write("Fatal error: " . $ex->getMessage());
         }
     }

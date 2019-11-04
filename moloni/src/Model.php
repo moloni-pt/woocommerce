@@ -6,8 +6,8 @@ class Model
 {
     /**
      * Return the row of moloni_api table with all the session details
-     * @global $wpdb
      * @return array|false
+     * @global $wpdb
      */
     public static function getTokensRow()
     {
@@ -18,10 +18,10 @@ class Model
 
     /**
      * Clear moloni_api and set new access and refresh token
-     * @global $wpdb
      * @param string $accessToken
      * @param string $refreshToken
      * @return array|false
+     * @global $wpdb
      */
     public static function setTokens($accessToken, $refreshToken)
     {
@@ -33,10 +33,10 @@ class Model
 
     /**
      * Check if a setting exists on database and update it or create it
-     * @global $wpdb
      * @param string $option
      * @param string $value
      * @return int
+     * @global $wpdb
      */
     public static function setOption($option, $value)
     {
@@ -55,8 +55,8 @@ class Model
     /**
      * Checks if tokens need to be refreshed and refreshes them
      * If it fails, log user out
-     * @global $wpdb
      * @return array|false
+     * @global $wpdb
      */
     public static function refreshTokens()
     {
@@ -79,7 +79,11 @@ class Model
             }
 
             $wpdb->update(
-                "moloni_api", ["main_token" => $results['access_token'], "refresh_token" => $results['refresh_token'], "expiretime" => time() + 3000], ["id" => $tokensRow['id']]
+                "moloni_api", [
+                    "main_token" => $results['access_token'],
+                    "refresh_token" => $results['refresh_token'],
+                    "expiretime" => time() + 3000
+                ], ["id" => $tokensRow['id']]
             );
         }
 
@@ -92,11 +96,11 @@ class Model
     public static function defineValues()
     {
         $tokensRow = self::getTokensRow();
-        define("SESSION_ID", $tokensRow['id']);
-        define("ACCESS_TOKEN", $tokensRow['main_token']);
-        define("REFRESH_TOKEN", $tokensRow['refresh_token']);
+        define("MOLONI_SESSION_ID", $tokensRow['id']);
+        define("MOLONI_ACCESS_TOKEN", $tokensRow['main_token']);
+
         if (!empty($tokensRow['company_id'])) {
-            define("COMPANY_ID", $tokensRow['company_id']);
+            define("MOLONI_COMPANY_ID", $tokensRow['company_id']);
         }
     }
 
@@ -122,7 +126,12 @@ class Model
     public static function getCustomFields()
     {
         global $wpdb;
-        $results = $wpdb->get_results("SELECT DISTINCT meta_key FROM " . TABLE_PREFIX . "postmeta ORDER BY `" . TABLE_PREFIX . "postmeta`.`meta_key` ASC", ARRAY_A);
+
+        $results = $wpdb->get_results(
+            "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "postmeta ORDER BY `" . $wpdb->prefix . "postmeta`.`meta_key` ASC",
+            ARRAY_A
+        );
+
         $customFields = [];
         if ($results && is_array($results)) {
             foreach ($results as $result) {
@@ -131,7 +140,7 @@ class Model
         }
         return $customFields;
     }
-    
+
     public static function resetTokens()
     {
         global $wpdb;

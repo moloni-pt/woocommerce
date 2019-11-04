@@ -1,4 +1,5 @@
 <?php
+
 namespace Moloni;
 
 class Log
@@ -12,7 +13,9 @@ class Log
             mkdir(MOLONI_DIR . '/logs');
         }
 
-        $fileName = self::$fileName ? self::$fileName . '.log' : date("Ymd") . '.log';
+        $fileName = (defined('MOLONI_COMPANY_ID') ? MOLONI_COMPANY_ID : '000')
+            . (self::$fileName ? self::$fileName . '.log' : date("Ymd"))
+            . '.log';
         $logFile = fopen(MOLONI_DIR . '/logs/' . $fileName, 'a');
         fwrite($logFile, '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL);
     }

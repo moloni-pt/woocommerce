@@ -1,22 +1,11 @@
 <?php
-/**
- *
- *   Plugin Name:  Moloni
- *   Plugin URI:   https://plugins.moloni.com/woocommerce
- *   Description:  Send your orders automatically to your Moloni invoice software
- *   Version:      0.0.1
- *   Author:       Moloni.com
- *   Author URI:   https://moloni.com
- *   License:      GPL2
- *   License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- *
- */
 
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Order;
 
 class OrderShipping
 {
@@ -45,7 +34,7 @@ class OrderShipping
     /** @var float */
     private $discount;
 
-    /** @var \WC_Order */
+    /** @var WC_Order */
     private $order;
 
     /** @var string */
@@ -64,7 +53,7 @@ class OrderShipping
 
     /**
      * OrderProduct constructor.
-     * @param \WC_Order $order
+     * @param WC_Order $order
      * @param int $index
      */
     public function __construct($order, $index = 0)

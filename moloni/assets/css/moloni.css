@@ -2,10 +2,6 @@
     margin-top: 25px;
 }
 
-.icon-48-moloni-titulo {
-    background: url("../images/48logo.png") 0 0 no-repeat !important;
-}
-
 hr {
     border: 0;
     height: 1px;
@@ -28,34 +24,18 @@ hr {
     border-radius: 3px;
 }
 
-
-.msgAlertaForms {
-    border: 1px dashed #ddd;
-    background-color: #feff71;
-    margin-top: -30px;
-    text-align: center;
-    width: 200px;
-    margin-left: 77px;
-    height: 24px;
-    vertical-align: middle;
-    padding-top: 4px;
-}
-
 /* ============= Login ==============*/
 #formLogin {
-    margin-left: auto;
-    margin-right: auto;
     width: 574px;
-    margin: 15px auto 15px auto;
     background-color: #fff;
     padding: 15px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
-    -moz-box-shadow: 0px 0px 15px 2px #ccc;
-    -webkit-box-shadow: 0px 0px 15px 2px #ccc;
-    box-shadow: 0px 0px 15px 2px #ccc;
-    margin-top: 200px;
+    -moz-box-shadow: 0 0 15px 2px #ccc;
+    -webkit-box-shadow: 0 0 15px 2px #ccc;
+    box-shadow: 0 0 15px 2px #ccc;
+    margin: 200px auto 15px;
 }
 
 #formLogin a, a:visited {
@@ -118,9 +98,7 @@ hr {
     z-index: 99;
 }
 
-/* ==================================*/
-
-/* ============ SELECT EMPRESAS ============*/
+/* ============ Select Company ============*/
 .outBoxEmpresa {
     margin-left: auto;
     margin-right: auto;
@@ -130,29 +108,30 @@ hr {
 
 .caixaLoginEmpresa {
     float: left;
-    margin: 10px 15px 20px 0;
+    margin: 20px 15px 20px 0;
     background-color: #fff;
-    padding: 15px;
+    padding: 20px 15px;
     width: 200px;
     cursor: pointer;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     border-radius: 6px;
-    -moz-box-shadow: 0px 0px 15px 2px #ccc;
-    -webkit-box-shadow: 0px 0px 15px 2px #ccc;
-    box-shadow: 0px 0px 15px 2px #ccc;
-    min-height: 250px;
+    -moz-box-shadow: 0 0 15px 2px #ccc;
+    -webkit-box-shadow: 0 0 15px 2px #ccc;
+    box-shadow: 0 0 15px 2px #ccc;
+    min-height: 150px;
 }
-/* ============ SELECT EMPRESAS ============*/
 
+/** =========== Error Message ========== */
 #MoloniConsoleLogError {
     display: block;
     background-color: white;
     border: 1px solid rgb(241, 241, 241);
     padding: 5px;
-    margin: 0px 0px 10px;
+    margin: 0 0 10px;
 }
 
-li#toplevel_page_moloni img{
+/** =========== Menu Logo ========== */
+li#toplevel_page_moloni img {
     margin-top: -4px;
 }

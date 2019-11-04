@@ -2,7 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f9309f-dc00-4f6e-86d3-b90d3d03111d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/moloni/images/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/assets/css/moloni.css" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/assets/css/moloni.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/moloni.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/moloni.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Activators/Install.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Activators/Install.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/ProductCategory.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/ProductCategory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/SyncProducts.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/SyncProducts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Crons.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Crons.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Curl.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Curl.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Error.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Error.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/OrderView.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/OrderView.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/ProductUpdate.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/ProductUpdate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Hooks/ProductView.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Hooks/ProductView.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Log.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Log.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Menus/Admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Menus/Admin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Model.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Model.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Plugin.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Plugin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Start.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Start.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/CompanySelect.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/CompanySelect.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/Containers/Settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/Containers/Settings.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/LoginForm.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/LoginForm.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/MainContainer.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/MainContainer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Tools.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Tools.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni_wc_beta.zip" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +129,8 @@
       <workItem from="1571955441945" duration="144000" />
       <workItem from="1571955602815" duration="7136000" />
       <workItem from="1572387413417" duration="3753000" />
-      <workItem from="1572479826057" duration="204000" />
+      <workItem from="1572479826057" duration="1608000" />
+      <workItem from="1572907817813" duration="821000" />
     </task>
     <servers />
   </component>

@@ -20,16 +20,16 @@ class Crons
     }
 
     /**
-     * @global $wpdb
      * @return bool
+     * @global $wpdb
      */
     public static function productsSync()
     {
-        self::requires();
-
         global $wpdb;
         $runningAt = time();
         try {
+            self::requires();
+
             if (!Start::login()) {
                 Log::write("Não foi possível estabelecer uma ligação a uma empresa Moloni");
                 return false;

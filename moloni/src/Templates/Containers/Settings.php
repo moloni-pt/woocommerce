@@ -1,6 +1,9 @@
-<?php $company = \Moloni\Curl::simple("companies/getOne", []); ?>
+<?php use \Moloni\Curl; ?>
+<?php use \Moloni\Model; ?>
 
-<form method='POST' action='admin.php?page=moloni&tab=settings' id='formOpcoes'>
+<?php $company = Curl::simple("companies/getOne", []); ?>
+
+<form method='POST' action='<?= admin_url('admin.php?page=moloni&tab=settings') ?>' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>
     <div>
         <h2 class="title"><?= __("Documentos") ?></h2>
@@ -65,7 +68,7 @@
                 </th>
                 <td>
                     <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
-                        <?php $documentSets = \Moloni\Curl::simple("documentSets/getAll", []); ?>
+                        <?php $documentSets = Curl::simple("documentSets/getAll", []); ?>
                         <?php foreach ($documentSets as $documentSet) : ?>
                             <option value='<?= $documentSet['document_set_id'] ?>' <?= DOCUMENT_SET_ID == $documentSet['document_set_id'] ? 'selected' : '' ?>><?= $documentSet['name'] ?></option>
                         <?php endforeach; ?>
@@ -106,13 +109,36 @@
         <h2 class="title"><?= __("Artigos") ?></h2>
         <table class="form-table">
             <tbody>
+
+            <?php $warehouses = Curl::simple("warehouses/getAll", []); ?>
+            <?php if (is_array($warehouses)): ?>
+                <tr>
+
+                    <th>
+                        <label for="moloni_product_warehouse"><?= __("Armazém") ?></label>
+                    </th>
+                    <td>
+                        <select id="moloni_product_warehouse" name='opt[moloni_product_warehouse]' class='inputOut'>
+                            <option value='0'><?= __("Armazém pré-definido") ?></option>
+                            <?php foreach ($warehouses as $warehouse) : ?>
+                                <option value='<?= $warehouse['warehouse_id'] ?>' <?= MOLONI_PRODUCT_WAREHOUSE == $warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                    <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
+                                </option>
+                            <?php endforeach; ?>
+
+                        </select>
+                        <p class='description'><?= __('Obrigatório') ?></p>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
             <tr>
                 <th>
                     <label for="measure_unit_id"><?= __("Unidade de medida") ?></label>
                 </th>
                 <td>
                     <select id="measure_unit_id" name='opt[measure_unit]' class='inputOut'>
-                        <?php $measurementUnits = \Moloni\Curl::simple("measurementUnits/getAll", []); ?>
+                        <?php $measurementUnits = Curl::simple("measurementUnits/getAll", []); ?>
                         <?php if (is_array($measurementUnits)): ?>
                             <?php foreach ($measurementUnits as $measurementUnit) : ?>
                                 <option value='<?= $measurementUnit['unit_id'] ?>' <?= MEASURE_UNIT == $measurementUnit['unit_id'] ? 'selected' : '' ?>><?= $measurementUnit['name'] ?></option>
@@ -130,7 +156,7 @@
                 <td>
                     <select id="exemption_reason" name='opt[exemption_reason]' class='inputOut'>
                         <option value='' <?= EXEMPTION_REASON == '' ? 'selected' : '' ?>><?= __("Nenhuma") ?></option>
-                        <?php $exemptionReasons = \Moloni\Curl::simple("taxExemptions/getAll", []); ?>
+                        <?php $exemptionReasons = Curl::simple("taxExemptions/getAll", []); ?>
                         <?php if (is_array($exemptionReasons)): ?>
                             <?php foreach ($exemptionReasons as $exemptionReason) : ?>
                                 <option value='<?= $exemptionReason['code'] ?>' <?= EXEMPTION_REASON == $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . " - " . $exemptionReason['name'] ?></option>
@@ -170,7 +196,7 @@
                 <td>
                     <select id="maturity_date_id" name='opt[maturity_date]' class='inputOut'>
                         <option value='0' <?= MATURITY_DATE == 0 ? 'selected' : '' ?>><?= __("Escolha uma opção") ?></option>
-                        <?php $maturityDates = \Moloni\Curl::simple("maturityDates/getAll", []); ?>
+                        <?php $maturityDates = Curl::simple("maturityDates/getAll", []); ?>
                         <?php if (is_array($maturityDates)): ?>
                             <?php foreach ($maturityDates as $maturityDate) : ?>
                                 <option value='<?= $maturityDate['maturity_date_id'] ?>' <?= MATURITY_DATE == $maturityDate['maturity_date_id'] ? 'selected' : '' ?>><?= $maturityDate['name'] ?></option>
@@ -188,7 +214,7 @@
                 <td>
                     <select id="payment_method_id" name='opt[payment_method]' class='inputOut'>
                         <option value='0' <?= PAYMENT_METHOD == 0 ? 'selected' : '' ?>><?= __("Escolha uma opção") ?></option>
-                        <?php $paymentMethods = \Moloni\Curl::simple("paymentMethods/getAll", []); ?>
+                        <?php $paymentMethods = Curl::simple("paymentMethods/getAll", []); ?>
                         <?php if (is_array($paymentMethods)): ?>
                             <?php foreach ($paymentMethods as $paymentMethod) : ?>
                                 <option value='<?= $paymentMethod['payment_method_id'] ?>' <?= PAYMENT_METHOD == $paymentMethod['payment_method_id'] ? 'selected' : '' ?>><?= $paymentMethod['name'] ?></option>
@@ -206,7 +232,7 @@
                 <td>
                     <select id="vat_field" name='opt[vat_field]' class='inputOut'>
                         <option value='' <?= VAT_FIELD == '' ? 'selected' : '' ?>><?= __("Escolha uma opção") ?></option>
-                        <?php $customFields = \Moloni\Model::getCustomFields(); ?>
+                        <?php $customFields = Model::getCustomFields(); ?>
                         <?php if (is_array($customFields)): ?>
                             <?php foreach ($customFields as $customField) : ?>
                                 <option value='<?= $customField['meta_key'] ?>' <?= VAT_FIELD == $customField['meta_key'] ? 'selected' : '' ?>><?= $customField['meta_key'] ?></option>

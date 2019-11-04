@@ -4,6 +4,11 @@ namespace Moloni;
 
 use Moloni\Controllers\Documents;
 
+/**
+ * Main constructor
+ * Class Plugin
+ * @package Moloni
+ */
 class Plugin
 {
     public function __construct()
@@ -41,13 +46,6 @@ class Plugin
      */
     private function defines()
     {
-        global $wpdb;
-        define("TABLE_PREFIX", $wpdb->prefix);
-
-        $schema = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://";
-        $full = explode("?", $schema . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-        define("FULL_URL", $full[0]);
-
         wp_enqueue_style("moloni-styles", plugins_url('assets/css/moloni.css', MOLONI_PLUGIN_FILE));
     }
 
@@ -60,7 +58,7 @@ class Plugin
         try {
             /** If the user is not logged in show the login form */
             if (Start::login()) {
-                $action = $_REQUEST["action"];
+                $action = sanitize_text_field($_REQUEST["action"]);
 
                 switch ($action) {
                     case "remInvoice":
@@ -84,7 +82,7 @@ class Plugin
 
                     case "getInvoice":
                         $document = false;
-                        $documentId = $_REQUEST["id"];
+                        $documentId = (int)$_REQUEST["id"];
 
                         if ((int)$documentId > 0) {
                             $document = Documents::showDocument($documentId);
@@ -121,9 +119,12 @@ class Plugin
         return $document;
     }
 
+    /**
+     * @param int $orderId
+     */
     private function removeOrder($orderId)
     {
-        if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
+        if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) == 'true') {
             add_post_meta($orderId, "_moloni_sent", "-1", true);
             add_settings_error('moloni', 'moloni-order-remove-success', __('A encomenda ' . $orderId . ' foi marcada como gerada!'), 'updated');
         } else {
@@ -135,9 +136,10 @@ class Plugin
         }
     }
 
+
     private function removeOrdersAll()
     {
-        if (isset($_GET['confirm']) && $_GET['confirm'] == 'true') {
+        if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) == 'true') {
             $allOrders = Controllers\PendingOrders::getAllAvailable();
             if (!empty($allOrders) && is_array($allOrders)) {
                 foreach ($allOrders as $order) {
@@ -156,7 +158,7 @@ class Plugin
 
     private function syncStocks()
     {
-        $date = isset($_GET['since']) ? $_GET['since'] : gmdate('Y-m-d', strtotime("-1 week"));
+        $date = isset($_GET['since']) ? sanitize_text_field($_GET['since']) : gmdate('Y-m-d', strtotime("-1 week"));
         $syncStocksResult = (new Controllers\SyncProducts($date))->run();
 
         if ($syncStocksResult->countUpdated() > 0) {

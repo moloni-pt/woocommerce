@@ -1,12 +1,16 @@
-<?php $orders = \Moloni\Controllers\PendingOrders::getAllAvailable(); ?>
+<?php use \Moloni\Controllers\Documents; ?>
+<?php use \Moloni\Controllers\PendingOrders; ?>
+
+<?php $orders = PendingOrders::getAllAvailable(); ?>
 
 <div class="wrap">
 
-    <?php if (isset($document) && $document instanceof \Moloni\Controllers\Documents && $document->getError()) : ?>
+    <?php if (isset($document) && $document instanceof Documents && $document->getError()) : ?>
         <?php $document->getError()->showError(); ?>
     <?php endif; ?>
 
-    <h3>Aqui pode consultar todas as encomendas que tem por gerar</h3>
+    <h3><?= __("Aqui pode consultar todas as encomendas que tem por gerar") ?></h3>
+
     <table class='wp-list-table widefat fixed striped posts'>
         <thead>
         <tr>
@@ -87,7 +91,7 @@
         <?php else : ?>
             <tr>
                 <td colspan="7">
-                    Não foram encontadas encomendas por gerar!
+                    <?= __("Não foram encontadas encomendas por gerar!") ?>
                 </td>
             </tr>
 
