@@ -7,5 +7,4 @@
       <path value="$PROJECT_DIR$/moloni-pt/vendor/curl/curl" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
 </project>

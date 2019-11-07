@@ -21,10 +21,10 @@ class Documents
     private $company = [];
 
     /** @var int */
-    private $orderId = 0;
+    private $orderId;
 
     /** @var WC_Order */
-    private $order;
+    public $order;
 
     /** @var bool|Error */
     private $error = false;
@@ -84,7 +84,7 @@ class Documents
     private $status = 0;
     private $products;
 
-    private $documentType = 'invoices';
+    public $documentType;
 
     /**
      * Documents constructor.
@@ -96,8 +96,8 @@ class Documents
         $this->orderId = $orderId;
         $this->order = new WC_Order((int)$orderId);
 
-        if (!defined("DOCUMENT_TYPE")) {
-            throw new Error(__("Tipo de documento não definido nas opções"));
+        if (!defined('DOCUMENT_TYPE')) {
+            throw new Error(__('Tipo de documento não definido nas opções'));
         }
 
         $this->documentType = isset($_GET['document_type']) ? sanitize_text_field($_GET['document_type']) : DOCUMENT_TYPE;
@@ -109,20 +109,20 @@ class Documents
      */
     public function getError()
     {
-        return $this->error ? $this->error : false;
+        return $this->error ?: false;
     }
 
     /**
      * @return mixed
-     * @throws Exception
+     * @throws Error
      */
     public function getDocumentId()
     {
-        if ((int)$this->documentId > 0) {
+        if ($this->documentId > 0) {
             return $this->documentId;
-        } else {
-            throw new Exception(__("Document not found"));
         }
+
+        throw new Error(__('Document not found'));
     }
 
     /**
@@ -137,7 +137,7 @@ class Documents
             $this->date = date('Y-m-d');
             $this->expiration_date = date('Y-m-d');
 
-            $this->your_reference = "#" . $this->order->get_order_number();
+            $this->your_reference = '#' . $this->order->get_order_number();
 
             foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
                 /** @var $orderProduct WC_Order_Item_Product */
@@ -178,13 +178,11 @@ class Documents
             $this->setNotes();
 
             // One last validation
-            if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true')) {
-                if ($this->isReferencedInDatabase()) {
-                    throw new Error(
-                        __("O documento da encomenda " . $this->order->get_order_number() . " já foi gerado anteriormente!") .
-                        " <a href='admin.php?page=moloni&action=genInvoice&id=" . $this->orderId . "&force=true'>" . __("Gerar novamente") . "</a>"
-                    );
-                }
+            if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
+                throw new Error(
+                    __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
+                    " <a href='admin.php?page=moloni&action=genInvoice&id=" . $this->orderId . "&force=true'>" . __('Gerar novamente') . '</a>'
+                );
             }
 
             $document = $this->mapPropsToValues();
@@ -193,32 +191,32 @@ class Documents
             $insertedDocument = Curl::simple($this->documentType . '/insert', $document);
 
             if (!isset($insertedDocument['document_id'])) {
-                throw new Error(__("Atenção, houve um erro ao inserir o documento"));
+                throw new Error(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
             }
 
             $this->document_id = $insertedDocument['document_id'];
-            add_post_meta($this->orderId, "_moloni_sent", $this->document_id, true);
+            add_post_meta($this->orderId, '_moloni_sent', $this->document_id, true);
 
-            $addedDocument = Curl::simple('documents/getOne', ["document_id" => $insertedDocument['document_id']]);
+            $addedDocument = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
 
             // If the documents is going to be inserted as closed
-            if (defined("DOCUMENT_STATUS") && DOCUMENT_STATUS) {
+            if (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS) {
 
                 // Validate if the document totals match can be closed
                 if (((float)$this->order->get_total() - (float)$this->order->get_total_refunded()) !== (float)$addedDocument['net_value']) {
-                    $viewUrl = admin_url("admin.php?page=moloni&action=getInvoice&id=" . $this->document_id);
+                    $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
                     throw new Error(
-                        __("O documento foi inserido mas os totais não correspondem. ") .
+                        __('O documento foi inserido mas os totais não correspondem. ') .
                         '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
                     );
                 }
 
                 $closeDocument = [];
-                $closeDocument["document_id"] = $this->document_id;
+                $closeDocument['document_id'] = $this->document_id;
                 $closeDocument['status'] = 1;
 
                 // Send email to the client
-                if (defined("EMAIL_SEND") && EMAIL_SEND) {
+                if (defined('EMAIL_SEND') && EMAIL_SEND) {
                     $closeDocument['send_email'] = [];
                     $closeDocument['send_email'][] = [
                         'email' => $this->order->get_billing_email(),
@@ -249,7 +247,7 @@ class Documents
             foreach ($notes as $index => $note) {
                 $this->notes .= $note->comment_content;
                 if ($index !== count($notes) - 1) {
-                    $this->notes .= "<br>";
+                    $this->notes .= '<br>';
                 }
             }
         }
@@ -261,21 +259,21 @@ class Documents
     public function setShippingInfo()
     {
         if (defined('SHIPPING_INFO') && SHIPPING_INFO) {
-            $this->company = Curl::simple("companies/getOne", []);
+            $this->company = Curl::simple('companies/getOne', []);
             $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
-            if ($this->order->get_shipping_country() == "PT") {
+            if ($this->order->get_shipping_country() === 'PT') {
                 $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
             }
 
             $this->delivery_method_id = $this->company['delivery_method_id'];
-            $this->delivery_datetime = date("Y-m-d H:i:s");
+            $this->delivery_datetime = date('Y-m-d H:i:s');
 
             $this->delivery_departure_address = $this->company['address'];
             $this->delivery_departure_city = $this->company['city'];
             $this->delivery_departure_zip_code = $this->company['zip_code'];
             $this->delivery_departure_country = $this->company['country_id'];
 
-            $this->delivery_destination_address = $this->order->get_shipping_address_1() . " " . $this->order->get_shipping_address_2();
+            $this->delivery_destination_address = $this->order->get_shipping_address_1() . ' ' . $this->order->get_shipping_address_2();
             $this->delivery_destination_city = $this->order->get_shipping_city();
             $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
         }
@@ -287,11 +285,11 @@ class Documents
      */
     public function getDocumentSetId()
     {
-        if (defined("DOCUMENT_SET_ID") && (int)DOCUMENT_SET_ID > 0) {
+        if (defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID > 0) {
             return DOCUMENT_SET_ID;
-        } else {
-            throw new Error(__("Série de documentos em falta. <br>Por favor seleccione uma série nas opções do plugin", false));
         }
+
+        throw new Error(__('Série de documentos em falta. <br>Por favor seleccione uma série nas opções do plugin', false));
     }
 
     /**
@@ -300,7 +298,7 @@ class Documents
      */
     public function isReferencedInDatabase()
     {
-        return $this->order->get_meta("_moloni_sent") ? true : false;
+        return $this->order->get_meta('_moloni_sent') ? true : false;
     }
 
     /**
@@ -351,43 +349,43 @@ class Documents
      */
     public static function showDocument($documentId)
     {
-        $values["document_id"] = $documentId;
-        $invoice = Curl::simple("documents/getOne", $values);
+        $values['document_id'] = $documentId;
+        $invoice = Curl::simple('documents/getOne', $values);
 
         if (!isset($invoice['document_id'])) {
             return false;
         }
 
-        if ($invoice['status'] == 1) {
-            $url = Curl::simple("documents/getPDFLink", $values);
-            header("Location: " . $url['url']);
+        if ((int)$invoice['status'] === 1) {
+            $url = Curl::simple('documents/getPDFLink', $values);
+            header('Location: ' . $url['url']);
         } else {
             switch ($invoice['document_type']['saft_code']) {
-                case "FT" :
+                case 'FT' :
                 default:
-                    $typeName = "Faturas";
+                    $typeName = 'Faturas';
                     break;
-                case "FR" :
-                    $typeName = "FaturasRecibo";
+                case 'FR' :
+                    $typeName = 'FaturasRecibo';
                     break;
-                case "FS" :
-                    $typeName = "FaturaSimplificada";
+                case 'FS' :
+                    $typeName = 'FaturaSimplificada';
                     break;
-                case "GT" :
-                    $typeName = "GuiasTransporte";
+                case 'GT' :
+                    $typeName = 'GuiasTransporte';
                     break;
-                case "NEF" :
-                    $typeName = "NotasEncomenda";
+                case 'NEF' :
+                    $typeName = 'NotasEncomenda';
                     break;
             }
 
-            if (defined("COMPANY_SLUG")) {
+            if (defined('COMPANY_SLUG')) {
                 $slug = COMPANY_SLUG;
             } else {
-                $meInfo = Curl::simple("companies/getOne", []);
+                $meInfo = Curl::simple('companies/getOne', []);
                 $slug = $meInfo['slug'];
             }
-            header("Location: https://moloni.pt/" . $slug . "/" . $typeName . "/showDetail/" . $invoice['document_id']);
+            header('Location: https://moloni.pt/' . $slug . '/' . $typeName . '/showDetail/' . $invoice['document_id']);
         }
         exit;
     }

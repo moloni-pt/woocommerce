@@ -11,12 +11,12 @@
     </a>
 
     <a href="<?= admin_url('admin.php?page=moloni&tab=settings') ?>"
-       class="nav-tab <?= ($_GET['tab'] == 'settings') ? 'nav-tab-active' : '' ?>">
+       class="nav-tab <?= ($_GET['tab'] === 'settings') ? 'nav-tab-active' : '' ?>">
         <?= __('Configurações') ?>
     </a>
 
     <a href="<?= admin_url('admin.php?page=moloni&tab=tools') ?>"
-       class="nav-tab <?= ($_GET['tab'] == 'tools') ? 'nav-tab-active' : '' ?>">
+       class="nav-tab <?= ($_GET['tab'] === 'tools') ? 'nav-tab-active' : '' ?>">
         <?= __('Ferramentas') ?>
     </a>
 </nav>
@@ -24,13 +24,13 @@
 <?php
 switch ($_GET['tab']) {
     case 'tools':
-        include MOLONI_TEMPLATE_DIR . "Containers/Tools.php";
+        include MOLONI_TEMPLATE_DIR . 'Containers/Tools.php';
         break;
     case 'settings':
-        include MOLONI_TEMPLATE_DIR . "Containers/Settings.php";
+        include MOLONI_TEMPLATE_DIR . 'Containers/Settings.php';
         break;
     default:
-        include MOLONI_TEMPLATE_DIR . "Containers/PendingOrders.php";
+        include MOLONI_TEMPLATE_DIR . 'Containers/PendingOrders.php';
         break;
 }
 

@@ -9,11 +9,26 @@
         <?php $document->getError()->showError(); ?>
     <?php endif; ?>
 
-    <h3><?= __("Aqui pode consultar todas as encomendas que tem por gerar") ?></h3>
+    <h3><?= __('Aqui pode consultar todas as encomendas que tem por gerar') ?></h3>
+
+    <div class="tablenav top">
+        <div class="alignleft actions bulkactions">
+            <label for="bulk-action-selector-top" class="screen-reader-text">Seleccionar acção por lotes</label><select
+                    name="action" id="bulk-action-selector-top">
+                <option value="-1"><?= __('Ações por lotes') ?></option>
+                <option value="bulkGenInvoice"><?= __('Gerar documentos') ?></option>
+            </select>
+            <input type="submit" id="doAction" class="button action" value="<?= __('Correr') ?>">
+        </div>
+    </div>
 
     <table class='wp-list-table widefat fixed striped posts'>
         <thead>
         <tr>
+            <td class="manage-column column-cb check-column">
+                <label for="moloni-pending-orders-select-all" class="screen-reader-text"></label>
+                <input id="moloni-pending-orders-select-all" class="moloni-pending-orders-select-all" type="checkbox">
+            </td>
             <th><a><?= __("Encomenda") ?></a></th>
             <th><a><?= __("Cliente") ?></a></th>
             <th><a><?= __("Contribuinte") ?></a></th>
@@ -28,7 +43,12 @@
 
             <!-- Lets draw a list of all the available orders -->
             <?php foreach ($orders as $order) : ?>
-                <tr>
+                <tr id="moloni-pending-order-row-<?= $order['id'] ?>">
+                    <td class="">
+                        <label for="moloni-pending-order-<?= $order['id'] ?>" class="screen-reader-text"></label>
+                        <input id="moloni-pending-order-<?= $order['id'] ?>" type="checkbox"
+                               value="<?= $order['id'] ?>">
+                    </td>
                     <td>
                         <a href=<?= admin_url('post.php?post=' . $order['id'] . '&action=edit') ?>>#<?= $order['number'] ?></a>
                     </td>
@@ -99,6 +119,12 @@
 
         <tfoot>
         <tr>
+            <td class="manage-column column-cb check-column">
+                <label for="moloni-pending-orders-select-all-bottom" class="screen-reader-text"></label>
+                <input id="moloni-pending-orders-select-all-bottom" class="moloni-pending-orders-select-all"
+                       type="checkbox">
+            </td>
+
             <th><a><?= __("Encomenda") ?></a></th>
             <th><a><?= __("Cliente") ?></a></th>
             <th><a><?= __("Contribuinte") ?></a></th>
@@ -109,4 +135,18 @@
         </tr>
         </tfoot>
     </table>
+</div>
+
+<div id="bulk-action-progress-modal" class="modal" style="display: none">
+    <div id="bulk-action-progress-content">
+        <h2>
+            <?= __('A gerar ') ?>
+            <span id="bulk-action-progress-current">0</span>
+            <?= __(' de ') ?>
+            <span id="bulk-action-progress-total">0</span>
+            <?= __(' documentos.') ?>
+        </h2>
+        <div id="bulk-action-progress-message">
+        </div>
+    </div>
 </div>

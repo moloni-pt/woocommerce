@@ -135,3 +135,12 @@ hr {
 li#toplevel_page_moloni img {
     margin-top: -4px;
 }
+
+.blocker {
+    z-index: 9999;
+}
+
+.modal {
+    border-radius: 4px;
+    box-shadow: 0 0 0 #0000;
+}

@@ -50,7 +50,7 @@ class Product
     {
         $this->setReference();
 
-        $searchProduct = Curl::simple("products/getByReference", ["reference" => $this->reference, "exact" => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $product = $searchProduct[0];
             $this->product_id = $product['product_id'];
@@ -82,13 +82,13 @@ class Product
             ->setUnitId()
             ->setTaxes();
 
-        $insert = Curl::simple("products/insert", $this->mapPropsToValues());
+        $insert = Curl::simple('products/insert', $this->mapPropsToValues());
         if (isset($insert['product_id'])) {
             $this->product_id = $insert['product_id'];
             return $this;
         }
 
-        throw new Error(__("Erro ao inserir o artigo ") . $this->name);
+        throw new Error(__('Erro ao inserir o artigo ') . $this->name);
     }
 
     /**
@@ -96,7 +96,7 @@ class Product
      */
     public function getProductId()
     {
-        return $this->product_id ? $this->product_id : false;
+        return $this->product_id ?: false;
     }
 
     /**
@@ -118,7 +118,7 @@ class Product
      */
     private function setCategory()
     {
-        $categoryName = "Loja Online";
+        $categoryName = 'Loja Online';
 
         $categories = $this->product->get_category_ids();
         if (!empty($categories) && (int)$categories[0] > 0) {
@@ -186,7 +186,7 @@ class Product
      */
     private function setEan()
     {
-        $metaBarcode = $this->product->get_meta("barcode", true);
+        $metaBarcode = $this->product->get_meta('barcode', true);
         if (!empty($metaBarcode)) {
             $this->ean = $metaBarcode;
         }
@@ -200,10 +200,10 @@ class Product
      */
     private function setUnitId()
     {
-        if (defined("MEASURE_UNIT")) {
+        if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error(__("Unidade de medida não definida!"));
+            throw new Error(__('Unidade de medida não definida!'));
         }
 
         return $this;
@@ -216,10 +216,10 @@ class Product
      */
     private function setTaxes()
     {
-        if ($this->product->get_tax_status() == 'taxable') {
+        if ($this->product->get_tax_status() === 'taxable') {
             // Get taxes based on a tax class of a product
             // If the tax class is empty it means the products uses the shop default
-            $productTaxes = $taxes = $this->product->get_tax_class();
+            $productTaxes = $this->product->get_tax_class();
             $taxRates = WC_Tax::get_base_tax_rates($productTaxes);
 
             foreach ($taxRates as $order => $taxRate) {
@@ -227,14 +227,14 @@ class Product
                 $tax['tax_id'] = Tools::getTaxIdFromRate((float)$taxRate['rate']);
                 $tax['value'] = $taxRate['rate'];
                 $tax['order'] = $order;
-                $tax['cumulative'] = "0";
+                $tax['cumulative'] = '0';
 
                 $this->taxes[] = $tax;
             }
         }
 
-        if (empty($this->taxes)) {
-            $this->exemption_reason = defined("EXEMPTION_REASON") ? EXEMPTION_REASON : '';
+        if (empty($this->taxes) || (float)$this->taxes[0]['value'] === 0) {
+            $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
         }
 
         return $this;

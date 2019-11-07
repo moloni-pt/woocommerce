@@ -23,12 +23,16 @@ class SyncProducts
 
     public function __construct($since)
     {
-        $sinceTime = strtotime($since);
-        if (!$sinceTime) {
-            $sinceTime = strtotime("-1 week");
+        if (is_numeric($since)) {
+            $sinceTime = $since;
+        } else {
+            $sinceTime = strtotime($since);
+            if (!$sinceTime) {
+                $sinceTime = strtotime('-1 week');
+            }
         }
 
-        $this->since = gmdate("Y-m-d H:i:s", $sinceTime);
+        $this->since = gmdate('Y-m-d H:i:s', $sinceTime);
     }
 
     /**
@@ -37,35 +41,36 @@ class SyncProducts
      */
     public function run()
     {
-        Log::write("A sincronizar artigos desde " . $this->since);
-        /** @var array $updatedProducts */
+        Log::write('A sincronizar artigos desde ' . $this->since);
+
         $updatedProducts = $this->getAllMoloniProducts();
+
         if (!empty($updatedProducts) && is_array($updatedProducts)) {
             $this->found = count($updatedProducts);
+            Log::write('Encontrados ' . $this->found . ' artigos');
             foreach ($updatedProducts as $product) {
                 try {
                     $wcProductId = wc_get_product_id_by_sku($product['reference']);
                     if ($product['has_stock'] && $wcProductId > 0) {
-                        Log::write("Sincronizar artigo: " . $product['reference']);
                         $currentStock = get_post_meta($wcProductId, '_stock', true);
                         $newStock = $product['stock'];
 
-                        if ($currentStock == $newStock) {
-                            Log::write("Artigo com a referência " . $product['reference'] . " já tem o stock correcto " . $currentStock . "|" . $newStock);
-                            $this->equal[$product['reference']] = "Artigo com a referência " . $product['reference'] . " já tem o stock correcto";
+                        if ((float)$currentStock === (float)$newStock) {
+                            Log::write('Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto ' . $currentStock . '|' . $newStock);
+                            $this->equal[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto';
                         } else {
-                            Log::write("Artigo com a referência " . $product['reference'] . " foi actualizado de " . $currentStock . " para " . $newStock);
-                            $this->updated[$product['reference']] = "Artigo com a referência " . $product['reference'] . " foi actualizado de " . $currentStock . " para " . $newStock;
+                            Log::write('Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock);
+                            $this->updated[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
                             update_post_meta($wcProductId, '_stock', $product['stock']);
                             update_post_meta($wcProductId, '_stock_status', ($product['stock'] > 0 ? 'instock' : $this->outOfStockStatus));
-                            update_post_meta($wcProductId, 'outofstock', ($product['stock'] > 0 ? "0" : "1"));
+                            update_post_meta($wcProductId, 'outofstock', ($product['stock'] > 0 ? '0' : '1'));
                         }
                     } else {
-                        Log::write("Artigo não encontrado ou sem stock ativo: " . $product['reference']);
-                        $this->notFound[$product['reference']] = "Artigo não encontrado no WooCommerce ou sem stock activo";
+                        Log::write('Artigo não encontrado ou sem stock ativo: ' . $product['reference']);
+                        $this->notFound[$product['reference']] = 'Artigo não encontrado no WooCommerce ou sem stock activo';
                     }
                 } catch (Exception $error) {
-                    echo "<br>" . $error->getMessage();
+                    Log::write('Erro: ' . $error->getMessage());
                 }
             }
         } else {
@@ -149,21 +154,27 @@ class SyncProducts
 
         while (true) {
             $values = [
-                "company_id" => MOLONI_COMPANY_ID,
-                "lastmodified" => $this->since,
-                "offset" => $this->offset
+                'company_id' => MOLONI_COMPANY_ID,
+                'lastmodified' => $this->since,
+                'offset' => $this->offset
             ];
 
+            Log::write(json_encode($values));
+
             try {
-                $fetched = Curl::simple("products/getModifiedSince", $values);
+                $fetched = Curl::simple('products/getModifiedSince', $values);
             } catch (Error $e) {
                 $fetched = [];
-                Log::write("Atenção, erro ao obter todos os artigos via API");
+                Log::write('Atenção, erro ao obter todos os artigos via API');
             }
 
             /** Fail safe - When a request brings no product at all */
             if (isset($fetched[0]['product_id'])) {
-                $productsList = array_merge($productsList, $fetched);
+
+                foreach ($fetched as $item) {
+                    $productsList[] = $item;
+                }
+
                 $this->offset += count($fetched);
             } else {
                 break;

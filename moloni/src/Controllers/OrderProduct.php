@@ -122,18 +122,18 @@ class OrderProduct
     private function getSummaryExtraProductOptions()
     {
         $summary = '';
-        $checkEPO = $this->product->get_meta("_tmcartepo_data", true);
+        $checkEPO = $this->product->get_meta('_tmcartepo_data', true);
         $extraProductOptions = maybe_unserialize($checkEPO);
 
         if ($extraProductOptions && is_array($extraProductOptions)) {
             foreach ($extraProductOptions as $extraProductOption) {
-                if (isset($extraProductOption['name']) && isset($extraProductOption['value'])) {
+                if (isset($extraProductOption['name'], $extraProductOption['value'])) {
 
                     if (!empty($summary)) {
                         $summary .= "\n";
                     }
 
-                    $summary .= $extraProductOption['name'] . " " . $extraProductOption['value'];
+                    $summary .= $extraProductOption['name'] . ' ' . $extraProductOption['value'];
                 }
             }
         }
@@ -146,7 +146,7 @@ class OrderProduct
      */
     public function setPrice($price = null)
     {
-        if (!is_null($price)) {
+        if ($price !== null) {
             $this->price = $price;
         } else {
             $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
@@ -158,7 +158,7 @@ class OrderProduct
      */
     public function setQty($qty = null)
     {
-        if (!is_null($qty)) {
+        if ($qty !== null) {
             $this->qty = $qty;
         } else {
             $this->qty = $this->qty = (float)$this->product->get_quantity();
@@ -189,8 +189,15 @@ class OrderProduct
      */
     private function setDiscount()
     {
-        $this->discount = (float)(100 - (((float)$this->product->get_total() * 100) / (float)$this->product->get_subtotal()));
-        $this->discount = $this->discount < 0 ? 0 : $this->discount > 100 ? 100 : $this->discount;
+        $this->discount = (100 - (((float)$this->product->get_total() * 100) / (float)$this->product->get_subtotal()));
+
+        if ($this->discount > 100) {
+            $this->discount = 100;
+        }
+
+        if ($this->discount < 0) {
+            $this->discount = 0;
+        }
 
         return $this;
     }
@@ -201,17 +208,18 @@ class OrderProduct
      */
     private function setTaxes()
     {
+        $taxRate = 0;
         $taxes = $this->product->get_taxes();
         foreach ($taxes['subtotal'] as $taxId => $value) {
             if (!empty($value)) {
-                $taxRate = preg_replace('/[^0-9.]/', "", WC_Tax::get_rate_percent($taxId));
+                $taxRate = preg_replace('/[^0-9.]/', '', WC_Tax::get_rate_percent($taxId));
                 if ((float)$taxRate > 0) {
                     $this->taxes[] = $this->setTax($taxRate);
                 }
             }
         }
 
-        if (empty($this->taxes)) {
+        if (empty($this->taxes) || (float)$taxRate === 0) {
             $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
         }
 
@@ -243,7 +251,7 @@ class OrderProduct
             return $this;
         }
 
-        if (defined("MOLONI_PRODUCT_WAREHOUSE") && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
+        if (defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
             $this->warehouse_id = (int)MOLONI_PRODUCT_WAREHOUSE;
         }
 
@@ -258,13 +266,13 @@ class OrderProduct
     {
         $values = [];
 
-        $values["product_id"] = $this->product_id;
-        $values["name"] = $this->name;
-        $values["summary"] = $this->summary;
-        $values["qty"] = $this->qty;
-        $values["price"] = $this->price;
-        $values["discount"] = $this->discount;
-        $values["order"] = $this->order;
+        $values['product_id'] = $this->product_id;
+        $values['name'] = $this->name;
+        $values['summary'] = $this->summary;
+        $values['qty'] = $this->qty;
+        $values['price'] = $this->price;
+        $values['discount'] = $this->discount;
+        $values['order'] = $this->order;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['warehouse_id'] = $this->warehouse_id;

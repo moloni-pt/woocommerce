@@ -42,11 +42,11 @@ class Start
             }
         }
 
-        if ($action == 'logout') {
+        if ($action === 'logout') {
             Model::resetTokens();
         }
 
-        if ($action == 'save') {
+        if ($action === 'save') {
             add_settings_error('general', 'settings_updated', __('Alterações guardadas.'), 'updated');
             $options = $_POST['opt'];
 
@@ -107,10 +107,8 @@ class Start
 
         if (empty($companies)) {
             self::loginForm("Não tem empresas disponíveis na sua conta");
-        } else {
-            if (!self::$ajax) {
-                include(MOLONI_TEMPLATE_DIR . "CompanySelect.php");
-            }
+        } else if (!self::$ajax) {
+            include(MOLONI_TEMPLATE_DIR . "CompanySelect.php");
         }
     }
 

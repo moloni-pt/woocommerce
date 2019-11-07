@@ -31,27 +31,27 @@ class Crons
             self::requires();
 
             if (!Start::login()) {
-                Log::write("Não foi possível estabelecer uma ligação a uma empresa Moloni");
+                Log::write('Não foi possível estabelecer uma ligação a uma empresa Moloni');
                 return false;
             }
 
             if (defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC) {
-                Log::write("A iniciar a sincronização de stocks automática...");
+                Log::write('A iniciar a sincronização de stocks automática...');
                 if (!defined('MOLONI_STOCK_SYNC_TIME')) {
-                    define('MOLONI_STOCK_SYNC_TIME', (int)(time() - 600));
-                    $wpdb->insert("moloni_api_config", ["config" => "moloni_stock_sync_time", "selected" => MOLONI_STOCK_SYNC_TIME]);
+                    define('MOLONI_STOCK_SYNC_TIME', (time() - 600));
+                    $wpdb->insert('moloni_api_config', ['config' => 'moloni_stock_sync_time', 'selected' => MOLONI_STOCK_SYNC_TIME]);
                 }
 
-                (new SyncProducts(MOLONI_STOCK_SYNC))->run();
+                (new SyncProducts(MOLONI_STOCK_SYNC_TIME))->run();
             } else {
-                Log::write("Stock sync disabled in plugin settings");
+                Log::write('Stock sync disabled in plugin settings');
             }
 
         } catch (Exception $ex) {
-            Log::write("Fatal Errror: " . $ex->getMessage());
+            Log::write('Fatal Errror: ' . $ex->getMessage());
         }
 
-        Model::setOption("moloni_stock_sync_time", (int)$runningAt);
+        Model::setOption('moloni_stock_sync_time', $runningAt);
         return true;
     }
 
