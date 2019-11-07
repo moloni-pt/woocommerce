@@ -66,6 +66,10 @@ Released plugin version 3 Beta.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.12 =
+* UPDATE: Emissão de documentos em bulk
+* FIX: Razões de isenção em taxas de 0%
+
 = 3.0.11 =
 * UPDATE: Consulta de logs
 * UPDATE: Limpeza de logs
