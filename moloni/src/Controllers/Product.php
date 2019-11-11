@@ -229,7 +229,9 @@ class Product
                 $tax['order'] = $order;
                 $tax['cumulative'] = '0';
 
-                $this->taxes[] = $tax;
+                if ((float)$taxRate['rate'] > 0) {
+                    $this->taxes[] = $tax;
+                }
             }
         }
 
