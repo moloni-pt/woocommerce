@@ -20,6 +20,10 @@
             </select>
             <input type="submit" id="doAction" class="button action" value="<?= __('Correr') ?>">
         </div>
+
+        <div class="tablenav-pages">
+            <?= PendingOrders::getPagination() ?>
+        </div>
     </div>
 
     <table class='wp-list-table widefat fixed striped posts'>
@@ -135,6 +139,12 @@
         </tr>
         </tfoot>
     </table>
+
+    <div class="tablenav bottom">
+        <div class="tablenav-pages">
+            <?= PendingOrders::getPagination() ?>
+        </div>
+    </div>
 </div>
 
 <div id="bulk-action-progress-modal" class="modal" style="display: none">

@@ -8,50 +8,56 @@ use WP_Query;
 class PendingOrders
 {
     private static $limit = 50;
-    private static $ordersStatuses = ["wc-processing", "wc-completed"];
+    private static $ordersStatuses = ['wc-processing', 'wc-completed'];
+    private static $totalPages = 1;
+    private static $currentPage = 1;
+
 
     public static function getAllAvailable()
     {
+        self::$currentPage = (int)($_GET['paged']) > 0 ? $_GET['paged'] : 1;
+
         $ordersList = [];
-        $args = array(
+        $args = [
             'post_type' => 'shop_order',
             'post_status' => self::$ordersStatuses,
             'posts_per_page' => self::$limit,
+            'paged' => self::$currentPage,
             'orderby' => 'date',
             'order' => 'DESC',
-            'meta_query' => array(
+            'meta_query' => [
                 'relation' => 'OR',
-                array(
+                [
                     'key' => '_moloni_sent',
                     'compare' => 'NOT EXISTS'
-                ),
-                array(
+                ],
+                [
                     'key' => '_moloni_sent',
                     'value' => '0',
                     'compare' => '='
-                )
-            ),
-        );
+                ]
+            ],
+        ];
+
 
         $query = new WP_Query($args);
-        $orders = $query->posts;
+        self::$totalPages = $query->max_num_pages;
 
-        foreach ($orders as $order) {
-
+        foreach ($query->posts as $order) {
             $orderDetails = new WC_Order($order->ID);
             $meta = self::getPostMeta($order->ID);
             $status = get_post_status_object(get_post_status($order->ID));
 
-            if (!isset($meta["_moloni_sent"]) || $meta["_moloni_sent"] == "0") {
+            if (!isset($meta['_moloni_sent']) || (int)$meta['_moloni_sent'] === 0) {
                 $ordersList[] = [
-                    "info" => $meta,
-                    "status" => $status->label,
-                    "number" => $orderDetails->get_order_number(),
-                    "id" => $order->ID
+                    'info' => $meta,
+                    'status' => $status ? $status->label : '',
+                    'number' => $orderDetails->get_order_number(),
+                    'id' => $order->ID
                 ];
             }
         }
-        
+
         return $ordersList;
     }
 
@@ -67,5 +73,17 @@ class PendingOrders
         }
 
         return $metas;
+    }
+
+    public static function getPagination()
+    {
+        $args = [
+            'base' => add_query_arg( 'paged', '%#%' ),
+            'format' => '',
+            'current' => ($_GET['paged']) ?: 1,
+            'total' => self::$totalPages,
+        ];
+
+        return paginate_links($args);
     }
 }

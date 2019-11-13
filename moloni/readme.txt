@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.12
+Stable tag: 3.0.13
 Tested up to: 5.2.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,9 @@ Released plugin version 3 Beta.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.13 =
+* FEEATURE: Paginação na listagem de encomendas pendentes
+
 = 3.0.12 =
 * UPDATE: Emissão de documentos em bulk
 * FIX: Razões de isenção em taxas de 0%
