@@ -21,7 +21,9 @@ class Curl
     private static $allowedCachedMethods = [
         'companies/getOne',
         'countries/getAll',
-        'taxes/getAll'
+        'taxes/getAll',
+        'currencyExchange/getAll',
+        'currencies/getAll'
     ];
 
     /**
@@ -39,17 +41,15 @@ class Curl
      */
     public static function simple($action, $values = false, $debug = false)
     {
-        if (in_array($action, self::$allowedCachedMethods)) {
-            if (isset(self::$cache[$action])) {
-                return self::$cache[$action];
-            }
+        if (isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
+            return self::$cache[$action];
         }
 
         if (is_array($values) && defined('MOLONI_COMPANY_ID')) {
             $values['company_id'] = MOLONI_COMPANY_ID;
         }
 
-        $url = "https://api.moloni.pt/v1/" . $action . "/?human_errors=true&access_token=" . MOLONI_ACCESS_TOKEN;
+        $url = 'https://api.moloni.pt/v1/' . $action . '/?human_errors=true&access_token=' . MOLONI_ACCESS_TOKEN;
 
         $response = wp_remote_post($url, ['body' => http_build_query($values)]);
         $raw = wp_remote_retrieve_body($response);
@@ -65,23 +65,21 @@ class Curl
         self::$logs[] = $log;
 
         if ($debug) {
-            echo "<pre>";
+            echo '<pre>';
             print_r($log);
-            echo "</pre>";
+            echo '</pre>';
         }
 
         if (!isset($parsed['error'])) {
 
-            if (in_array($action, self::$allowedCachedMethods)) {
-                if (!isset(self::$cache[$action])) {
-                    self::$cache[$action] = $parsed;
-                }
+            if (!isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
+                self::$cache[$action] = $parsed;
             }
 
             return $parsed;
-        } else {
-            throw new Error(__("Ups, foi encontrado um erro..."), $log);
         }
+
+        throw new Error(__('Ups, foi encontrado um erro...'), $log);
     }
 
     /**
@@ -102,11 +100,11 @@ class Curl
      */
     public static function login($user, $pass)
     {
-        $url = "https://api.moloni.pt/v1/grant/?grant_type=password";
-        $url .= "&client_id=" . self::$moloniClient;
-        $url .= "&client_secret=" . self::$moloniSecret;
-        $url .= "&username=" . urlencode($user);
-        $url .= "&password=" . urlencode($pass);
+        $url = 'https://api.moloni.pt/v1/grant/?grant_type=password';
+        $url .= '&client_id=' . self::$moloniClient;
+        $url .= '&client_secret=' . self::$moloniSecret;
+        $url .= '&username=' . urlencode($user);
+        $url .= '&password=' . urlencode($pass);
 
         $response = wp_remote_get($url);
         $raw = wp_remote_retrieve_body($response);
@@ -115,9 +113,9 @@ class Curl
 
         if (!isset($parsed['error'])) {
             return $parsed;
-        } else {
-            throw new Error(__("Ups, foi encontrado um erro...", "A combinação de utilizador/password está errada"));
         }
+
+        throw new Error(__('Ups, foi encontrado um erro...', 'A combinação de utilizador/password está errada'));
     }
 
     /**
@@ -127,10 +125,10 @@ class Curl
      */
     public static function refresh($refresh)
     {
-        $url = "https://api.moloni.pt/v1/grant/?grant_type=refresh_token";
-        $url .= "&client_id=" . self::$moloniClient;
-        $url .= "&client_secret=" . self::$moloniSecret;
-        $url .= "&refresh_token=" . $refresh;
+        $url = 'https://api.moloni.pt/v1/grant/?grant_type=refresh_token';
+        $url .= '&client_id=' . self::$moloniClient;
+        $url .= '&client_secret=' . self::$moloniSecret;
+        $url .= '&refresh_token=' . $refresh;
 
         $response = wp_remote_get($url);
         $raw = wp_remote_retrieve_body($response);
@@ -138,9 +136,9 @@ class Curl
         $res_txt = json_decode($raw, true);
         if (!isset($res_txt['error'])) {
             return ($res_txt);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 }

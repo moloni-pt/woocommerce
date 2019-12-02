@@ -4,8 +4,10 @@ namespace Moloni\Controllers;
 
 use Moloni\Error;
 use Moloni\Tools;
+use WC_Order;
 use WC_Order_Item_Product;
 use WC_Tax;
+use Moloni\Curl;
 
 class OrderProduct
 {
@@ -20,6 +22,9 @@ class OrderProduct
      * @var WC_Order_Item_Product
      */
     private $product;
+
+    /** @var WC_Order */
+    private $wc_order;
 
     /** @var array */
     private $taxes = [];
@@ -48,11 +53,13 @@ class OrderProduct
     /**
      * OrderProduct constructor.
      * @param WC_Order_Item_Product $product
+     * @param WC_Order $wcOrder
      * @param int $order
      */
-    public function __construct($product, $order = 0)
+    public function __construct($product, $wcOrder, $order = 0)
     {
         $this->product = $product;
+        $this->wc_order = $wcOrder;
         $this->order = $order;
     }
 
@@ -62,18 +69,22 @@ class OrderProduct
      */
     public function create()
     {
-        $this->setPrice();
-        $this->setQty();
-
-        $this->name = $this->product->get_name();
-
-        $this->setSummary()
+        $this
+            ->setName()
+            ->setPrice()
+            ->setQty()
+            ->setSummary()
             ->setProductId()
             ->setDiscount()
             ->setTaxes()
             ->setWarehouse();
 
+        return $this;
+    }
 
+    public function setName()
+    {
+        $this->name = $this->product->get_name();
         return $this;
     }
 
@@ -142,27 +153,33 @@ class OrderProduct
     }
 
     /**
-     * @param null|float $price
+     * @return OrderProduct
      */
-    public function setPrice($price = null)
+    public function setPrice()
     {
-        if ($price !== null) {
-            $this->price = $price;
-        } else {
-            $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
+        $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
+
+        $refundedValue = $this->wc_order->get_total_refunded_for_item($this->product->get_id());
+        if ((float)$refundedValue > 0) {
+            $this->price -= (float)$refundedValue;
         }
+
+        return $this;
     }
 
     /**
-     * @param null|float $qty
+     * @return OrderProduct
      */
-    public function setQty($qty = null)
+    public function setQty()
     {
-        if ($qty !== null) {
-            $this->qty = $qty;
-        } else {
-            $this->qty = $this->qty = (float)$this->product->get_quantity();
+        $this->qty = (float)$this->product->get_quantity();
+
+        $refundedQty = $this->wc_order->get_qty_refunded_for_item($this->product->get_id());
+        if ((float)$refundedQty > 0) {
+            $this->qty -= (float)$refundedQty;
         }
+
+        return $this;
     }
 
     /**

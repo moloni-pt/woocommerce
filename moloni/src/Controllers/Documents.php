@@ -2,7 +2,6 @@
 
 namespace Moloni\Controllers;
 
-use Exception;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
@@ -86,6 +85,10 @@ class Documents
 
     public $documentType;
 
+    /** @var int */
+    private $exchange_currency_id;
+    private $exchange_rate;
+
     /**
      * Documents constructor.
      * @param int $orderId
@@ -139,43 +142,13 @@ class Documents
 
             $this->your_reference = '#' . $this->order->get_order_number();
 
-            foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
-                /** @var $orderProduct WC_Order_Item_Product */
-                $newOrderProduct = new OrderProduct($orderProduct, count($this->products));
-                $newOrderProduct->create();
-
-                $refundedValue = $this->order->get_total_refunded_for_item($orderProduct->get_id());
-                if ((float)$refundedValue > 0) {
-                    $newOrderProduct->setPrice($newOrderProduct->price - (float)$refundedValue);
-                }
-
-                $refundedQty = $this->order->get_qty_refunded_for_item($orderProduct->get_id());
-                if ((float)$refundedQty > 0) {
-                    $newOrderProduct->setQty($newOrderProduct->qty - (float)$refundedQty);
-                }
-
-                $this->products[] = $newOrderProduct->mapPropsToValues();
-
-            }
-
-            if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
-                $newOrderShipping = new OrderShipping($this->order, count($this->products));
-                $this->products[] = $newOrderShipping->create()->mapPropsToValues();
-            }
-
-            foreach ($this->order->get_fees() as $key => $item) {
-                /** @var $item WC_Order_Item_Fee */
-                $feePrice = abs($item['line_total']);
-
-                if ($feePrice > 0) {
-                    $newOrderFee = new OrderFees($item, count($this->products));
-                    $this->products[] = $newOrderFee->create()->mapPropsToValues();
-
-                }
-            }
-
-            $this->setShippingInfo();
-            $this->setNotes();
+            $this
+                ->setProducts()
+                ->setShipping()
+                ->setFees()
+                ->setExchangeRate()
+                ->setShippingInfo()
+                ->setNotes();
 
             // One last validation
             if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
@@ -185,10 +158,7 @@ class Documents
                 );
             }
 
-            $document = $this->mapPropsToValues();
-
-
-            $insertedDocument = Curl::simple($this->documentType . '/insert', $document);
+            $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
 
             if (!isset($insertedDocument['document_id'])) {
                 throw new Error(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
@@ -203,7 +173,10 @@ class Documents
             if (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS) {
 
                 // Validate if the document totals match can be closed
-                if (((float)$this->order->get_total() - (float)$this->order->get_total_refunded()) !== (float)$addedDocument['net_value']) {
+                $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded());
+                $documentTotal = (float)$addedDocument['exchange_total_value'] > 0 ? (float)$addedDocument['exchange_total_value'] : (float)$addedDocument['net_value'];
+
+                if ($orderTotal !== $documentTotal) {
                     $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
                     throw new Error(
                         __('O documento foi inserido mas os totais não correspondem. ') .
@@ -238,6 +211,78 @@ class Documents
     }
 
     /**
+     * @return $this
+     * @throws Error
+     */
+    private function setProducts()
+    {
+        foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
+            /** @var $orderProduct WC_Order_Item_Product */
+            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products));
+            $this->products[] = $newOrderProduct->create()->mapPropsToValues();
+
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws Error
+     */
+    private function setShipping()
+    {
+        if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
+            $newOrderShipping = new OrderShipping($this->order, count($this->products));
+            $this->products[] = $newOrderShipping->create()->mapPropsToValues();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws Error
+     */
+    private function setFees()
+    {
+        foreach ($this->order->get_fees() as $key => $item) {
+            /** @var $item WC_Order_Item_Fee */
+            $feePrice = abs($item['line_total']);
+
+            if ($feePrice > 0) {
+                $newOrderFee = new OrderFees($item, count($this->products));
+                $this->products[] = $newOrderFee->create()->mapPropsToValues();
+
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws Error
+     */
+    private function setExchangeRate()
+    {
+
+        $company = Curl::simple('companies/getOne', []);
+        if ($company['currency']['iso4217'] !== $this->order->get_currency()) {
+            $this->exchange_currency_id = Tools::getCurrencyIdFromCode($this->order->get_currency());
+            $this->exchange_rate = Tools::getCurrencyExchangeRate($company['currency']['currency_id'], $this->exchange_currency_id);
+
+            if (!empty($this->products) && is_array($this->products)) {
+                foreach ($this->products as &$product) {
+                    $product['price'] /= $this->exchange_rate;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Set the document customer notes
      */
     private function setNotes()
@@ -254,6 +299,7 @@ class Documents
     }
 
     /**
+     * @return $this
      * @throws Error
      */
     public function setShippingInfo()
@@ -277,6 +323,8 @@ class Documents
             $this->delivery_destination_city = $this->order->get_shipping_city();
             $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
         }
+
+        return $this;
     }
 
     /**
@@ -336,6 +384,11 @@ class Documents
         $values['delivery_destination_country'] = $this->delivery_destination_country;
 
         $values['products'] = $this->products;
+
+        if (!empty($this->exchange_currency_id)) {
+            $values['exchange_currency_id'] = $this->exchange_currency_id;
+            $values['exchange_rate'] = $this->exchange_rate;
+        }
 
         return $values;
     }

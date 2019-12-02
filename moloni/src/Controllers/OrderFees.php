@@ -88,7 +88,7 @@ class OrderFees
      */
     private function setReference()
     {
-        $this->reference = "Fee";
+        $this->reference = 'Fee';
         return $this;
     }
 
@@ -98,7 +98,7 @@ class OrderFees
      */
     private function setProductId()
     {
-        $searchProduct = Curl::simple("products/getByReference", ["reference" => $this->reference, "exact" => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $this->product_id = $searchProduct[0]['product_id'];
             return $this;
@@ -109,13 +109,13 @@ class OrderFees
             ->setCategory()
             ->setUnitId();
 
-        $insert = Curl::simple("products/insert", $this->mapPropsToValues(true));
+        $insert = Curl::simple('products/insert', $this->mapPropsToValues(true));
         if (isset($insert['product_id'])) {
             $this->product_id = $insert['product_id'];
             return $this;
         }
 
-        throw new Error(__("Erro ao inserir Taxa da encomenda"));
+        throw new Error(__('Erro ao inserir Taxa da encomenda'));
     }
 
     /**
@@ -123,7 +123,7 @@ class OrderFees
      */
     private function setCategory()
     {
-        $categoryName = "Loja Online";
+        $categoryName = 'Loja Online';
 
         $categoryObj = new ProductCategory($categoryName);
         if (!$categoryObj->loadByName()) {
@@ -141,10 +141,10 @@ class OrderFees
      */
     private function setUnitId()
     {
-        if (defined("MEASURE_UNIT")) {
+        if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error(__("Unidade de medida não definida!"));
+            throw new Error(__('Unidade de medida não definida!'));
         }
 
         return $this;
@@ -158,7 +158,7 @@ class OrderFees
     private function setDiscount()
     {
         $this->discount = $this->price <= 0 ? 100 : 0;
-        $this->discount = $this->discount < 0 ? 0 : $this->discount > 100 ? 100 : $this->discount;
+        $this->discount = $this->discount < 0 ? 0 : ($this->discount > 100) ? 100 : $this->discount;
 
         return $this;
     }
@@ -206,13 +206,13 @@ class OrderFees
     {
         $values = [];
 
-        $values["product_id"] = $this->product_id;
-        $values["name"] = $this->name;
-        $values["summary"] = "";
-        $values["qty"] = $this->qty;
-        $values["price"] = $this->price;
-        $values["discount"] = $this->discount;
-        $values["order"] = $this->index;
+        $values['product_id'] = $this->product_id;
+        $values['name'] = $this->name;
+        $values['summary'] = '';
+        $values['qty'] = $this->qty;
+        $values['price'] = $this->price;
+        $values['discount'] = $this->discount;
+        $values['order'] = $this->index;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
 

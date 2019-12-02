@@ -3,11 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="09f9309f-dc00-4f6e-86d3-b90d3d03111d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/assets/css/moloni.css" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/assets/css/moloni.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/moloni.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/moloni.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/readme.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Documents.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderCustomer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Templates/Containers/PendingOrders.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Curl.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Curl.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Tools.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Tools.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +112,12 @@
       <workItem from="1573081272252" duration="704000" />
       <workItem from="1573082094499" duration="11719000" />
       <workItem from="1573430379065" duration="1460000" />
-      <workItem from="1573604303031" duration="3710000" />
+      <workItem from="1573604303031" duration="4112000" />
+      <workItem from="1574124226136" duration="691000" />
+      <workItem from="1574635698753" duration="8144000" />
+      <workItem from="1574717386120" duration="2232000" />
+      <workItem from="1574815833799" duration="724000" />
+      <workItem from="1575319901581" duration="708000" />
     </task>
     <servers />
   </component>

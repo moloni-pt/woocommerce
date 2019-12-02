@@ -12,7 +12,9 @@ class PendingOrders
     private static $totalPages = 1;
     private static $currentPage = 1;
 
-
+    /**
+     * @return array
+     */
     public static function getAllAvailable()
     {
         self::$currentPage = (int)($_GET['paged']) > 0 ? $_GET['paged'] : 1;
@@ -61,6 +63,10 @@ class PendingOrders
         return $ordersList;
     }
 
+    /**
+     * @param $postId
+     * @return array
+     */
     public static function getPostMeta($postId)
     {
         $metas = [];
@@ -75,6 +81,9 @@ class PendingOrders
         return $metas;
     }
 
+    /**
+     * @return array|string|void
+     */
     public static function getPagination()
     {
         $args = [

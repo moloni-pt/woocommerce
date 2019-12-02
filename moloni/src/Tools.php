@@ -19,18 +19,18 @@ class Tools
     public static function createReferenceFromString($string, $productId = 0, $variationId = 0)
     {
         $reference = '';
-        $name = explode(" ", $string);
+        $name = explode(' ', $string);
 
         foreach ($name as $word) {
-            $reference .= "_" . mb_substr($word, 0, 3);
+            $reference .= '_' . mb_substr($word, 0, 3);
         }
 
         if ((int)$productId > 0) {
-            $reference .= "_" . $productId;
+            $reference .= '_' . $productId;
         }
 
         if ((int)$variationId > 0) {
-            $reference .= "_" . $variationId;
+            $reference .= '_' . $variationId;
         }
 
         return $reference;
@@ -46,14 +46,14 @@ class Tools
     public static function getTaxIdFromRate($taxRate)
     {
         $defaultTax = 0;
-        $taxesList = Curl::simple("taxes/getAll", []);
+        $taxesList = Curl::simple('taxes/getAll', []);
         if (!empty($taxesList) && is_array($taxesList)) {
             foreach ($taxesList as $tax) {
-                if ($tax['active_by_default'] == 1) {
+                if ((int)$tax['active_by_default'] === 1) {
                     $defaultTax = $tax['tax_id'];
                 }
 
-                if ((float)$tax['value'] == (float)$taxRate) {
+                if ((float)$tax['value'] === (float)$taxRate) {
                     return $tax['tax_id'];
                 }
             }
@@ -69,10 +69,10 @@ class Tools
      */
     public static function getCountryIdFromCode($countryCode)
     {
-        $countriesList = Curl::simple("countries/getAll", []);
+        $countriesList = Curl::simple('countries/getAll', []);
         if (!empty($countriesList) && is_array($countriesList)) {
             foreach ($countriesList as $country) {
-                if (strtoupper($country["iso_3166_1"]) == strtoupper($countryCode)) {
+                if (strtoupper($country['iso_3166_1']) === strtoupper($countryCode)) {
                     return $country['country_id'];
                     break;
                 }
@@ -83,50 +83,89 @@ class Tools
     }
 
     /**
+     * @param int $from
+     * @param int $to
+     * @return float
+     * @throws Error
+     */
+    public static function getCurrencyExchangeRate($from, $to)
+    {
+        $currenciesList = Curl::simple('currencyExchange/getAll', []);
+        if (!empty($currenciesList) && is_array($currenciesList)) {
+            foreach ($currenciesList as $currency) {
+                if ((int)$currency['from'] === $from && (int)$currency['to'] === $to) {
+                    return (float)$currency['value'];
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    /**
+     * @param string $currencyCode
+     * @return int
+     * @throws Error
+     */
+    public static function getCurrencyIdFromCode($currencyCode)
+    {
+        $currenciesList = Curl::simple('currencies/getAll', []);
+        if (!empty($currenciesList) && is_array($currenciesList)) {
+            foreach ($currenciesList as $currency) {
+                if ($currency['iso4217'] === mb_strtoupper($currencyCode)) {
+                    return $currency['currency_id'];
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    /**
      * @param $input
      * @return string
      */
     public static function zipCheck($input)
     {
-        $zipCode = trim(str_replace(" ", "", $input));
-        $zipCode = preg_replace("/[^0-9]/", "", $zipCode);
+        $zipCode = trim(str_replace(' ', '', $input));
+        $zipCode = preg_replace('/\d/', '', $zipCode);
 
-        if (strlen($zipCode) == 7) {
-            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . "-" . $zipCode[4] . $zipCode[5] . $zipCode[6];
+        if (strlen($zipCode) === 7) {
+            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . $zipCode[5] . $zipCode[6];
         }
 
-        if (strlen($zipCode) == 6) {
-            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . "-" . $zipCode[4] . $zipCode[5] . "0";
+        if (strlen($zipCode) === 6) {
+            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . $zipCode[5] . '0';
         }
 
-        if (strlen($zipCode) == 5) {
-            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . "-" . $zipCode[4] . "00";
+        if (strlen($zipCode) === 5) {
+            $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . '00';
         }
 
-        if (strlen($zipCode) == 4) {
-            $zipCode = $zipCode . "-" . "000";
+        if (strlen($zipCode) === 4) {
+            $zipCode .= '-' . '000';
         }
 
-        if (strlen($zipCode) == 3) {
-            $zipCode = $zipCode . "0-" . "000";
+        if (strlen($zipCode) === 3) {
+            $zipCode .= '0-' . '000';
         }
 
-        if (strlen($zipCode) == 2) {
-            $zipCode = $zipCode . "00-" . "000";
+        if (strlen($zipCode) === 2) {
+            $zipCode .= '00-' . '000';
         }
 
-        if (strlen($zipCode) == 1) {
-            $zipCode = $zipCode . "000-" . "000";
+        if (strlen($zipCode) === 1) {
+            $zipCode .= '000-' . '000';
         }
 
-        if (strlen($zipCode) == 0) {
-            $zipCode = "1000-100";
+        if ($zipCode === '') {
+            $zipCode = '1000-100';
         }
         if (self::finalCheck($zipCode)) {
             return $zipCode;
-        } else {
-            return "1000-100";
         }
+
+        return '1000-100';
     }
 
     /**
@@ -136,12 +175,12 @@ class Tools
      */
     private static function finalCheck($zipCode)
     {
-        $regexp = "/[0-9]{4}\-[0-9]{3}/";
+        $regexp = "/\d{4}\-\d{3}/";
         if (preg_match($regexp, $zipCode)) {
-            return (true);
-        } else {
-            return (false);
+            return true;
         }
+
+        return false;
     }
 
 }
