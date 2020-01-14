@@ -72,6 +72,41 @@ class Product
      */
     public function create()
     {
+        $this->setProduct();
+
+        $insert = Curl::simple('products/insert', $this->mapPropsToValues());
+        if (isset($insert['product_id'])) {
+            $this->product_id = $insert['product_id'];
+            return $this;
+        }
+
+        throw new Error(__('Erro ao inserir o artigo ') . $this->name);
+    }
+
+    /**
+     * Create a product based on a WooCommerce Product
+     * @return $this
+     * @throws Error
+     */
+    public function update()
+    {
+        $this->setProduct();
+
+        $update = Curl::simple('products/update', $this->mapPropsToValues());
+
+        if (isset($update['product_id'])) {
+            $this->product_id = $update['product_id'];
+            return $this;
+        }
+
+        throw new Error(__('Erro ao atualizar o artigo ') . $this->name);
+    }
+
+    /**
+     * @throws Error
+     */
+    private function setProduct()
+    {
         $this
             ->setReference()
             ->setCategory()
@@ -81,14 +116,6 @@ class Product
             ->setEan()
             ->setUnitId()
             ->setTaxes();
-
-        $insert = Curl::simple('products/insert', $this->mapPropsToValues());
-        if (isset($insert['product_id'])) {
-            $this->product_id = $insert['product_id'];
-            return $this;
-        }
-
-        throw new Error(__('Erro ao inserir o artigo ') . $this->name);
     }
 
     /**
@@ -177,7 +204,7 @@ class Product
      */
     private function setPrice()
     {
-        $this->price = (float)$this->product->get_price();
+        $this->price = (float)wc_get_price_excluding_tax($this->product);
         return $this;
     }
 

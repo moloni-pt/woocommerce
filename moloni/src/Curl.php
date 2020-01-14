@@ -115,7 +115,13 @@ class Curl
             return $parsed;
         }
 
-        throw new Error(__('Ups, foi encontrado um erro...', 'A combinação de utilizador/password está errada'));
+        $log = [
+            'url' => $url,
+            'sent' => [],
+            'received' => $parsed
+        ];
+
+        throw new Error(__('Ups, foi encontrado um erro...'), $log);
     }
 
     /**

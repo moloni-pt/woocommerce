@@ -11,7 +11,8 @@
   ],
   "require": {
     "php": ">=5.4.1",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {

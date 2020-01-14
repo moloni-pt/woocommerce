@@ -87,7 +87,7 @@ class OrderShipping
      */
     private function setReference()
     {
-        $this->reference = "Portes";
+        $this->reference = 'Portes';
         return $this;
     }
 
@@ -98,7 +98,7 @@ class OrderShipping
     private function setProductId()
     {
 
-        $searchProduct = Curl::simple("products/getByReference", ["reference" => $this->reference, "exact" => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $this->product_id = $searchProduct[0]['product_id'];
             return $this;
@@ -109,13 +109,13 @@ class OrderShipping
             ->setCategory()
             ->setUnitId();
 
-        $insert = Curl::simple("products/insert", $this->mapPropsToValues(true));
+        $insert = Curl::simple('products/insert', $this->mapPropsToValues(true));
         if (isset($insert['product_id'])) {
             $this->product_id = $insert['product_id'];
             return $this;
         }
 
-        throw new Error("Erro ao inserir portes de envio");
+        throw new Error('Erro ao inserir portes de envio');
     }
 
     /**
@@ -123,7 +123,7 @@ class OrderShipping
      */
     private function setCategory()
     {
-        $categoryName = "Loja Online";
+        $categoryName = 'Loja Online';
 
         $categoryObj = new ProductCategory($categoryName);
         if (!$categoryObj->loadByName()) {
@@ -141,10 +141,10 @@ class OrderShipping
      */
     private function setUnitId()
     {
-        if (defined("MEASURE_UNIT")) {
+        if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error("Unidade de medida não definida!");
+            throw new Error('Unidade de medida não definida!');
         }
 
         return $this;
@@ -169,8 +169,16 @@ class OrderShipping
      */
     private function setTaxes()
     {
+        $shippingTotal = 0;
 
-        $taxRate = round(($this->order->get_shipping_tax() * 100) / $this->order->get_shipping_total());
+        foreach ($this->order->get_shipping_methods() as $item_id => $item) {
+            $taxes = $item->get_taxes();
+            foreach ($taxes['total'] as $tax_rate_id => $tax) {
+                $shippingTotal += (float)$tax;
+            }
+        }
+
+        $taxRate = round(($shippingTotal * 100) / $this->order->get_shipping_total());
 
         if ((float)$taxRate > 0) {
             $this->taxes[] = $this->setTax($taxRate);
@@ -207,13 +215,13 @@ class OrderShipping
     {
         $values = [];
 
-        $values["product_id"] = $this->product_id;
-        $values["name"] = $this->name;
-        $values["summary"] = "";
-        $values["qty"] = $this->qty;
-        $values["price"] = $this->price;
-        $values["discount"] = $this->discount;
-        $values["order"] = $this->index;
+        $values['product_id'] = $this->product_id;
+        $values['name'] = $this->name;
+        $values['summary'] = '';
+        $values['qty'] = $this->qty;
+        $values['price'] = $this->price;
+        $values['discount'] = $this->discount;
+        $values['order'] = $this->index;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
 

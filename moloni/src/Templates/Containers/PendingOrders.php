@@ -33,12 +33,12 @@
                 <label for="moloni-pending-orders-select-all" class="screen-reader-text"></label>
                 <input id="moloni-pending-orders-select-all" class="moloni-pending-orders-select-all" type="checkbox">
             </td>
-            <th><a><?= __("Encomenda") ?></a></th>
-            <th><a><?= __("Cliente") ?></a></th>
-            <th><a><?= __("Contribuinte") ?></a></th>
-            <th><a><?= __("Total") ?></a></th>
-            <th><a><?= __("Estado") ?></a></th>
-            <th><a><?= __("Data de Pagamento") ?></a></th>
+            <th><a><?= __('Encomenda') ?></a></th>
+            <th><a><?= __('Cliente') ?></a></th>
+            <th><a><?= __('Contribuinte') ?></a></th>
+            <th><a><?= __('Total') ?></a></th>
+            <th><a><?= __('Estado') ?></a></th>
+            <th><a><?= __('Data de Pagamento') ?></a></th>
             <th style="width: 350px;"></th>
         </tr>
         </thead>
@@ -59,9 +59,9 @@
                     <td>
                         <?php
                         if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
-                            echo $order['info']['_billing_first_name'] . " " . $order['info']['_billing_last_name'];
+                            echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
                         } else {
-                            echo __("Desconhecido");
+                            echo __('Desconhecido');
                         }
 
                         ?>
@@ -75,24 +75,28 @@
                             <input type="hidden" name="action" value="genInvoice">
                             <input type="hidden" name="id" value="<?= $order['id'] ?>">
                             <select name="document_type" style="margin-right: 5px">
-                                <option value='invoices' <?= (DOCUMENT_TYPE == "invoices" ? "selected" : "") ?>>
+                                <option value='invoices' <?= (DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
                                     <?= __('Faturas') ?>
                                 </option>
 
-                                <option value='invoiceReceipts' <?= (DOCUMENT_TYPE == "invoiceReceipts" ? "selected" : "") ?>>
-                                    <?= __("Factura/Recibo") ?>
+                                <option value='invoiceReceipts' <?= (DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
+                                    <?= __('Factura/Recibo') ?>
                                 </option>
 
-                                <option value='simplifiedInvoices'<?= (DOCUMENT_TYPE == "simplifiedInvoices" ? "selected" : "") ?>>
+                                <option value='simplifiedInvoices'<?= (DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
                                     <?= __('Factura Simplificada') ?>
                                 </option>
 
-                                <option value='billsOfLading' <?= (DOCUMENT_TYPE == "billsOfLading" ? "selected" : "") ?>>
+                                <option value='billsOfLading' <?= (DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
                                     <?= __('Guia de Transporte') ?>
                                 </option>
 
-                                <option value='purchaseOrder' <?= (DOCUMENT_TYPE == "purchaseOrder" ? "selected" : "") ?>>
+                                <option value='purchaseOrder' <?= (DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
                                     <?= __('Nota de Encomenda') ?>
+                                </option>
+
+                                <option value='estimates' <?= (DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
+                                    <?= __('Orçamento') ?>
                                 </option>
                             </select>
 
@@ -115,7 +119,7 @@
         <?php else : ?>
             <tr>
                 <td colspan="7">
-                    <?= __("Não foram encontadas encomendas por gerar!") ?>
+                    <?= __('Não foram encontadas encomendas por gerar!') ?>
                 </td>
             </tr>
 
@@ -129,12 +133,12 @@
                        type="checkbox">
             </td>
 
-            <th><a><?= __("Encomenda") ?></a></th>
-            <th><a><?= __("Cliente") ?></a></th>
-            <th><a><?= __("Contribuinte") ?></a></th>
-            <th><a><?= __("Total") ?></a></th>
-            <th><a><?= __("Estado") ?></a></th>
-            <th><a><?= __("Data de Pagamento") ?></a></th>
+            <th><a><?= __('Encomenda') ?></a></th>
+            <th><a><?= __('Cliente') ?></a></th>
+            <th><a><?= __('Contribuinte') ?></a></th>
+            <th><a><?= __('Total') ?></a></th>
+            <th><a><?= __('Estado') ?></a></th>
+            <th><a><?= __('Data de Pagamento') ?></a></th>
             <th></th>
         </tr>
         </tfoot>

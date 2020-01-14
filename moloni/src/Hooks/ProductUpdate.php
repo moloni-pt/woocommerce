@@ -30,6 +30,7 @@ class ProductUpdate
             $product = wc_get_product($productId);
             try {
                 if ($product->get_status() !== 'draft' && Start::login()) {
+                    /** @noinspection NestedPositiveIfStatementsInspection */
                     if (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC) {
                         $productObj = new Product($product);
                         if (!$productObj->loadByReference()) {
@@ -39,6 +40,7 @@ class ProductUpdate
                                 Notice::addMessageSuccess(__("O artigo foi criado no Moloni"));
                             }
                         } else {
+                            $productObj->update();
                             Notice::addMessageInfo(__("O artigo já existe no Moloni"));
                         }
                     }

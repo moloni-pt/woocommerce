@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.16
+Stable tag: 3.0.19
 Tested up to: 5.3
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,17 @@ Released plugin version 3 Beta.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.18 =
+* FEATURE: Suporte a Orçamentos
+
+= 3.0.18 =
+* UPDATE: Melhoria no cálculo das taxas de Portes
+* FIX: Preços atualizados deverão ter em conta se os artigos têm IVA incluído ou não
+* FIX: Strip Slashes da password
+
+= 3.0.17 =
+* FIX: Melhorias na validação dos códigos postais
+
 = 3.0.16 =
 * FIX: Alterações no câmbio
 

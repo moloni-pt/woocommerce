@@ -128,37 +128,29 @@ class Tools
     public static function zipCheck($input)
     {
         $zipCode = trim(str_replace(' ', '', $input));
-        $zipCode = preg_replace('/\d/', '', $zipCode);
-
-        if (strlen($zipCode) === 7) {
+        $zipCode = preg_replace('/[^0-9]/', '', $zipCode);
+        if (strlen($zipCode) == 7) {
             $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . $zipCode[5] . $zipCode[6];
         }
-
-        if (strlen($zipCode) === 6) {
+        if (strlen($zipCode) == 6) {
             $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . $zipCode[5] . '0';
         }
-
-        if (strlen($zipCode) === 5) {
+        if (strlen($zipCode) == 5) {
             $zipCode = $zipCode[0] . $zipCode[1] . $zipCode[2] . $zipCode[3] . '-' . $zipCode[4] . '00';
         }
-
-        if (strlen($zipCode) === 4) {
-            $zipCode .= '-' . '000';
+        if (strlen($zipCode) == 4) {
+            $zipCode = $zipCode . '-' . '000';
         }
-
-        if (strlen($zipCode) === 3) {
-            $zipCode .= '0-' . '000';
+        if (strlen($zipCode) == 3) {
+            $zipCode = $zipCode . '0-' . '000';
         }
-
-        if (strlen($zipCode) === 2) {
-            $zipCode .= '00-' . '000';
+        if (strlen($zipCode) == 2) {
+            $zipCode = $zipCode . '00-' . '000';
         }
-
-        if (strlen($zipCode) === 1) {
-            $zipCode .= '000-' . '000';
+        if (strlen($zipCode) == 1) {
+            $zipCode = $zipCode . '000-' . '000';
         }
-
-        if ($zipCode === '') {
+        if (strlen($zipCode) == 0) {
             $zipCode = '1000-100';
         }
         if (self::finalCheck($zipCode)) {
@@ -175,12 +167,13 @@ class Tools
      */
     private static function finalCheck($zipCode)
     {
-        $regexp = "/\d{4}\-\d{3}/";
+        $regexp = "/[0-9]{4}\-[0-9]{3}/";
         if (preg_match($regexp, $zipCode)) {
-            return true;
+            return (true);
         }
 
-        return false;
+        return (false);
     }
+
 
 }

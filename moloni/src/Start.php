@@ -24,9 +24,10 @@ class Start
     public static function login($ajax = false)
     {
         global $wpdb;
+
         $action = sanitize_text_field(trim($_REQUEST['action']));
         $username = sanitize_email(trim($_POST['user']));
-        $password = sanitize_text_field(trim($_POST['pass']));
+        $password = stripslashes(sanitize_text_field(trim($_POST['pass'])));
 
         if ($ajax) {
             self::$ajax = true;

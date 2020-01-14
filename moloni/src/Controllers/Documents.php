@@ -430,6 +430,9 @@ class Documents
                 case 'NEF' :
                     $typeName = 'NotasEncomenda';
                     break;
+                case 'OR':
+                    $typeName = 'Orcamentos';
+                    break;
             }
 
             if (defined('COMPANY_SLUG')) {
