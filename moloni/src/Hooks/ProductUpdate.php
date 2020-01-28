@@ -10,46 +10,46 @@ use Moloni\Notice;
 use Moloni\Plugin;
 use Moloni\Start;
 
-class ProductUpdate
+class productupdate
 {
 
     public $parent;
 
     /**
-     * @param Plugin $parent
+     * @param plugin $parent
      */
     public function __construct($parent)
     {
         $this->parent = $parent;
-        add_action('woocommerce_update_product', [$this, 'productCreateUpdate']);
+        add_action('woocommerce_update_product', [$this, 'productcreateupdate']);
     }
 
-    public function productCreateUpdate($productId)
+    public function productcreateupdate($productid)
     {
         try {
-            $product = wc_get_product($productId);
+            $product = wc_get_product($productid);
             try {
-                if ($product->get_status() !== 'draft' && Start::login()) {
+                if ($product->get_status() !== 'draft' && start::login(true)) {
                     /** @noinspection NestedPositiveIfStatementsInspection */
                     if (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC) {
-                        $productObj = new Product($product);
-                        if (!$productObj->loadByReference()) {
+                        $productObj = new product($product);
+                        if (!$productObj->loadbyreference()) {
                             $productObj->create();
 
                             if ($productObj->product_id > 0) {
-                                Notice::addMessageSuccess(__("O artigo foi criado no Moloni"));
+                                notice::addmessagesuccess(__('o artigo foi criado no moloni'));
                             }
                         } else {
                             $productObj->update();
-                            Notice::addMessageInfo(__("O artigo já existe no Moloni"));
+                            notice::addmessageinfo(__('o artigo já existe no moloni'));
                         }
                     }
                 }
-            } catch (Error $error) {
-                Notice::addMessageCustom(htmlentities($error->getError()));
+            } catch (error $error) {
+                notice::addmessagecustom(htmlentities($error->geterror()));
             }
-        } catch (Exception $ex) {
-            Log::write("Fatal error: " . $ex->getMessage());
+        } catch (exception $ex) {
+            log::write('fatal error: ' . $ex->getmessage());
         }
     }
 }

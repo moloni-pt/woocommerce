@@ -50,7 +50,7 @@ class ProductView
     public function showMoloniView()
     {
         try {
-            if (Start::login()) {
+            if (Start::login(true)) {
                 $this->product = wc_get_product(get_the_ID());
 
                 if (!$this->product) {

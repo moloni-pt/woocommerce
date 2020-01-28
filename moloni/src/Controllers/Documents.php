@@ -81,7 +81,9 @@ class Documents
     private $notes = '';
 
     private $status = 0;
-    private $products;
+
+    private $products = [];
+    private $payments = [];
 
     public $documentType;
 
@@ -148,6 +150,7 @@ class Documents
                 ->setFees()
                 ->setExchangeRate()
                 ->setShippingInfo()
+                ->setPaymentMethod()
                 ->setNotes();
 
             // One last validation
@@ -190,6 +193,8 @@ class Documents
 
                 // Send email to the client
                 if (defined('EMAIL_SEND') && EMAIL_SEND) {
+                    $this->order->add_order_note(__('Documento enviado por email para o cliente'));
+
                     $closeDocument['send_email'] = [];
                     $closeDocument['send_email'][] = [
                         'email' => $this->order->get_billing_email(),
@@ -199,9 +204,11 @@ class Documents
                 }
 
                 Curl::simple($this->documentType . '/update', $closeDocument);
+
+                $this->order->add_order_note(__('Documento inserido no Moloni'));
+            } else {
+                $this->order->add_order_note(__('Documento inserido como rascunho no Moloni'));
             }
-
-
         } catch (Error $error) {
             $this->document_id = 0;
             $this->error = $error;
@@ -276,6 +283,33 @@ class Documents
                 foreach ($this->products as &$product) {
                     $product['price'] /= $this->exchange_rate;
                 }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the document Payment Method
+     * @return $this
+     * @throws Error
+     */
+    private function setPaymentMethod()
+    {
+        $paymentMethodName = $this->order->get_payment_method_title();
+
+        if (!empty($paymentMethodName)) {
+            $paymentMethod = new Payment($paymentMethodName);
+            if (!$paymentMethod->loadByName()) {
+                $paymentMethod->create();
+            }
+
+            if ((int)$paymentMethod->payment_method_id > 0) {
+                $this->payments[] = [
+                    'payment_method_id' => (int)$paymentMethod->payment_method_id,
+                    'date' => date('Y-m-d H:i:s'),
+                    'value' => $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded())
+                ];
             }
         }
 
@@ -383,6 +417,8 @@ class Documents
         $values['delivery_destination_zip_code'] = $this->delivery_destination_zip_code;
         $values['delivery_destination_country'] = $this->delivery_destination_country;
 
+        $values['payments'] = $this->payments;
+
         $values['products'] = $this->products;
 
         if (!empty($this->exchange_currency_id)) {
@@ -413,27 +449,7 @@ class Documents
             $url = Curl::simple('documents/getPDFLink', $values);
             header('Location: ' . $url['url']);
         } else {
-            switch ($invoice['document_type']['saft_code']) {
-                case 'FT' :
-                default:
-                    $typeName = 'Faturas';
-                    break;
-                case 'FR' :
-                    $typeName = 'FaturasRecibo';
-                    break;
-                case 'FS' :
-                    $typeName = 'FaturaSimplificada';
-                    break;
-                case 'GT' :
-                    $typeName = 'GuiasTransporte';
-                    break;
-                case 'NEF' :
-                    $typeName = 'NotasEncomenda';
-                    break;
-                case 'OR':
-                    $typeName = 'Orcamentos';
-                    break;
-            }
+
 
             if (defined('COMPANY_SLUG')) {
                 $slug = COMPANY_SLUG;
@@ -441,8 +457,99 @@ class Documents
                 $meInfo = Curl::simple('companies/getOne', []);
                 $slug = $meInfo['slug'];
             }
-            header('Location: https://moloni.pt/' . $slug . '/' . $typeName . '/showDetail/' . $invoice['document_id']);
+
+
+            header('Location: https://moloni.pt/' . $slug . '/' . self::getDocumentTypeName($invoice) . '/showDetail/' . $invoice['document_id']);
         }
         exit;
+    }
+
+    /**
+     * @param int $documentId
+     * @throws Error
+     * @deprecated In favor of API sending methods
+     */
+    private function sendOldEmail($documentId)
+    {
+        $invoice = Curl::simple('documents/getOne', ['document_id' => $documentId]);
+
+        $meInfo = Curl::simple('companies/getOne', []);
+        $email = $this->order->get_billing_email();
+        $subject = 'Envio de documento | ' . self::getDocumentTypeName($invoice) . $invoice['document_set']['name'] . '-' . $invoice['number'] . ' | ' . date('Y-m-d');
+
+        $date = explode('T', $invoice['date']);
+        $date = $date[0];
+
+        $url = 'http://plugins.moloni.com/templates/emails/invoice.txt';
+
+        $response = wp_remote_get($url);
+        $message = wp_remote_retrieve_body($response);
+
+        $pdfURL = Curl::simple('documents/getPDFLink', ['document_id' => $invoice['document_id']]);
+
+        $message = str_replace(
+            [
+                '{{image}}',
+                '{{nome_empresa}}',
+                '{{data_hoje}}',
+                '{{nome_cliente}}',
+                '{{documento_tipo}}',
+                '{{documento_numero}}',
+                '{{documento_emissao}}',
+                '{{documento_vencimento}}',
+                '{{documento_total}}',
+                '{{documento_url}}',
+                '{{empresa_nome}}',
+                '{{empresa_morada}}',
+                '{{empresa_email}}'
+            ], [
+            $meInfo['image'],
+            $meInfo['name'],
+            date('Y-m-d'),
+            $this->order->get_billing_first_name() . ' ' . $this->order->get_billing_last_name(),
+            self::getDocumentTypeName($invoice), $invoice['document_set']['name'] . '-' . $invoice['number'],
+            $date,
+            $date,
+            $invoice['net_value'] . '€',
+            $pdfURL['url'],
+            $meInfo['name'],
+            $meInfo['address'],
+            $meInfo['mails_sender_address']
+        ], $message
+        );
+
+        $headers = [
+            'Reply-To' => $meInfo['mails_sender_name'] . ' <' . $meInfo['mails_sender_address'] . '>'
+        ];
+
+        add_filter('wp_mail_content_type', create_function('', 'return "text/html"; '));
+        wp_mail($email, $subject, $message, $headers);
+    }
+
+    private static function getDocumentTypeName($invoice)
+    {
+        switch ($invoice['document_type']['saft_code']) {
+            case 'FT' :
+            default:
+                $typeName = 'Faturas';
+                break;
+            case 'FR' :
+                $typeName = 'FaturasRecibo';
+                break;
+            case 'FS' :
+                $typeName = 'FaturaSimplificada';
+                break;
+            case 'GT' :
+                $typeName = 'GuiasTransporte';
+                break;
+            case 'NEF' :
+                $typeName = 'NotasEncomenda';
+                break;
+            case 'OR':
+                $typeName = 'Orcamentos';
+                break;
+        }
+
+        return $typeName;
     }
 }

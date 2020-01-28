@@ -22,7 +22,9 @@
 </nav>
 
 <?php
-switch ($_GET['tab']) {
+$tab = isset($_GET['tab']) ? $_GET['tab'] : '';
+
+switch ($tab) {
     case 'tools':
         include MOLONI_TEMPLATE_DIR . 'Containers/Tools.php';
         break;

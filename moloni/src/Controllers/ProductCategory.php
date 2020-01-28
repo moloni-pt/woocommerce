@@ -33,10 +33,10 @@ class ProductCategory
      */
     public function loadByName()
     {
-        $categoriesList = Curl::simple("productCategories/getAll", ["parent_id" => $this->parent_id]);
+        $categoriesList = Curl::simple('productCategories/getAll', ['parent_id' => $this->parent_id]);
         if (!empty($categoriesList) && is_array($categoriesList)) {
             foreach ($categoriesList as $category) {
-                if ($category['name'] == $this->name) {
+                if (strcmp((string)$category['name'], (string)$this->name) === 0) {
                     $this->category_id = $category['category_id'];
                     return $this;
                 }
@@ -52,14 +52,14 @@ class ProductCategory
      */
     public function create()
     {
-        $insert = Curl::simple("productCategories/insert", $this->mapPropsToValues());
+        $insert = Curl::simple('productCategories/insert', $this->mapPropsToValues());
 
         if (isset($insert['category_id'])) {
             $this->category_id = $insert['category_id'];
             return $this;
         }
 
-        throw new Error(__("Erro ao inserir a categoria") . $this->name);
+        throw new Error(__('Erro ao inserir a categoria') . $this->name);
     }
 
 

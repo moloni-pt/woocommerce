@@ -24,7 +24,8 @@ class Plugin
      */
     private function defines()
     {
-        if (!wp_doing_ajax() && sanitize_text_field($_REQUEST['page']) === 'moloni') {
+        if (isset($_REQUEST['page']) && !wp_doing_ajax() && sanitize_text_field($_REQUEST['page']) === 'moloni') {
+
             wp_enqueue_style('jquery-modal', plugins_url('assets/external/jquery.modal.min.css', MOLONI_PLUGIN_FILE));
             wp_enqueue_script('jquery-modal', plugins_url('assets/external/jquery.modal.min.js', MOLONI_PLUGIN_FILE));
 
@@ -66,7 +67,7 @@ class Plugin
         try {
             /** If the user is not logged in show the login form */
             if (Start::login()) {
-                $action = sanitize_text_field($_REQUEST['action']);
+                $action = isset($_REQUEST['action']) ? sanitize_text_field($_REQUEST['action']) : '';
 
                 switch ($action) {
                     case 'remInvoice':
@@ -80,6 +81,7 @@ class Plugin
                     case 'genInvoice':
                         $orderId = (int)$_REQUEST['id'];
                         /** @var Documents $document intended */
+                        /** @noinspection PhpUnusedLocalVariableInspection */
                         $document = $this->createDocument($orderId);
                         break;
 

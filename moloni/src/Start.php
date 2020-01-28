@@ -25,9 +25,9 @@ class Start
     {
         global $wpdb;
 
-        $action = sanitize_text_field(trim($_REQUEST['action']));
-        $username = sanitize_email(trim($_POST['user']));
-        $password = stripslashes(sanitize_text_field(trim($_POST['pass'])));
+        $action = isset($_REQUEST['action']) ? sanitize_text_field(trim($_REQUEST['action'])) : '';
+        $username = isset($_POST['user']) ? sanitize_email(trim($_POST['user'])) : '';
+        $password = isset($_POST['pass']) ? stripslashes(sanitize_text_field(trim($_POST['pass']))) : '';
 
         if ($ajax) {
             self::$ajax = true;
@@ -36,9 +36,9 @@ class Start
         if (!empty($username) && !empty($password)) {
             $login = Curl::login($username, $password);
             if ($login && isset($login['access_token'])) {
-                Model::setTokens($login["access_token"], $login["refresh_token"]);
+                Model::setTokens($login['access_token'], $login['refresh_token']);
             } else {
-                self::loginForm(__("Combinação de utilizador/password errados"));
+                self::loginForm(__('Combinação de utilizador/password errados'));
                 return false;
             }
         }
@@ -66,21 +66,21 @@ class Start
             if (defined('MOLONI_COMPANY_ID')) {
                 Model::defineConfigs();
                 return true;
-            } else {
-                if (isset($_GET['company_id'])) {
-                    $wpdb->update("moloni_api", ["company_id" => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
-                    Model::defineValues();
-                    Model::defineConfigs();
-                    return true;
-                } else {
-                    self::companiesForm();
-                    return false;
-                }
             }
-        } else {
-            self::loginForm();
+
+            if (isset($_GET['company_id'])) {
+                $wpdb->update('moloni_api', ['company_id' => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
+                Model::defineValues();
+                Model::defineConfigs();
+                return true;
+            }
+
+            self::companiesForm();
             return false;
         }
+
+        self::loginForm();
+        return false;
     }
 
     /**
@@ -90,7 +90,7 @@ class Start
     public static function loginForm($error = false)
     {
         if (!self::$ajax) {
-            include(MOLONI_TEMPLATE_DIR . "LoginForm.php");
+            include(MOLONI_TEMPLATE_DIR . 'LoginForm.php');
         }
     }
 
@@ -107,9 +107,9 @@ class Start
         }
 
         if (empty($companies)) {
-            self::loginForm("Não tem empresas disponíveis na sua conta");
+            self::loginForm('Não tem empresas disponíveis na sua conta');
         } else if (!self::$ajax) {
-            include(MOLONI_TEMPLATE_DIR . "CompanySelect.php");
+            include(MOLONI_TEMPLATE_DIR . 'CompanySelect.php');
         }
     }
 

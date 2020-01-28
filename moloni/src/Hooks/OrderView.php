@@ -16,7 +16,7 @@ class OrderView
     public $parent;
 
     /** @var array */
-    private $allowedStatus = ["wc-processing", "wc-completed"];
+    private $allowedStatus = ['wc-processing', 'wc-completed'];
 
     /**
      * @param Plugin $parent
@@ -35,13 +35,13 @@ class OrderView
     function showMoloniView($post)
     {
         if (in_array($post->post_status, $this->allowedStatus)) : ?>
-            <?php $documentId = get_post_meta($post->ID, "_moloni_sent", true); ?>
+            <?php $documentId = get_post_meta($post->ID, '_moloni_sent', true); ?>
             <?php if ((int)$documentId > 0) : ?>
                 <?= __('O documento já foi gerado no moloni') ?>
                 <a type="button"
                    class="button button-primary"
                    target="_BLANK"
-                   href="<?= admin_url("admin.php?page=moloni&action=getInvoice&id=" . $documentId) ?>"
+                   href="<?= admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId) ?>"
                    style="margin-top: 10px; float:right;"
                 >
                     <?= __('Ver documento') ?>
@@ -50,7 +50,7 @@ class OrderView
                 <a type="button"
                    class="button"
                    target="_BLANK"
-                   href="<?= admin_url("admin.php?page=moloni&action=genInvoice&id=" . $post->ID) ?>"
+                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
                    style="margin-top: 10px; float:right;"
                 >
                     <?= __('Gerar novamente') ?>
@@ -61,7 +61,7 @@ class OrderView
                 <a type="button"
                    class="button"
                    target="_BLANK"
-                   href="<?= admin_url("admin.php?page=moloni&action=genInvoice&id=" . $post->ID) ?>"
+                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
                    style="float:right"
                 >
                     <?= __('Gerar novamente') ?>
@@ -70,15 +70,15 @@ class OrderView
                 <a type="button"
                    class="button button-primary"
                    target="_BLANK"
-                   href="<?= admin_url("admin.php?page=moloni&action=genInvoice&id=" . $post->ID) ?>"
+                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
                    style="float:right"
                 >
-                    <?= __("Gerar documento moloni") ?>
+                    <?= __('Gerar documento moloni') ?>
                 </a>
             <?php endif; ?>
             <div style="clear:both"></div>
         <?php else : ?>
-            <?= __("A encomenda tem que ser dada como paga para poder ser gerada.") ?>
+            <?= __('A encomenda tem que ser dada como paga para poder ser gerada.') ?>
         <?php endif;
     }
 

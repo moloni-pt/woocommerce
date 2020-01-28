@@ -145,22 +145,46 @@ class Product
      */
     private function setCategory()
     {
-        $categoryName = 'Loja Online';
-
         $categories = $this->product->get_category_ids();
-        if (!empty($categories) && (int)$categories[0] > 0) {
-            $category = get_term_by('id', $categories[0], 'product_cat');
-            if (!empty($category->name)) {
-                $categoryName = $category->name;
+
+        // Get the deepest category from all the trees
+        if (!empty($categories) && is_array($categories)) {
+            $categoryTree = [];
+
+            foreach ($categories as $category) {
+                $parents = get_ancestors($category, 'product_cat');
+                $parents = array_reverse($parents);
+                $parents[] = $category;
+
+                if (is_array($parents) && count($parents) > count($categoryTree)) {
+                    $categoryTree = $parents;
+                }
+            }
+
+            $this->category_id = 0;
+            foreach ($categoryTree as $categoryId) {
+                $category = get_term_by('id', $categoryId, 'product_cat');
+                if (!empty($category->name)) {
+                    $categoryObj = new ProductCategory($category->name, $this->category_id);
+
+                    if (!$categoryObj->loadByName()) {
+                        $categoryObj->create();
+                    }
+
+                    $this->category_id = $categoryObj->category_id;
+                }
             }
         }
 
-        $categoryObj = new ProductCategory($categoryName);
-        if (!$categoryObj->loadByName()) {
-            $categoryObj->create();
-        }
+        if ((int)$this->category_id === 0) {
+            $categoryObj = new ProductCategory('Loja Online', 0);
 
-        $this->category_id = $categoryObj->category_id;
+            if (!$categoryObj->loadByName()) {
+                $categoryObj->create();
+            }
+
+            $this->category_id = $categoryObj->category_id;
+        }
 
         return $this;
     }

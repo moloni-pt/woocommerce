@@ -23,7 +23,8 @@ class Curl
         'countries/getAll',
         'taxes/getAll',
         'currencyExchange/getAll',
-        'currencies/getAll'
+        'currencies/getAll',
+        'paymentMethods/getAll'
     ];
 
     /**

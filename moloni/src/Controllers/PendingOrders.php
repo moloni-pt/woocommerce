@@ -87,9 +87,9 @@ class PendingOrders
     public static function getPagination()
     {
         $args = [
-            'base' => add_query_arg( 'paged', '%#%' ),
+            'base' => add_query_arg('paged', '%#%'),
             'format' => '',
-            'current' => ($_GET['paged']) ?: 1,
+            'current' => isset($_GET['paged']) ? (int)$_GET['paged'] : 1,
             'total' => self::$totalPages,
         ];
 
