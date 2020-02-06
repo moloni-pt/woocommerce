@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.21
+Stable tag: 3.0.22
 Tested up to: 5.3
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -62,10 +62,13 @@ Via FTP
 
 == Upgrade Notice ==
 = 3.0 =
-Released plugin version 3 Beta.
+Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.22 =
+* FEATURE: Criação de vários níveis de categorias e sub-categorias
+
 = 3.0.2 =
 * FEATURE: Inserção de métodos de pagamento
 * FIX: Formulário de login na página do artigo

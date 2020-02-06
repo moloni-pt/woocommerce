@@ -17,7 +17,7 @@ class PendingOrders
      */
     public static function getAllAvailable()
     {
-        self::$currentPage = (int)($_GET['paged']) > 0 ? $_GET['paged'] : 1;
+        self::$currentPage = (isset($_GET['paged']) && (int)($_GET['paged']) > 0) ? $_GET['paged'] : 1;
 
         $ordersList = [];
         $args = [
