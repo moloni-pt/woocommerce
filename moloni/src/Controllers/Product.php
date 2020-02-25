@@ -267,6 +267,8 @@ class Product
      */
     private function setTaxes()
     {
+        $hasIVA = false;
+
         if ($this->product->get_tax_status() === 'taxable') {
             // Get taxes based on a tax class of a product
             // If the tax class is empty it means the products uses the shop default
@@ -274,8 +276,14 @@ class Product
             $taxRates = WC_Tax::get_base_tax_rates($productTaxes);
 
             foreach ($taxRates as $order => $taxRate) {
+                $moloniTax = Tools::getTaxFromRate((float)$taxRate['rate']);
+
+                if (!$moloniTax) {
+                    continue;
+                }
+
                 $tax = [];
-                $tax['tax_id'] = Tools::getTaxIdFromRate((float)$taxRate['rate']);
+                $tax['tax_id'] = $moloniTax['tax_id'];
                 $tax['value'] = $taxRate['rate'];
                 $tax['order'] = $order;
                 $tax['cumulative'] = '0';
@@ -283,10 +291,14 @@ class Product
                 if ((float)$taxRate['rate'] > 0) {
                     $this->taxes[] = $tax;
                 }
+
+                if ((int)$moloniTax['saft_type'] === 1) {
+                    $hasIVA = true;
+                }
             }
         }
 
-        if (empty($this->taxes) || (float)$this->taxes[0]['value'] === 0) {
+        if (!$hasIVA) {
             $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
         }
 

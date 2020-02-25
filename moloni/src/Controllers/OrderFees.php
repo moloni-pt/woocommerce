@@ -51,6 +51,8 @@ class OrderFees
     private $stock = 0;
     private $at_product_category = 'M';
 
+    private $hasIVA = false;
+
     /**
      * OrderProduct constructor.
      * @param WC_Order_Item_Fee $fee
@@ -175,7 +177,7 @@ class OrderFees
             $this->taxes[] = $this->setTax($taxRate);
         }
 
-        if (empty($this->taxes)) {
+        if (!$this->hasIVA) {
             $this->exemption_reason = defined('EXEMPTION_REASON_SHIPPING') ? EXEMPTION_REASON_SHIPPING : '';
         }
 
@@ -189,11 +191,15 @@ class OrderFees
      */
     private function setTax($taxRate)
     {
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate);
+
         $tax = [];
-        $tax['tax_id'] = Tools::getTaxIdFromRate((float)$taxRate);
+        $tax['tax_id'] = $moloniTax['tax_id'];
         $tax['value'] = $taxRate;
-        $tax['order'] = 0;
-        $tax['cumulative'] = 0;
+
+        if ((int) $moloniTax['saft_type'] === 1) {
+            $this->hasIVA = true;
+        }
 
         return $tax;
     }

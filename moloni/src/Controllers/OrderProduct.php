@@ -49,6 +49,9 @@ class OrderProduct
 
     /** @var int */
     private $warehouse_id = 0;
+    
+    /** @var bool */
+    private $hasIVA = false;
 
     /**
      * OrderProduct constructor.
@@ -236,7 +239,7 @@ class OrderProduct
             }
         }
 
-        if (empty($this->taxes) || (float)$taxRate === 0) {
+        if (!$this->hasIVA) {
             $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
         }
 
@@ -250,9 +253,15 @@ class OrderProduct
      */
     private function setTax($taxRate)
     {
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate);
+        
         $tax = [];
-        $tax['tax_id'] = Tools::getTaxIdFromRate((float)$taxRate);
+        $tax['tax_id'] = $moloniTax['tax_id'];
         $tax['value'] = $taxRate;
+
+        if ((int) $moloniTax['saft_type'] === 1) {
+            $this->hasIVA = true;
+        }
 
         return $tax;
     }

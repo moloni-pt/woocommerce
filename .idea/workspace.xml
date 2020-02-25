@@ -2,12 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f9309f-dc00-4f6e-86d3-b90d3d03111d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/moloni/src/ApiConnector/Api.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/moloni/src/ApiConnector/ApiInterface.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/moloni/src/ApiConnector/LoggedRequests.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/moloni/src/ApiConnector/MoloniPT.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/moloni.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/moloni.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/moloni/readme.txt" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/readme.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/PendingOrders.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderFees.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderProduct.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/OrderShipping.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Controllers/Product.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/moloni/src/Tools.php" beforeDir="false" afterPath="$PROJECT_DIR$/moloni/src/Tools.php" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,6 +55,11 @@
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
@@ -57,6 +70,10 @@
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Moloni\Plugins\WooCommerce\" />
+      <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni-pt" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni\assets\js" />
       <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni\src\Controllers" />
@@ -64,21 +81,6 @@
       <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni-old\src\Templates" />
       <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni-old\src" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Projects\Moloni\Plugins\WooCommerce\moloni\moloni-pt" />
-    </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -128,6 +130,7 @@
       <workItem from="1580427867856" duration="31000" />
       <workItem from="1580868733429" duration="183000" />
       <workItem from="1580941878633" duration="6000" />
+      <workItem from="1582669191063" duration="1461000" />
     </task>
     <servers />
   </component>
@@ -149,6 +152,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="714" y="137" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1582669734112">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="714" y="137" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1582669734112" />
+    <state x="665" y="334" key="NewPhpClassDialog" timestamp="1582670243716">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="665" y="334" key="NewPhpClassDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1582670243716" />
   </component>
   <component name="WordPressConfiguration" doNotAskAgain="true" />
   <component name="masterDetails">
