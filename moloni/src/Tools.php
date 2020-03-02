@@ -33,7 +33,7 @@ class Tools
             $reference .= '_' . $variationId;
         }
 
-        return $reference;
+        return mb_substr($reference, 0, 30);
     }
 
     /**
