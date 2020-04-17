@@ -18,12 +18,15 @@ class Product
     /** @var WC_Product */
     private $product;
 
+    /** @var WC_Product|false */
+    private $productParent = false;
+
     public $product_id;
     public $category_id;
     private $type;
     public $reference;
     public $name;
-    private $summary = '';
+    public $summary = '';
     private $ean = '';
     public $price;
     private $unit_id;
@@ -40,6 +43,11 @@ class Product
     public function __construct($product)
     {
         $this->product = $product;
+
+        $parentId = $this->product->get_parent_id();
+        if ($parentId > 0) {
+            $this->productParent = wc_get_product($parentId);
+        }
     }
 
     /**
@@ -51,9 +59,12 @@ class Product
         $this->setReference();
 
         $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
+
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $product = $searchProduct[0];
             $this->product_id = $product['product_id'];
+            $this->name = $product['name'];
+            $this->summary = $product['summary'];
             $this->category_id = $product['category_id'];
             $this->has_stock = $product['has_stock'];
             $this->stock = $product['stock'];
@@ -147,6 +158,10 @@ class Product
     {
         $categories = $this->product->get_category_ids();
 
+        if(empty($categories) && $this->productParent) {
+            $categories = $this->productParent->get_category_ids();
+        }
+
         // Get the deepest category from all the trees
         if (!empty($categories) && is_array($categories)) {
             $categoryTree = [];
@@ -204,7 +219,7 @@ class Product
             $this->has_stock = 0;
         } else {
             $this->type = 1;
-            $this->has_stock = 1;
+            $this->has_stock = $this->product->managing_stock() ? 1 : 0;
             $this->stock = (float)$this->product->get_stock_quantity();
         }
 
@@ -218,7 +233,7 @@ class Product
      */
     private function setName()
     {
-        $this->name = $this->product->get_name();
+        $this->name = strip_tags($this->product->get_name());
         return $this;
     }
 
@@ -229,6 +244,11 @@ class Product
     private function setPrice()
     {
         $this->price = (float)wc_get_price_excluding_tax($this->product);
+
+        if ((float)$this->price === 0 && $this->productParent) {
+            $this->price = (float)wc_get_price_excluding_tax($this->productParent);
+        }
+
         return $this;
     }
 
@@ -319,7 +339,12 @@ class Product
         $values['reference'] = $this->reference;
         $values['name'] = $this->name;
         $values['summary'] = $this->summary;
-        $values['ean'] = $this->ean;
+
+        if (!empty($this->ean)) {
+            /** EAN is created from an external plugin so avoid to update it */
+            $values['ean'] = $this->ean;
+        }
+
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;

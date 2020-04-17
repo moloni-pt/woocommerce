@@ -13,7 +13,6 @@ class Plugin
 {
     public function __construct()
     {
-        $this->defines();
         $this->actions();
         $this->crons();
     }
@@ -22,10 +21,9 @@ class Plugin
      * Define some table params
      * Load scripts and CSS as needed
      */
-    private function defines()
+    public static function defines()
     {
         if (isset($_REQUEST['page']) && !wp_doing_ajax() && sanitize_text_field($_REQUEST['page']) === 'moloni') {
-
             wp_enqueue_style('jquery-modal', plugins_url('assets/external/jquery.modal.min.css', MOLONI_PLUGIN_FILE));
             wp_enqueue_script('jquery-modal', plugins_url('assets/external/jquery.modal.min.js', MOLONI_PLUGIN_FILE));
 

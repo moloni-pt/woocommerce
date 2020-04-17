@@ -205,6 +205,8 @@ class OrderShipping
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
         $tax['value'] = $taxRate;
+        $tax['order'] = is_array($this->taxes) ? count($this->taxes) : 0;
+        $tax['cumulative'] = 0;
 
         if ((int) $moloniTax['saft_type'] === 1) {
             $this->hasIVA = true;

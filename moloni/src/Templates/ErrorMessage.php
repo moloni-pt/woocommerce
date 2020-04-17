@@ -5,7 +5,7 @@
             <p><?= __("Clique aqui para mais informações") ?></p>
         </a>
 
-        <div id="MoloniConsoleLogError" style="display: none">
+        <div class="MoloniConsoleLogError" style="display: none;">
             <p>
                 <b><?= __("Endpoint") ?>: </b> <?= $url ?>
             </p>
@@ -26,7 +26,11 @@
 
 <script>
     function showMoloniErrors() {
-        var errorConsole = document.getElementById("MoloniConsoleLogError");
-        errorConsole.style['display'] = errorConsole.style['display'] === 'none' ? 'block' : 'none';
+        var errorConsole = document.getElementsByClassName("MoloniConsoleLogError");
+        if (errorConsole.length > 0) {
+            Array.prototype.forEach.call(errorConsole, function (element) {
+                element.style['display'] = element.style['display'] === 'none' ? 'block' : 'none';
+            });
+        }
     }
 </script>

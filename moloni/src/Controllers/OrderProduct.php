@@ -49,7 +49,7 @@ class OrderProduct
 
     /** @var int */
     private $warehouse_id = 0;
-    
+
     /** @var bool */
     private $hasIVA = false;
 
@@ -97,6 +97,8 @@ class OrderProduct
      */
     public function setSummary($summary = null)
     {
+        $summary = apply_filters('moloni_before_order_item_setSummary', $summary, $this->product);
+
         if ($summary) {
             $this->summary = $summary;
         } else {
@@ -108,6 +110,8 @@ class OrderProduct
 
             $this->summary .= $this->getSummaryExtraProductOptions();
         }
+
+        $this->summary = apply_filters('moloni_after_order_item_setSummary', $summary, $this->product);
 
         return $this;
     }
@@ -195,6 +199,9 @@ class OrderProduct
 
         if (!$product->loadByReference()) {
             $product->create();
+        } elseif (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS) {
+            $this->name = $product->name;
+            $this->summary = $product->summary;
         }
 
         $this->product_id = $product->getProductId();
@@ -228,7 +235,6 @@ class OrderProduct
      */
     private function setTaxes()
     {
-        $taxRate = 0;
         $taxes = $this->product->get_taxes();
         foreach ($taxes['subtotal'] as $taxId => $value) {
             if (!empty($value)) {
@@ -254,12 +260,14 @@ class OrderProduct
     private function setTax($taxRate)
     {
         $moloniTax = Tools::getTaxFromRate((float)$taxRate);
-        
+
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
         $tax['value'] = $taxRate;
+        $tax['order'] = is_array($this->taxes) ? count($this->taxes) : 0;
+        $tax['cumulative'] = 0;
 
-        if ((int) $moloniTax['saft_type'] === 1) {
+        if ((int)$moloniTax['saft_type'] === 1) {
             $this->hasIVA = true;
         }
 

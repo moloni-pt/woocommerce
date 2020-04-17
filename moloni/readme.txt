@@ -2,8 +2,8 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.24
-Tested up to: 5.3
+Stable tag: 3.0.29
+Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
 License: GPLv2 or later
@@ -66,6 +66,29 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.29 =
+* FEATURE: Permitir a escolha entre criar documento quando a encomenda passa a "Completa" ou "Em Processamento"
+* FEATURE: Permitir escolher o tipo de documento directamente na página da encomenda
+* CHANGE: A opção "Tem Stock" passa a ser controlada pela opção do WooCommerce "Gerir stock"
+* CHANGE: Caso um artigo "Atributo" não tenha preço, deverá ser usado o preço do artigo "Pai"
+* FIX: Remover as tags do nome do artigo
+
+= 3.0.28 =
+* CHANGE: Permitir sincronização de artigos com variações. Os artigos "Filhos" são criados individualmente no Moloni e com os dados correctos
+
+= 3.0.27 =
+* FEATURE: Adição de hook para a alteração do resumo do artigo
+* FEATURE: A funcionalidade de inserir/actualizar artigos foi dividida em duas, uma própria para inserir, outra para actualizar
+* FEATURE: Adicionada nova opção para usar os dados dos artigos que estão no Moloni (nome e resumo), caso já existam
+* CHANGE: O campo EAN passou a não ser actualizado caso esteja vazio
+* CHANGE: Validação correcta das taxas/isenções
+
+= 3.0.26 =
+* FIX: Correcção do carregamento de ficheiros .js e .css
+
+= 3.0.25 =
+* FIX: Correcção da ordem das taxas
+
 = 3.0.24 =
 * FIX: Verificação da taxa nos artigos - Verificar se a taxa é do tipo IVA
 
@@ -83,7 +106,7 @@ New plugin version fully re-written
 * FEATURE: Suporte a Orçamentos
 
 = 3.0.18 =
-* UPDATE: Melhoria no cálculo das taxas de Portes
+* CHANGE: Melhoria no cálculo das taxas de Portes
 * FIX: Preços atualizados deverão ter em conta se os artigos têm IVA incluído ou não
 * FIX: Strip Slashes da password
 
@@ -100,10 +123,10 @@ New plugin version fully re-written
 * FEATURE: Paginação na listagem de encomendas pendentes
 
 = 3.0.12 =
-* UPDATE: Emissão de documentos em bulk
+* CHANGE: Emissão de documentos em bulk
 * FIX: Razões de isenção em taxas de 0%
 
 = 3.0.11 =
-* UPDATE: Consulta de logs
-* UPDATE: Limpeza de logs
+* CHANGE: Consulta de logs
+* CHANGE: Limpeza de logs
 * FIX: Sincronização de stocks

@@ -26,7 +26,7 @@ class ProductView
     public $moloniProduct;
 
 
-    private $allowedPostTypes = ["product"];
+    private $allowedPostTypes = ['product'];
 
     /**
      * @param Plugin $parent

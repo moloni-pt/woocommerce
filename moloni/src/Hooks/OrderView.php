@@ -2,7 +2,9 @@
 
 namespace Moloni\Hooks;
 
+use Moloni\Error;
 use Moloni\Plugin;
+use Moloni\Start;
 
 /**
  * Class OrderView
@@ -32,49 +34,95 @@ class OrderView
         add_meta_box('moloni_add_meta_box', 'Moloni', [$this, 'showMoloniView'], 'shop_order', 'side', 'core');
     }
 
-    function showMoloniView($post)
+    public function getDocumentTypeSelect()
+    {
+        ?>
+
+        <select id="moloni_document_type" style="float:right">
+            <option value='invoices' <?= (DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
+                <?= __('Fatura') ?>
+            </option>
+
+            <option value='invoiceReceipts' <?= (DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
+                <?= __('Factura/Recibo') ?>
+            </option>
+
+            <option value='simplifiedInvoices'<?= (DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
+                <?= __('Factura Simplificada') ?>
+            </option>
+
+            <option value='billsOfLading' <?= (DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
+                <?= __('Guia de Transporte') ?>
+            </option>
+
+            <option value='purchaseOrder' <?= (DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
+                <?= __('Nota de Encomenda') ?>
+            </option>
+
+            <option value='estimates' <?= (DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
+                <?= __('Orçamento') ?>
+            </option>
+        </select>
+
+        <?php
+    }
+
+    public function seeDocument($documentId)
+    {
+        ?>
+        <a type="button"
+           class="button button-primary"
+           target="_BLANK"
+           href="<?= admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId) ?>"
+           style="margin-top: 10px; float:right;"
+        >
+            <?= __('Ver documento') ?>
+        </a>
+        <div style="clear:both"></div>
+
+        <?php
+    }
+
+    public function reCreateDocument($post)
+    {
+        ?>
+        <a type="button"
+           class="button"
+           target="_BLANK"
+           href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
+           style="margin-top: 10px; float:right;"
+        >
+            <?= __('Gerar novamente') ?>
+        </a>
+        <?php
+    }
+
+    public function showMoloniView($post)
     {
         if (in_array($post->post_status, $this->allowedStatus)) : ?>
             <?php $documentId = get_post_meta($post->ID, '_moloni_sent', true); ?>
             <?php if ((int)$documentId > 0) : ?>
                 <?= __('O documento já foi gerado no moloni') ?>
-                <a type="button"
-                   class="button button-primary"
-                   target="_BLANK"
-                   href="<?= admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId) ?>"
-                   style="margin-top: 10px; float:right;"
-                >
-                    <?= __('Ver documento') ?>
-                </a>
-                <div style="clear:both"></div>
-                <a type="button"
-                   class="button"
-                   target="_BLANK"
-                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
-                   style="margin-top: 10px; float:right;"
-                >
-                    <?= __('Gerar novamente') ?>
-                </a>
+                <?php $this->seeDocument($documentId) ?>
+                <?php $this->reCreateDocument($post) ?>
             <?php elseif ($documentId == -1) : ?>
                 <?= __('O documento foi marcado como gerado.') ?>
-                <br>
-                <a type="button"
-                   class="button"
-                   target="_BLANK"
-                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
-                   style="float:right"
-                >
-                    <?= __('Gerar novamente') ?>
-                </a>
+                <?php try {
+                    Start::login(true);
+                } catch (Error $e) {
+                } ?>
+                <br><br>
+                <?php $this->getDocumentTypeSelect() ?>
+                <br><br>
+                <?php $this->getDocumentCreateButton($post, __('Gerar novamente')) ?>
             <?php else: ?>
-                <a type="button"
-                   class="button button-primary"
-                   target="_BLANK"
-                   href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
-                   style="float:right"
-                >
-                    <?= __('Gerar documento moloni') ?>
-                </a>
+                <?php try {
+                    Start::login(true);
+                } catch (Error $e) {
+                } ?>
+
+                <?php $this->getDocumentCreateButton($post, __('Gerar')) ?>
+                <?php $this->getDocumentTypeSelect() ?>
             <?php endif; ?>
             <div style="clear:both"></div>
         <?php else : ?>
@@ -82,4 +130,27 @@ class OrderView
         <?php endif;
     }
 
+    public function getDocumentCreateButton($post, $text = 'Gerar')
+    {
+        ?>
+        <a type="button"
+           class="button-primary"
+           target="_BLANK"
+           onclick="createMoloniDocument()"
+           style="margin-left: 5px; float:right;"
+        >
+            <?= $text ?>
+        </a>
+
+        <script>
+            function createMoloniDocument() {
+                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>";
+                if (document.getElementById('moloni_document_type')) {
+                    redirectUrl += '&document_type=' + document.getElementById('moloni_document_type').value;
+                }
+                window.open(redirectUrl, '_blank')
+            }
+        </script>
+        <?php
+    }
 }

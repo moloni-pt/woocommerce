@@ -155,9 +155,15 @@ class Documents
 
             // One last validation
             if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
+                $forceUrl = 'admin.php?page=moloni&action=genInvoice&id=' . $this->orderId . '&force=true';
+
+                if (isset($_GET['document_type'])) {
+                    $forceUrl .= '&document_type=' . sanitize_text_field($_GET['document_type']);
+                }
+
                 throw new Error(
                     __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
-                    " <a href='admin.php?page=moloni&action=genInvoice&id=" . $this->orderId . "&force=true'>" . __('Gerar novamente') . '</a>'
+                    " <a href='$forceUrl'>" . __('Gerar novamente') . '</a>'
                 );
             }
 

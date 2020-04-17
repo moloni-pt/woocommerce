@@ -13,9 +13,8 @@ class Notice
     public static function showMessages()
     {
         $messages = get_option(self::NOTICE_FIELD);
-
         if (!empty($messages) && isset($messages['message'])) {
-            if ($messages['notice-level'] == 'custom') {
+            if ($messages['notice-level'] === 'custom') {
                 echo html_entity_decode($messages['message']);
             } else {
                 echo self::getMessageHtml($messages['message'], $messages['notice-level']);
@@ -72,9 +71,9 @@ class Notice
      */
     private static function getMessageHtml($message, $type = 'error')
     {
-        $template = "<div class=\"notice is-dismissible notice-" . $type . "\">";
-        $template .= "<p>" . $message . "</p>";
-        $template .= "</div>";
+        $template = '<div class="notice is-dismissible notice-' . $type . '">';
+        $template .= '<p>' . $message . '</p>';
+        $template .= '</div>';
 
         return $template;
     }

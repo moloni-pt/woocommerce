@@ -71,12 +71,14 @@ class Install
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('document_type', 'Escolha o tipo de documentos que deseja emitir')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('client_prefix', 'Prefixo da referência do cliente')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('product_prefix', 'Prefixo da referência do produto')");
+        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('use_moloni_product_details', 'Usar os detalhes do artigo já existente no Moloni')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('update_final_consumer', 'Actualizar consumidor final')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('shipping_info', 'Informação de envio')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('vat_field', 'Número de contribuinte')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('email_send', 'Enviar email')");
         $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_stock_sync', 'Sincronizar Stocks')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_products_sync', 'Sincronizar Artigos')");
+        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_product_sync', 'Inserir Artigos')");
+        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_product_sync_update', 'Actualizar Artigos')");
     }
 
 }

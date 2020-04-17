@@ -187,6 +187,19 @@
                     <p class='description'><?= __('Será usada se os portes não tiverem uma taxa de IVA') ?></p>
                 </td>
             </tr>
+
+            <tr>
+                <th>
+                    <label for="use_moloni_product_details"><?= __('Usar dados do Moloni ') ?></label>
+                </th>
+                <td>
+                    <select id="use_moloni_product_details" name='opt[use_moloni_product_details]' class='inputOut'>
+                        <option value='0' <?= (USE_MOLONI_PRODUCT_DETAILS == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (USE_MOLONI_PRODUCT_DETAILS == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Se o artigo já existir no Moloni, será usado o Nome e o Resumo que existem no Moloni, em vez dos que estão na encomenda') ?></p>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -243,7 +256,7 @@
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
-                    <p class='description'><?= __('Custom field associado ao contribuinte do cliente') ?></p>
+                    <p class='description'><?= __('Custom field associado ao contribuinte do cliente. Se o campo não aparecer, certifique-se que tem pelo menos uma encomenda com o campo em uso.') ?></p>
                 </td>
             </tr>
             </tbody>
@@ -257,11 +270,36 @@
                     <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
                 </th>
                 <td>
-                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
+                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'
+                            onchange="onInvoiceAutoChange()">
                         <option value='0' <?= (INVOICE_AUTO == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
                         <option value='1' <?= (INVOICE_AUTO == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Criar documento automaticamente quando uma encomenda é paga') ?></p>
+                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
+                </td>
+
+                <script>
+                    function onInvoiceAutoChange() {
+                        var selectedOption = document.getElementById('invoice_auto');
+                        if (selectedOption && selectedOption.value === '1') {
+                            document.getElementById('invoice_auto_status_line').style['display'] = 'table-row';
+                        } else {
+                            document.getElementById('invoice_auto_status_line').style['display'] = 'none';
+                        }
+                    }
+                </script>
+            </tr>
+
+            <tr id="invoice_auto_status_line" <?= (INVOICE_AUTO == '0' ? 'style="display: none;"' : '') ?>>
+                <th>
+                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
+                        <option value='completed' <?= (INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
+                        <option value='processing' <?= (INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
+                    </select>
+                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
                 </td>
             </tr>
 
@@ -280,14 +318,27 @@
 
             <tr>
                 <th>
-                    <label for="moloni_product_sync"><?= __('Sincronizar artigos') ?></label>
+                    <label for="moloni_product_sync"><?= __('Criar artigos') ?></label>
                 </th>
                 <td>
                     <select id="moloni_product_sync" name='opt[moloni_product_sync]' class='inputOut'>
                         <option value='0' <?= (MOLONI_PRODUCT_SYNC == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
                         <option value='1' <?= (MOLONI_PRODUCT_SYNC == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni ou actualizar o preço do artigo se já existir') ?></p>
+                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="moloni_product_sync"><?= __('Actualizar artigos') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
+                        <option value='0' <?= (MOLONI_PRODUCT_SYNC_UPDATE == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (MOLONI_PRODUCT_SYNC_UPDATE == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
                 </td>
             </tr>
 
