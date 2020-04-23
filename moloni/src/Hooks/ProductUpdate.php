@@ -23,6 +23,7 @@ class ProductUpdate
     {
         $this->parent = $parent;
         add_action('woocommerce_update_product', [$this, 'productCreateUpdate']);
+        add_action('woocommerce_update_product_variation', [$this, 'productCreateUpdate']);
     }
 
     public function productCreateUpdate($productId)

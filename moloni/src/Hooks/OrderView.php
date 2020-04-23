@@ -18,7 +18,7 @@ class OrderView
     public $parent;
 
     /** @var array */
-    private $allowedStatus = ['wc-processing', 'wc-completed'];
+    private $allowedStatus = ['wc-processing', 'wc-completed', 'wc-pending', 'wc-on-hold'];
 
     /**
      * @param Plugin $parent

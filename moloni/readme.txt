@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.29
+Stable tag: 3.0.30
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.30 =
+* CHANGE: Passou a sér possível emitir documentos directamente da encomenda quando a mesma está no estado "wc-pending" e "wc-on-hold"
+* FIX: Quando um artigo "filho" é actualizado no WooCommerce, passou também a correr a acção de actualização de artigos do Moloni
+
 = 3.0.29 =
 * FEATURE: Permitir a escolha entre criar documento quando a encomenda passa a "Completa" ou "Em Processamento"
 * FEATURE: Permitir escolher o tipo de documento directamente na página da encomenda
