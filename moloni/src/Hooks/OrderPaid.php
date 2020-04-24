@@ -29,23 +29,14 @@ class OrderPaid
         try {
             /** @noinspection NotOptimalIfConditionsInspection */
             if (Start::login() && defined('INVOICE_AUTO') && INVOICE_AUTO) {
-                echo 'MOLONISTATS'.INVOICE_AUTO_STATUS;
                 if (!defined('INVOICE_AUTO_STATUS') || (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed')) {
                     Log::setFileName('DocumentsAuto');
                     Log::write('A gerar automaticamente o documento da encomenda no estado "Completed" ' . $orderId);
 
                     $document = new Documents($orderId);
-                    $newDocument = $document->createDocument();
+                    $document->createDocument();
 
-                    if ($newDocument->getError()) {
-                        Notice::addmessagecustom(htmlentities($newDocument->getError()->getError()));
-                        Log::write('Houve um erro ao gerar o documento: ' . strip_tags($newDocument->getError()->getDecodedMessage()));
-                    }
-
-                    if ($document->document_id) {
-                        $viewUrl = ' <a href="' . admin_url('admin.php?page=moloni&action=getInvoice&id=' . $document->document_id) . '" target="_BLANK">Ver documento</a>';
-                        add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $viewUrl, 'updated');
-                    }
+                    $this->throwMessages($document);
                 }
             }
         } catch (Exception $ex) {
@@ -58,27 +49,31 @@ class OrderPaid
         try {
             /** @noinspection NotOptimalIfConditionsInspection */
             if (Start::login() && defined('INVOICE_AUTO') && INVOICE_AUTO) {
-                echo INVOICE_AUTO_STATUS;
                 if (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing') {
                     Log::setFileName('DocumentsAuto');
                     Log::write('A gerar automaticamente o documento da encomenda no estado "Processing" ' . $orderId);
 
                     $document = new Documents($orderId);
-                    $newDocument = $document->createDocument();
+                    $document->createDocument();
 
-                    if ($newDocument->getError()) {
-                        Notice::addmessagecustom(htmlentities($newDocument->getError()->getError()));
-                        Log::write('Houve um erro ao gerar o documento: ' . strip_tags($newDocument->getError()->getDecodedMessage()));
-                    }
-
-                    if ($document->document_id) {
-                        $viewUrl = ' <a href="' . admin_url('admin.php?page=moloni&action=getInvoice&id=' . $document->document_id) . '" target="_BLANK">Ver documento</a>';
-                        add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $viewUrl, 'updated');
-                    }
+                    $this->throwMessages($document);
                 }
             }
         } catch (Exception $ex) {
             Log::write('Fatal error: ' . $ex->getMessage());
+        }
+    }
+
+    private function throwMessages(Documents $document)
+    {
+        if ($document->getError()) {
+            Notice::addmessagecustom(htmlentities($document->getError()->getError()));
+            Log::write('Houve um erro ao gerar o documento: ' . strip_tags($document->getError()->getDecodedMessage()));
+        }
+
+        if ($document->document_id && is_admin()) {
+            $viewUrl = ' <a href="' . admin_url('admin.php?page=moloni&action=getInvoice&id=' . $document->document_id) . '" target="_BLANK">Ver documento</a>';
+            add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $viewUrl, 'updated');
         }
     }
 }
