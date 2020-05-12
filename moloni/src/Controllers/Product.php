@@ -36,6 +36,10 @@ class Product
     private $exemption_reason;
     private $taxes;
 
+    public $composition_type = 0;
+    /** @var false|array */
+    public $child_products = false;
+
     /**
      * Product constructor.
      * @param WC_Product $product
@@ -69,6 +73,8 @@ class Product
             $this->has_stock = $product['has_stock'];
             $this->stock = $product['stock'];
             $this->price = $product['price'];
+            $this->child_products = $product['child_products'];
+            $this->composition_type = $product['composition_type'];
             return $this;
         }
 
@@ -158,7 +164,7 @@ class Product
     {
         $categories = $this->product->get_category_ids();
 
-        if(empty($categories) && $this->productParent) {
+        if (empty($categories) && $this->productParent) {
             $categories = $this->productParent->get_category_ids();
         }
 

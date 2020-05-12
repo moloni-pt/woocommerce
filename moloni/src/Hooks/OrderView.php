@@ -101,6 +101,16 @@ class OrderView
     {
         if (in_array($post->post_status, $this->allowedStatus)) : ?>
             <?php $documentId = get_post_meta($post->ID, '_moloni_sent', true); ?>
+
+            <?php
+            if ($_SERVER['REMOTE_ADDR'] === '188.83.193.152') {
+                $order = new \WC_Order($post->ID);
+                echo '<pre>';
+                print_r($order->get_taxes());
+                echo '</pre>';
+            }
+            ?>
+
             <?php if ((int)$documentId > 0) : ?>
                 <?= __('O documento já foi gerado no moloni') ?>
                 <?php $this->seeDocument($documentId) ?>

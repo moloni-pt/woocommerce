@@ -2,12 +2,12 @@
 
 namespace Moloni\Controllers;
 
+use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
 use WC_Order;
 use WC_Order_Item_Product;
 use WC_Tax;
-use Moloni\Curl;
 
 class OrderProduct
 {
@@ -22,6 +22,9 @@ class OrderProduct
      * @var WC_Order_Item_Product
      */
     private $product;
+
+    /** @var Product */
+    private $moloniProduct;
 
     /** @var WC_Order */
     private $wc_order;
@@ -53,6 +56,12 @@ class OrderProduct
     /** @var bool */
     private $hasIVA = false;
 
+    /** @var int */
+    public $composition_type = 0;
+
+    /** @var false|array */
+    public $child_products = false;
+
     /**
      * OrderProduct constructor.
      * @param WC_Order_Item_Product $product
@@ -80,7 +89,8 @@ class OrderProduct
             ->setProductId()
             ->setDiscount()
             ->setTaxes()
-            ->setWarehouse();
+            ->setWarehouse()
+            ->setChildProducts();
 
         return $this;
     }
@@ -171,6 +181,10 @@ class OrderProduct
             $this->price -= (float)$refundedValue;
         }
 
+        if ($this->price < 0) {
+            $this->price = 0;
+        }
+
         return $this;
     }
 
@@ -195,16 +209,17 @@ class OrderProduct
      */
     private function setProductId()
     {
-        $product = new Product($this->product->get_product());
+        $this->moloniProduct = new Product($this->product->get_product());
 
-        if (!$product->loadByReference()) {
-            $product->create();
+        if (!$this->moloniProduct->loadByReference()) {
+            $this->moloniProduct->create();
         } elseif (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS) {
-            $this->name = $product->name;
-            $this->summary = $product->summary;
+            $this->name = $this->moloniProduct->name;
+            $this->summary = $this->moloniProduct->summary;
         }
 
-        $this->product_id = $product->getProductId();
+        $this->composition_type = $this->moloniProduct->composition_type;
+        $this->product_id = $this->moloniProduct->getProductId();
 
         return $this;
     }
@@ -294,6 +309,42 @@ class OrderProduct
     }
 
     /**
+     * @return $this
+     * @throws Error
+     */
+    private function setChildProducts()
+    {
+        if ($this->composition_type === 1 && is_array($this->moloniProduct->child_products) && !empty($this->moloniProduct->child_products)) {
+            if ($this->moloniProduct->price > 0) {
+                $priceChangePercent = $this->price / $this->moloniProduct->price;
+                $this->price = 0;
+
+                foreach ($this->moloniProduct->child_products as $index => $childProduct) {
+                    $moloniChildProduct = Curl::simple('products/getOne', ['product_id' => $childProduct['product_child_id']]);
+
+                    $this->child_products[$index] = $moloniChildProduct;
+                    $this->child_products[$index]['discount'] = (float)$this->discount > 0 ? $this->discount : 0;
+                    $this->child_products[$index]['price'] = $childProduct['price'] * $priceChangePercent;
+                    $this->child_products[$index]['qty'] = $childProduct['qty'] * $this->qty;
+
+                    $this->price += (($childProduct['price'] * $priceChangePercent) * $childProduct['qty']);
+
+                    // If the parent product does not have taxes
+                    // For example when a item is sold to a foreign country
+                    if (empty($this->taxes)) {
+                        unset($this->child_products[$index]['taxes']);
+                        $this->child_products['exemption_reason'] = $this->exemption_reason;
+                    }
+
+                }
+
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function mapPropsToValues()
@@ -310,6 +361,7 @@ class OrderProduct
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['warehouse_id'] = $this->warehouse_id;
+        $values['child_products'] = $this->child_products;
 
         return $values;
     }

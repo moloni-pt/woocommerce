@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.31
+Stable tag: 3.0.32
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,16 +66,20 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.32 =
+* FEATURE: Utilização de artigos compostos
+* FIX: Verificação extra para prevenir preços negativos
+
 = 3.0.31 =
 * FIX: Remover criação de erro ao criar um documento quando o Hook corre no Front End
 
 = 3.0.30 =
-* CHANGE: Passou a sér possível emitir documentos directamente da encomenda quando a mesma está no estado "wc-pending" e "wc-on-hold"
-* FIX: Quando um artigo "filho" é actualizado no WooCommerce, passou também a correr a acção de actualização de artigos do Moloni
+* CHANGE: Passou a sér possível emitir documentos diretamente da encomenda quando a mesma está no estado "wc-pending" e "wc-on-hold"
+* FIX: Quando um artigo "filho" é atualizado no WooCommerce, passou também a correr a ação de atualização de artigos do Moloni
 
 = 3.0.29 =
 * FEATURE: Permitir a escolha entre criar documento quando a encomenda passa a "Completa" ou "Em Processamento"
-* FEATURE: Permitir escolher o tipo de documento directamente na página da encomenda
+* FEATURE: Permitir escolher o tipo de documento diretamente na página da encomenda
 * CHANGE: A opção "Tem Stock" passa a ser controlada pela opção do WooCommerce "Gerir stock"
 * CHANGE: Caso um artigo "Atributo" não tenha preço, deverá ser usado o preço do artigo "Pai"
 * FIX: Remover as tags do nome do artigo
@@ -85,16 +89,16 @@ New plugin version fully re-written
 
 = 3.0.27 =
 * FEATURE: Adição de hook para a alteração do resumo do artigo
-* FEATURE: A funcionalidade de inserir/actualizar artigos foi dividida em duas, uma própria para inserir, outra para actualizar
+* FEATURE: A funcionalidade de inserir/atualizar artigos foi dividida em duas, uma própria para inserir, outra para actualizar
 * FEATURE: Adicionada nova opção para usar os dados dos artigos que estão no Moloni (nome e resumo), caso já existam
-* CHANGE: O campo EAN passou a não ser actualizado caso esteja vazio
-* CHANGE: Validação correcta das taxas/isenções
+* CHANGE: O campo EAN passou a não ser atualizado caso esteja vazio
+* CHANGE: Validação correta das taxas/isenções
 
 = 3.0.26 =
-* FIX: Correcção do carregamento de ficheiros .js e .css
+* FIX: Correção do carregamento de ficheiros .js e .css
 
 = 3.0.25 =
-* FIX: Correcção da ordem das taxas
+* FIX: Correção da ordem das taxas
 
 = 3.0.24 =
 * FIX: Verificação da taxa nos artigos - Verificar se a taxa é do tipo IVA
