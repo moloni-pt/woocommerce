@@ -18,9 +18,9 @@ namespace Moloni\Controllers;
 use Moloni\Curl;
 use Moloni\Error;
 
-class Payment
+class DeliveryMethod
 {
-    public $payment_method_id;
+    public $delivery_method_id;
     public $name;
     public $value = 0;
 
@@ -34,16 +34,15 @@ class Payment
     }
 
     /**
-     * This method SHOULD be replaced by a productCategories/getBySearch
      * @throws Error
      */
     public function loadByName()
     {
-        $paymentMethods = Curl::simple('paymentMethods/getAll', []);
-        if (!empty($paymentMethods) && is_array($paymentMethods)) {
-            foreach ($paymentMethods as $paymentMethod) {
-                if ($paymentMethod['name'] === $this->name) {
-                    $this->payment_method_id = $paymentMethod['payment_method_id'];
+        $deliveryMethods = Curl::simple('deliveryMethods/getAll', []);
+        if (!empty($deliveryMethods) && is_array($deliveryMethods)) {
+            foreach ($deliveryMethods as $deliveryMethod) {
+                if ($deliveryMethod['name'] === $this->name) {
+                    $this->delivery_method_id = $deliveryMethod['delivery_method_id'];
                     return $this;
                 }
             }
@@ -59,14 +58,14 @@ class Payment
      */
     public function create()
     {
-        $insert = Curl::simple('paymentMethods/insert', $this->mapPropsToValues());
+        $insert = Curl::simple('deliveryMethods/insert', $this->mapPropsToValues());
 
-        if (isset($insert['payment_method_id'])) {
-            $this->payment_method_id = $insert['payment_method_id'];
+        if (isset($insert['delivery_method_id'])) {
+            $this->delivery_method_id = $insert['delivery_method_id'];
             return $this;
         }
 
-        throw new Error(__('Erro ao inserir a método de pagamento') . $this->name);
+        throw new Error(__('Erro ao inserir a método de transporte') . $this->name);
     }
 
 

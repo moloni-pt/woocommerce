@@ -325,7 +325,22 @@ class Product
         }
 
         if (!$hasIVA) {
-            $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            if (!defined('EXEMPTION_REASON') || empty(EXEMPTION_REASON)) {
+                /** Get the default tax from Moloni Account*/
+                $moloniTax = Tools::getTaxFromRate(-1);
+
+                $tax = [];
+                $tax['tax_id'] = $moloniTax['tax_id'];
+                $tax['value'] = $moloniTax['value'];
+                $tax['order'] = 1;
+                $tax['cumulative'] = '0';
+
+                if ((float)$moloniTax['value'] > 0) {
+                    $this->taxes[] = $tax;
+                }
+            } else {
+                $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            }
         }
 
         return $this;

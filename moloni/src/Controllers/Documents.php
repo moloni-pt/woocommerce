@@ -345,13 +345,26 @@ class Documents
     public function setShippingInfo()
     {
         if (defined('SHIPPING_INFO') && SHIPPING_INFO) {
+            $shippingName = $this->order->get_shipping_method();
+
+            if (empty($shippingName)) {
+                return $this;
+            }
+
             $this->company = Curl::simple('companies/getOne', []);
             $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
             if ($this->order->get_shipping_country() === 'PT') {
                 $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
             }
 
-            $this->delivery_method_id = $this->company['delivery_method_id'];
+            $deliveryMethod = new DeliveryMethod($this->order->get_shipping_method());
+            if (!$deliveryMethod->loadByName()) {
+                $deliveryMethod->create();
+            }
+
+            $this->delivery_method_id = $deliveryMethod->delivery_method_id > 0 ?
+                $deliveryMethod->delivery_method_id : $this->company['delivery_method_id'];
+
             $this->delivery_datetime = date('Y-m-d H:i:s');
 
             $this->delivery_departure_address = $this->company['address'];
@@ -363,6 +376,7 @@ class Documents
             $this->delivery_destination_city = $this->order->get_shipping_city();
             $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
         }
+
 
         return $this;
     }
@@ -411,7 +425,7 @@ class Documents
         $values['status'] = $this->status;
 
         $values['delivery_datetime'] = $this->delivery_datetime;
-        $values['delivery_method_id '] = $this->delivery_method_id;
+        $values['delivery_method_id'] = $this->delivery_method_id;
 
         $values['delivery_departure_address'] = $this->delivery_departure_address;
         $values['delivery_departure_city'] = $this->delivery_departure_city;
