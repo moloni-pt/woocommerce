@@ -23,7 +23,7 @@ class ProductCategory
      */
     public function __construct($name, $parentId = 0)
     {
-        $this->name = trim($name);
+        $this->name = wp_specialchars_decode(trim($name));
         $this->parent_id = $parentId;
     }
 

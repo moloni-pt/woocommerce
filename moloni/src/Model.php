@@ -12,8 +12,7 @@ class Model
     public static function getTokensRow()
     {
         global $wpdb;
-        $results = $wpdb->get_row("SELECT * FROM moloni_api ORDER BY id DESC", ARRAY_A);
-        return $results;
+        return $wpdb->get_row("SELECT * FROM moloni_api ORDER BY id DESC", ARRAY_A);
     }
 
     /**
@@ -55,10 +54,11 @@ class Model
     /**
      * Checks if tokens need to be refreshed and refreshes them
      * If it fails, log user out
+     * @param int $retryNumber
      * @return array|false
      * @global $wpdb
      */
-    public static function refreshTokens()
+    public static function refreshTokens($retryNumber = 0)
     {
         global $wpdb;
         $tokensRow = self::getTokensRow();
@@ -74,20 +74,28 @@ class Model
             $results = Curl::refresh($tokensRow['refresh_token']);
 
             if (!isset($results['access_token'])) {
-                $wpdb->query("TRUNCATE moloni_api");
-                return false;
+                if ($retryNumber > 3) {
+                    Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
+                    $wpdb->query("TRUNCATE moloni_api");
+                    return false;
+                } else {
+                    $retryNumber++;
+                    return self::refreshTokens($retryNumber);
+                }
             }
 
             $wpdb->update(
                 "moloni_api", [
-                    "main_token" => $results['access_token'],
-                    "refresh_token" => $results['refresh_token'],
-                    "expiretime" => time() + 3000
-                ], ["id" => $tokensRow['id']]
+                "main_token" => $results['access_token'],
+                "refresh_token" => $results['refresh_token'],
+                "expiretime" => time() + 3000
+            ], ["id" => $tokensRow['id']]
             );
+
+            return self::getTokensRow();
         }
 
-        return self::getTokensRow();
+        return $tokensRow;
     }
 
     /**

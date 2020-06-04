@@ -103,12 +103,8 @@ class OrderView
             <?php $documentId = get_post_meta($post->ID, '_moloni_sent', true); ?>
 
             <?php
-            if ($_SERVER['REMOTE_ADDR'] === '188.83.193.152') {
-                $order = new \WC_Order($post->ID);
-                echo '<pre>';
-                print_r($order->get_taxes());
-                echo '</pre>';
-            }
+            $order = new \WC_Order($post->ID);
+            echo '<div style="display: none"><pre>' . print_r($order->get_taxes(), true) . '</pre></div>';
             ?>
 
             <?php if ((int)$documentId > 0) : ?>

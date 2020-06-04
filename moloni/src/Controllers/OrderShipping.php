@@ -72,12 +72,13 @@ class OrderShipping
     {
         $this->qty = 1;
         $this->price = (float)$this->order->get_shipping_total();
-        $this->name = $this->order->get_shipping_method();
 
         $this
             ->setReference()
             ->setDiscount()
             ->setTaxes()
+            ->setName()
+            ->setSummary()
             ->setProductId();
 
         return $this;
@@ -208,11 +209,37 @@ class OrderShipping
         $tax['order'] = is_array($this->taxes) ? count($this->taxes) : 0;
         $tax['cumulative'] = 0;
 
-        if ((int) $moloniTax['saft_type'] === 1) {
+        if ((int)$moloniTax['saft_type'] === 1) {
             $this->hasIVA = true;
         }
 
         return $tax;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name = '')
+    {
+        $name = empty($name) ? $this->order->get_shipping_method() : $name;
+
+        $this->name = apply_filters('moloni_after_order_shipping_setName', $name, $this->order);
+
+        return $this;
+    }
+
+    /**
+     * @param string $summary
+     * @return $this
+     */
+    public function setSummary($summary = '')
+    {
+        $summary = empty($summary) ? '' : $summary;
+
+        $this->summary = apply_filters('moloni_after_order_shipping_setSummary', $summary, $this->order);
+
+        return $this;
     }
 
     /**
