@@ -469,8 +469,6 @@ class Documents
             $url = Curl::simple('documents/getPDFLink', $values);
             header('Location: ' . $url['url']);
         } else {
-
-
             if (defined('COMPANY_SLUG')) {
                 $slug = COMPANY_SLUG;
             } else {
@@ -558,6 +556,9 @@ class Documents
                 break;
             case 'FS' :
                 $typeName = 'FaturaSimplificada';
+                break;
+            case 'PF' :
+                $typeName = 'FaturasProForma';
                 break;
             case 'GT' :
                 $typeName = 'GuiasTransporte';

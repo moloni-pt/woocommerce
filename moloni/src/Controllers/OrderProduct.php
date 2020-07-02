@@ -250,6 +250,7 @@ class OrderProduct
      */
     private function setTaxes()
     {
+        $taxRate = 0;
         $taxes = $this->product->get_taxes();
         foreach ($taxes['subtotal'] as $taxId => $value) {
             if (!empty($value)) {
@@ -261,7 +262,11 @@ class OrderProduct
         }
 
         if (!$this->hasIVA) {
-            $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            if ((float)$taxRate > 0) {
+                $this->taxes[] = $this->moloniProduct->getDefaultTax();
+            } else {
+                $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            }
         }
 
         return $this;

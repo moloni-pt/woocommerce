@@ -34,7 +34,7 @@ class Product
     public $stock;
     private $at_product_category = 'M';
     private $exemption_reason;
-    private $taxes;
+    public $taxes;
 
     public $composition_type = 0;
     /** @var false|array */
@@ -75,6 +75,7 @@ class Product
             $this->price = $product['price'];
             $this->child_products = $product['child_products'];
             $this->composition_type = $product['composition_type'];
+            $this->taxes = $product['taxes'];
             return $this;
         }
 
@@ -316,34 +317,40 @@ class Product
 
                 if ((float)$taxRate['rate'] > 0) {
                     $this->taxes[] = $tax;
-                }
 
-                if ((int)$moloniTax['saft_type'] === 1) {
-                    $hasIVA = true;
+                    if ((int)$moloniTax['saft_type'] === 1) {
+                        $hasIVA = true;
+                    }
                 }
             }
         }
 
         if (!$hasIVA) {
-            if (!defined('EXEMPTION_REASON') || empty(EXEMPTION_REASON)) {
-                /** Get the default tax from Moloni Account*/
-                $moloniTax = Tools::getTaxFromRate(-1);
-
-                $tax = [];
-                $tax['tax_id'] = $moloniTax['tax_id'];
-                $tax['value'] = $moloniTax['value'];
-                $tax['order'] = 1;
-                $tax['cumulative'] = '0';
-
-                if ((float)$moloniTax['value'] > 0) {
-                    $this->taxes[] = $tax;
-                }
-            } else {
+            if (defined('EXEMPTION_REASON') && EXEMPTION_REASON !== '') {
                 $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            } else {
+                $this->taxes[] = $this->getDefaultTax();
             }
         }
 
         return $this;
+    }
+
+    public function getDefaultTax()
+    {
+        $moloniTax = Tools::getTaxFromRate(-1);
+
+        $tax = [];
+        $tax['tax_id'] = $moloniTax['tax_id'];
+        $tax['value'] = $moloniTax['value'];
+        $tax['order'] = 1;
+        $tax['cumulative'] = '0';
+
+        if ((float)$moloniTax['value'] > 0) {
+            return $tax;
+        }
+
+        return [];
     }
 
     /**

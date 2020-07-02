@@ -87,6 +87,10 @@
                                     <?= __('Factura Simplificada') ?>
                                 </option>
 
+                                <option value='proFormaInvoices' <?= (DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
+                                    <?= __('Fatura Pró-Forma') ?>
+                                </option>
+
                                 <option value='billsOfLading' <?= (DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
                                     <?= __('Guia de Transporte') ?>
                                 </option>
