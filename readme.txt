@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.35
+Stable tag: 3.0.36
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,7 +66,7 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
-= 3.0.33 =
+= 3.0.36 =
 * FEATURE: Adicionada possibilidade de emissão de faturas pró-forma
 
 = 3.0.34 =

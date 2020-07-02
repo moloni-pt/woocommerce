@@ -4,7 +4,7 @@
  *   Plugin Name:  Moloni
  *   Plugin URI:   https://plugins.moloni.com/woocommerce
  *   Description:  A forma mais fácil de ligar a sua loja online com a sua faturação.
- *   Version:      3.0.35
+ *   Version:      3.0.36
  *   Author:       Moloni.com
  *   Author URI:   https://moloni.com
  *   License:      GPL2
