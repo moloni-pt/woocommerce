@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.34
+Stable tag: 3.0.35
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.33 =
+* FEATURE: Adicionada possibilidade de emissão de faturas pró-forma
+
 = 3.0.34 =
 * FEATURE: Adicionados Hooks moloni_after_order_shipping_setName e moloni_after_order_shipping_setSummary para que seja alterado o nom e resumo dos portes
 * CHANGE: Solidificar o método de renovação das tokens com retry e log

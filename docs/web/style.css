@@ -1,0 +1,276 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+nav ul a,
+nav .brand-logo {
+  color: #444;
+}
+
+p {
+  line-height: 2rem;
+}
+
+#section-text p {
+  text-align: center;
+}
+
+.button-collapse {
+  color: #333333;
+  left: 10px;
+}
+
+
+.moloni-plugins-container {
+  min-height: 120px;
+  line-height: 0;
+  height: auto;
+  color: #fff;
+  background-color: #8BC34A;
+}
+
+  .moloni-plugins-container .section {
+    width: 100%;
+  }
+#index-banner.moloni-plugins-container {
+	min-height: 600px;
+}
+
+@media only screen and (max-width : 992px) {
+  .moloni-plugins-container .section {
+    position: absolute;
+    top: 5%;
+  }
+  #index-banner .section {
+    top: 10%;
+  }
+}
+
+@media only screen and (max-width : 600px) {
+  #index-banner .section {
+    top: 0;
+  }
+}
+
+#index-banner .section{
+	margin-top: 6rem;
+}
+
+.install img{
+	max-width: 100%;
+}
+
+.install .row {
+	padding: 20px;
+}
+
+.install .even{
+	background-color: #f1f1f1;
+}
+
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+  font-size: inherit;
+}
+
+footer.page-footer {
+  margin: 0;
+}
+
+.list li {
+  list-style-type: disc;
+  list-style-position: inside;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.list {
+  margin-bottom: 0px;
+}
+
+.buttonright {
+  text-align: center;
+}
+
+#firststepgeneral {
+  display: flex;
+  align-items: center;
+}
+
+#rightstep {
+  flex: 1;
+  order: 2;
+}
+
+#leftstep {
+  flex: 1;
+  order: 1;
+}
+
+.footerSectionTextLinksBlock{
+  float: right;
+  width: 20%
+}
+
+.footerSectionText{
+  line-height: 23px;
+}
+
+.footerSectionIconRSHolder {
+    overflow: hidden;
+    margin: 35px 8px;
+    text-align: center;
+}
+
+.footerIconeRedesSociais_fb_off, .footerIconeRedesSociais_yt_off, .footerIconeRedesSociais_tw_off, .footerIconeRedesSociais_gg_off {
+    background: url(./images/tut/fe_v3_shapes_1.png) no-repeat -1px;
+    width: 38px;
+    height: 38px;
+    margin-right: 30px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.footerIconeRedesSociais_yt_off {
+    background-position-x: -72px;
+}
+
+.footerIconeRedesSociais_tw_off {
+    background-position-x: -210px;
+}
+
+.footerIconeRedesSociais_gg_off {
+    background-position-x: -140px;
+    margin-right: 0;
+}
+
+/*MEDIA QUERIES*/
+
+@media only screen and (max-width: 600px) {
+  #logo-container img {
+    margin-top: 9px; 
+  }
+  .row h3 {
+    font-size: 2.7rem;
+    /*margin: 0 0 1.168rem 0;*/
+  }
+}
+
+@media only screen and (min-width: 841px) {
+  .row .col.l6 {
+    width: 50%;
+  }  
+  .row h3 {
+    font-size: 2.7rem;
+  }
+}
+
+@media only screen and (max-width: 840px) {
+
+  .row .col.m6 { 
+    text-align: center;
+    margin: 20px 0 20px 0;
+    width: 100%;
+  }
+  .buttonright {
+    text-align: center;
+  }  
+  .row .col.offset-m1 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .row .col.offset-m1 {
+    margin: 0; 
+  }
+  .row .col.m5 {
+    width: 100% ;
+  }  
+  .row .col.m5 {
+    width: 100%;
+    text-align: center;
+  }
+  #firststepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  #secondstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  #thirdstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  #fourthstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  #fourthstepgeneral h4 {
+    margin: 1rem 0 .5rem 0;
+  }
+  #fifthstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  #sixthstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+  }
+  #seventhstepgeneral {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+    margin-bottom: 0px;
+  }
+  .row h3 {
+    font-size: 2.7rem;
+  }
+
+  #footer_align {
+    display: flex;
+    flex-direction: column;
+  }
+  .footerSectionTextLinksBlock {
+    float: right;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  #presentation {
+    width: 100%;
+    text-align: center;
+    padding: 0 3rem;
+  } 
+}
+
+@media only screen and (max-width: 840px) and (min-width: 600px) {
+  #footer_align {
+    display: flex;
+    flex-flow: wrap;
+  }
+  .footerSectionTextLinksBlock {
+    float: right;
+    width: 50%;
+    text-align: center;
+    margin-top: 10px;
+  }
+  #presentation {
+    width: 100%;
+    text-align: center;
+    padding: 0 3rem;
+    margin-top: 10px;
+  }  
+}
