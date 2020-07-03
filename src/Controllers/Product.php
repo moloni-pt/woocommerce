@@ -295,6 +295,7 @@ class Product
     private function setTaxes()
     {
         $hasIVA = false;
+        $this->taxes = [];
 
         if ($this->product->get_tax_status() === 'taxable') {
             // Get taxes based on a tax class of a product
