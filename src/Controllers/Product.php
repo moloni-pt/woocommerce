@@ -152,7 +152,7 @@ class Product
         $this->reference = $this->product->get_sku();
 
         if (empty($this->reference)) {
-            $this->reference = Tools::createReferenceFromString($this->product->get_name());
+            $this->reference = Tools::createReferenceFromString($this->product->get_name(), $this->product->get_id());
         }
 
         return $this;

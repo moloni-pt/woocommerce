@@ -21,16 +21,16 @@ class Tools
         $reference = '';
         $name = explode(' ', $string);
 
-        foreach ($name as $word) {
-            $reference .= '_' . mb_substr($word, 0, 3);
-        }
-
         if ((int)$productId > 0) {
             $reference .= '_' . $productId;
         }
 
         if ((int)$variationId > 0) {
             $reference .= '_' . $variationId;
+        }
+
+        foreach ($name as $word) {
+            $reference .= '_' . mb_substr($word, 0, 3);
         }
 
         return mb_substr($reference, 0, 30);
