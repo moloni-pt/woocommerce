@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.40
+Stable tag: 3.0.41
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.40 =
+* FIX: Erros de notificação na página de opções após primeiro login
+
 = 3.0.40 =
 * CHANGE: Na criação de um artigo, se não tiver referência, passou a ser usado o ID do artigo como base da referência
 * FIX: Na actualização de artigos, passamos a limpar as taxas antes de actualizar, de forma e vitar taxas duplicadas
