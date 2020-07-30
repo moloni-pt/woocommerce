@@ -35,7 +35,7 @@ class Crons
                 return false;
             }
 
-            if (defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC) {
+            if (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC !== 0) {
                 Log::write('A iniciar a sincronização de stocks automática...');
                 if (!defined('MOLONI_STOCK_SYNC_TIME')) {
                     define('MOLONI_STOCK_SYNC_TIME', (time() - 600));

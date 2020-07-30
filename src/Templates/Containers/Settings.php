@@ -319,10 +319,36 @@
                 </th>
                 <td>
                     <select id="moloni_stock_sync" name='opt[moloni_stock_sync]' class='inputOut'>
-                        <option value='0' <?= ( defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC == '0' ? 'selected' : '' ) ?>><?= __( 'Não' ) ?></option>
-                        <option value='1' <?= ( defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC == '1' ? 'selected' : '' ) ?>><?= __( 'Sim' ) ?></option>
+                        <option value='0' <?= ( defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC === '0' ? 'selected' : '' ) ?>><?= __( 'Não' ) ?></option>
+                        <option value='1' <?= ( defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC === '1' ? 'selected' : '' ) ?>><?= __( 'Sim, de todos os armazéns' ) ?></option>
+
+                        <?php if ( is_array( $warehouses ) ): ?>
+                            <optgroup label="<?=__( 'Sim, apenas do armazém:' ) ?>">
+
+                                <?php foreach ( $warehouses as $warehouse ) : ?>
+                                    <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                        <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </optgroup>
+                        <?php endif; ?>
+
                     </select>
                     <p class='description'><?= __( 'Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)' ) ?></p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="moloni_product_sync"><?= __( 'Estado do produto' ) ?></label>
+                </th>
+                <td>
+                    <select id="moloni_stock_status" name='opt[moloni_stock_status]' class='inputOut'>
+                        <option value='outofstock' <?= ( defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'outofstock' ? 'selected' : '' ) ?>><?= __( 'Sem stock' ) ?></option>
+                        <option value='onbackorder' <?= ( defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'onbackorder' ? 'selected' : '' ) ?>><?= __( 'Por encomenda' ) ?></option>
+                    </select>
+                    <p class='description'><?= __( 'O estado do produto quando o seu stock após sincronização é 0' ) ?></p>
                 </td>
             </tr>
 

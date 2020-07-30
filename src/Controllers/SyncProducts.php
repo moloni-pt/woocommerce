@@ -19,7 +19,7 @@ class SyncProducts
     private $notFound = [];
 
     /** @var string Switch this between outofstock or onbackorder */
-    private $outOfStockStatus = 'onbackorder';
+    private $outOfStockStatus = 'outofstock'; //default is out of stock
 
     public function __construct($since)
     {
@@ -30,6 +30,9 @@ class SyncProducts
             if (!$sinceTime) {
                 $sinceTime = strtotime('-1 week');
             }
+        }
+        if (defined('MOLONI_STOCK_STATUS')) { //sets the default no stock behaviour from settings
+            $this->outOfStockStatus = MOLONI_STOCK_STATUS;
         }
 
         $this->since = gmdate('Y-m-d H:i:s', $sinceTime);
@@ -48,12 +51,28 @@ class SyncProducts
         if (!empty($updatedProducts) && is_array($updatedProducts)) {
             $this->found = count($updatedProducts);
             Log::write('Encontrados ' . $this->found . ' artigos');
+
             foreach ($updatedProducts as $product) {
                 try {
                     $wcProductId = wc_get_product_id_by_sku($product['reference']);
                     if ($product['has_stock'] && $wcProductId > 0) {
                         $currentStock = get_post_meta($wcProductId, '_stock', true);
-                        $newStock = $product['stock'];
+
+                        /** if the product does not have the set warehouse, stock is 0 (so we do it here) */
+                        $newStock = 0;
+
+
+                        if ((int)MOLONI_STOCK_SYNC > 1) {
+                            /** If we have a warehouse selected */
+                            foreach ($product['warehouses'] as $productWarehouse) {
+                                if ((int)$productWarehouse['warehouse_id'] === (int)MOLONI_STOCK_SYNC) {
+                                    $newStock = $productWarehouse['stock']; // Get the stock of the particular warehouse
+                                    continue;
+                                }
+                            }
+                        } else {
+                            $newStock = $product['stock'];
+                        }
 
                         if ((float)$currentStock === (float)$newStock) {
                             Log::write('Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto ' . $currentStock . '|' . $newStock);
@@ -61,9 +80,9 @@ class SyncProducts
                         } else {
                             Log::write('Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock);
                             $this->updated[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
-                            update_post_meta($wcProductId, '_stock', $product['stock']);
-                            update_post_meta($wcProductId, '_stock_status', ($product['stock'] > 0 ? 'instock' : $this->outOfStockStatus));
-                            update_post_meta($wcProductId, 'outofstock', ($product['stock'] > 0 ? '0' : '1'));
+                            update_post_meta($wcProductId, '_stock', $newStock);
+                            update_post_meta($wcProductId, '_stock_status', ($newStock > 0 ? 'instock' : $this->outOfStockStatus));
+                            update_post_meta($wcProductId, 'outofstock', ($newStock > 0 ? '0' : '1'));
                         }
                     } else {
                         Log::write('Artigo não encontrado ou sem stock ativo: ' . $product['reference']);
