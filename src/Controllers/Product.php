@@ -267,6 +267,13 @@ class Product
         $metaBarcode = $this->product->get_meta('barcode', true);
         if (!empty($metaBarcode)) {
             $this->ean = $metaBarcode;
+            return $this;
+        }
+
+        $metaBarcode = $this->product->get_meta('_ywbc_barcode_display_value', true);
+        if (!empty($metaBarcode)) {
+            $this->ean = $metaBarcode;
+            return $this;
         }
 
         return $this;
