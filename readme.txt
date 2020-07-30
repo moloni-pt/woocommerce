@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.41
+Stable tag: 3.0.42
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,7 +66,14 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
-= 3.0.40 =
+= 3.0.42 =
+* FEATURE: Adicionada opção para definir o estado do stock de um artigo quando o artigo é sincronizado com stock igual a zero
+* FEATURE: Adicionada opção para atualização de stocks com base num armazém apenas
+* FEATURE: Adicionada opção para escolher se o nome deverá ser usado para a referência do artigo ou não
+* FEATURE: Adicionada a meta tag _ywbc_barcode_display_value para que possa ser usada como EAN
+* FEATURE: Adicionado filtro moloni_admin_menu_permission para as permissões de administrador
+
+= 3.0.41 =
 * FIX: Erros de notificação na página de opções após primeiro login
 
 = 3.0.40 =

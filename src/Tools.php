@@ -19,18 +19,30 @@ class Tools
     public static function createReferenceFromString($string, $productId = 0, $variationId = 0)
     {
         $reference = '';
+
+        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
         $name = explode(' ', $string);
 
-        if ((int)$productId > 0) {
-            $reference .= '_' . $productId;
-        }
+        if (!defined('USE_NAME_FOR_MOLONI_REFERENCE') || USE_NAME_FOR_MOLONI_REFERENCE == 1) {
+            if ((int)$productId > 0) {
+                $reference .= '_' . $productId;
+            }
 
-        if ((int)$variationId > 0) {
-            $reference .= '_' . $variationId;
-        }
+            if ((int)$variationId > 0) {
+                $reference .= '_' . $variationId;
+            }
 
-        foreach ($name as $word) {
-            $reference .= '_' . mb_substr($word, 0, 3);
+            foreach ($name as $word) {
+                $reference .= '_' . mb_substr($word, 0, 3);
+            }
+        } else {
+            if ((int)$productId > 0) {
+                $reference .= $productId;
+            }
+
+            if ((int)$variationId > 0) {
+                $reference .= '_' . $variationId;
+            }
         }
 
         return mb_substr($reference, 0, 30);

@@ -155,6 +155,8 @@ class Product
             $this->reference = Tools::createReferenceFromString($this->product->get_name(), $this->product->get_id());
         }
 
+        $this->reference = mb_substr($this->reference, 0, 30);
+
         return $this;
     }
 
