@@ -155,6 +155,8 @@ class Product
             $this->reference = Tools::createReferenceFromString($this->product->get_name(), $this->product->get_id());
         }
 
+        $this->reference = mb_substr($this->reference, 0, 30);
+
         return $this;
     }
 
@@ -267,6 +269,13 @@ class Product
         $metaBarcode = $this->product->get_meta('barcode', true);
         if (!empty($metaBarcode)) {
             $this->ean = $metaBarcode;
+            return $this;
+        }
+
+        $metaBarcode = $this->product->get_meta('_ywbc_barcode_display_value', true);
+        if (!empty($metaBarcode)) {
+            $this->ean = $metaBarcode;
+            return $this;
         }
 
         return $this;

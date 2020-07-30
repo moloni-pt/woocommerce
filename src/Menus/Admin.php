@@ -22,9 +22,10 @@ class Admin
 
     public function admin_menu()
     {
-        if (current_user_can('manage_woocommerce')) {
+        $permission = apply_filters( 'moloni_admin_menu_permission', 'manage_woocommerce');
+        if (current_user_can($permission)) {
             $logoDir = MOLONI_IMAGES_URL . 'small_logo.png';
-            add_menu_page(__('Moloni', 'Moloni'), __('Moloni', 'Moloni'), 'manage_woocommerce', 'moloni', [$this->parent, 'run'], $logoDir, 55.5);
+            add_menu_page(__('Moloni', 'Moloni'), __('Moloni', 'Moloni'), $permission, 'moloni', [$this->parent, 'run'], $logoDir, 55.5);
         }
     }
 }
