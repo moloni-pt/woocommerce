@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.42
+Stable tag: 3.0.43
 Tested up to: 5.4
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.43 =
+* CHANGE: Colocação automática da taxa de IVA por defeito caso não tenha razão de isenção selecionada
+
 = 3.0.42 =
 * FEATURE: Adicionada opção para definir o estado do stock de um artigo quando o artigo é sincronizado com stock igual a zero
 * FEATURE: Adicionada opção para atualização de stocks com base num armazém apenas
@@ -78,7 +81,7 @@ New plugin version fully re-written
 
 = 3.0.40 =
 * CHANGE: Na criação de um artigo, se não tiver referência, passou a ser usado o ID do artigo como base da referência
-* FIX: Na actualização de artigos, passamos a limpar as taxas antes de actualizar, de forma e vitar taxas duplicadas
+* FIX: Na actualização de artigos, passamos a limpar as taxas antes de actualizar, de forma a evitar taxas duplicadas
 
 = 3.0.37 =
 * FEATURE: Adicionada possibilidade de emissão de faturas pró-forma
@@ -86,7 +89,6 @@ New plugin version fully re-written
 = 3.0.34 =
 * FEATURE: Adicionados Hooks moloni_after_order_shipping_setName e moloni_after_order_shipping_setSummary para que seja alterado o nom e resumo dos portes
 * CHANGE: Solidificar o método de renovação das tokens com retry e log
-* CHANGE: Colocação automática da taxa de IVA por defeito caso não tenha razão de isenção selecionada
 * FIX: Tratar da codificação do nome das categorias em caracteres como &
 
 = 3.0.33 =
