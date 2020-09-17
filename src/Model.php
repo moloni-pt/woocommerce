@@ -11,8 +11,8 @@ class Model
      */
     public static function getTokensRow()
     {
-        global $wpdb;
-        return $wpdb->get_row("SELECT * FROM moloni_api ORDER BY id DESC", ARRAY_A);
+        global $wpdb,$bdprefix;
+        return $wpdb->get_row("SELECT * FROM moloni_api".$bdprefix." ORDER BY id DESC", ARRAY_A);
     }
 
     /**
@@ -24,9 +24,9 @@ class Model
      */
     public static function setTokens($accessToken, $refreshToken)
     {
-        global $wpdb;
-        $wpdb->query("TRUNCATE moloni_api");
-        $wpdb->insert('moloni_api', ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
+        global $wpdb,$bdprefix;
+        $wpdb->query("TRUNCATE moloni_api".$bdprefix);
+        $wpdb->insert('moloni_api'.$bdprefix, ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
         return self::getTokensRow();
     }
 
@@ -39,13 +39,13 @@ class Model
      */
     public static function setOption($option, $value)
     {
-        global $wpdb;
-        $setting = $wpdb->get_row($wpdb->prepare("SELECT * FROM moloni_api_config WHERE config = %s", $option), ARRAY_A);
+        global $wpdb,$bdprefix;
+        $setting = $wpdb->get_row($wpdb->prepare("SELECT * FROM moloni_api_config".$bdprefix." WHERE config = %s", $option), ARRAY_A);
 
         if (!empty($setting)) {
-            $wpdb->update('moloni_api_config', ['selected' => $value], ['config' => $option]);
+            $wpdb->update('moloni_api_config'.$bdprefix, ['selected' => $value], ['config' => $option]);
         } else {
-            $wpdb->insert('moloni_api_config', ['selected' => $value, 'config' => $option]);
+            $wpdb->insert('moloni_api_config'.$bdprefix, ['selected' => $value, 'config' => $option]);
         }
 
         return $wpdb->insert_id;
@@ -60,12 +60,12 @@ class Model
      */
     public static function refreshTokens($retryNumber = 0)
     {
-        global $wpdb;
+        global $wpdb,$bdprefix;
         $tokensRow = self::getTokensRow();
 
         $expire = false;
         if (!isset($tokensRow['expiretime'])) {
-            $wpdb->query("ALTER TABLE moloni_api ADD expiretime varchar(250)");
+            $wpdb->query("ALTER TABLE moloni_api".$bdprefix." ADD expiretime varchar(250)");
         } else {
             $expire = $tokensRow['expiretime'];
         }
@@ -76,7 +76,7 @@ class Model
             if (!isset($results['access_token'])) {
                 if ($retryNumber > 3) {
                     Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
-                    $wpdb->query("TRUNCATE moloni_api");
+                    $wpdb->query("TRUNCATE moloni_api".$bdprefix);
                     return false;
                 } else {
                     $retryNumber++;
@@ -85,7 +85,7 @@ class Model
             }
 
             $wpdb->update(
-                "moloni_api", [
+                "moloni_api".$bdprefix, [
                 "main_token" => $results['access_token'],
                 "refresh_token" => $results['refresh_token'],
                 "expiretime" => time() + 3000
@@ -117,8 +117,8 @@ class Model
      */
     public static function defineConfigs()
     {
-        global $wpdb;
-        $results = $wpdb->get_results("SELECT * FROM moloni_api_config ORDER BY id DESC", ARRAY_A);
+        global $wpdb,$bdprefix;
+        $results = $wpdb->get_results("SELECT * FROM moloni_api_config".$bdprefix." ORDER BY id DESC", ARRAY_A);
         foreach ($results as $result) {
             $setting = strtoupper($result['config']);
             if (!defined($setting)) {
@@ -151,8 +151,8 @@ class Model
 
     public static function resetTokens()
     {
-        global $wpdb;
-        $wpdb->query("TRUNCATE moloni_api");
+        global $wpdb,$bdprefix;
+        $wpdb->query("TRUNCATE moloni_api".$bdprefix);
         return self::getTokensRow();
     }
 

@@ -23,7 +23,7 @@ class Start
      */
     public static function login($ajax = false)
     {
-        global $wpdb;
+        global $wpdb,$bdprefix;
 
         $action = isset($_REQUEST['action']) ? sanitize_text_field(trim($_REQUEST['action'])) : '';
         $username = isset($_POST['user']) ? sanitize_email(trim($_POST['user'])) : '';
@@ -69,7 +69,7 @@ class Start
             }
 
             if (isset($_GET['company_id'])) {
-                $wpdb->update('moloni_api', ['company_id' => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
+                $wpdb->update('moloni_api'.$bdprefix, ['company_id' => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
                 Model::defineValues();
                 Model::defineConfigs();
                 return true;

@@ -14,9 +14,20 @@
 
 namespace Moloni;
 
+
 if (!defined('ABSPATH')) {
     exit;
 }
+
+global $wpdb,$bdprefix;
+$prefix = $wpdb->get_blog_prefix();
+$prefix = explode('_',$prefix);
+if(count($prefix) > 1 && $prefix[1]){
+    $bdprefix = '_'.$prefix[1];
+}else{
+    $bdprefix = '';
+}
+
 
 $composer_autoloader = __DIR__ . '/vendor/autoload.php';
 if (is_readable($composer_autoloader)) {
@@ -45,7 +56,10 @@ if (!defined('MOLONI_IMAGES_URL')) {
 }
 
 register_activation_hook(__FILE__, '\Moloni\Activators\Install::run');
-register_deactivation_hook(__FILE__, '\Moloni\Activators\Remove::run');
+register_uninstall_hook(__FILE__, '\Moloni\Activators\Remove::run');
+add_action( 'wp_insert_site', '\Moloni\Activators\Install::run' );
+add_action( 'wp_uninitialize_site', '\Moloni\Activators\Remove::droptables',10,1 );
+ 
 
 add_action('plugins_loaded', Start::class);
 add_action('admin_enqueue_scripts', '\Moloni\Plugin::defines');
