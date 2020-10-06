@@ -2,8 +2,8 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.43
-Tested up to: 5.4
+Stable tag: 3.0.44
+Tested up to: 5.5.1
 Requires PHP: 5.6
 Requires at least: 4.6
 License: GPLv2 or later
@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == Changelog ==
+= 3.0.44 =
+* MINOR: Testado até à versão 5.5.1 do Wordpress
+
 = 3.0.43 =
 * CHANGE: Colocação automática da taxa de IVA por defeito caso não tenha razão de isenção selecionada
 
