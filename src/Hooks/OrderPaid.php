@@ -28,7 +28,7 @@ class OrderPaid
     {
         try {
             /** @noinspection NotOptimalIfConditionsInspection */
-            if (Start::login() && defined('INVOICE_AUTO') && INVOICE_AUTO) {
+            if (Start::login(true) && defined('INVOICE_AUTO') && INVOICE_AUTO) {
                 if (!defined('INVOICE_AUTO_STATUS') || (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed')) {
                     Log::setFileName('DocumentsAuto');
                     Log::write('A gerar automaticamente o documento da encomenda no estado "Completed" ' . $orderId);
