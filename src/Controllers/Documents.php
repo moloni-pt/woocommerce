@@ -28,6 +28,13 @@ class Documents
     /** @var bool|Error */
     private $error = false;
 
+    /**
+     * Field used in filter to cancel document creation
+     *
+     * @var bool
+     */
+    public $stopProcess = false;
+
     /** @var int */
     public $document_id;
 
@@ -136,6 +143,12 @@ class Documents
     public function createDocument()
     {
         try {
+            apply_filters('moloni_before_start_document', $this);
+
+            if ($this->stopProcess) {
+                return $this;
+            }
+
             $this->customer_id = (new OrderCustomer($this->order))->create();
             $this->document_set_id = $this->getDocumentSetId();
 
@@ -167,6 +180,12 @@ class Documents
                 );
             }
 
+            apply_filters('moloni_before_insert_document', $this);
+
+            if ($this->stopProcess) {
+                return $this;
+            }
+
             $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
 
             if (!isset($insertedDocument['document_id'])) {
@@ -174,9 +193,12 @@ class Documents
             }
 
             $this->document_id = $insertedDocument['document_id'];
+
             add_post_meta($this->orderId, '_moloni_sent', $this->document_id, true);
 
             $addedDocument = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
+
+            apply_filters('moloni_after_insert_document', $this);
 
             // If the documents is going to be inserted as closed
             if (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS) {
