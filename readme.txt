@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.46
+Stable tag: 3.0.47
 Tested up to: 5.7
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -65,7 +65,12 @@ Via FTP
 Released plugin version 3.
 New plugin version fully re-written
 
-== Changelog ==
+== changelog ==
+= 3.0.47 =
+* FEATURE: Adicionado filtro moloni_before_start_document no inicio do processo de criação de documento
+* FEATURE: Adicionado filtro moloni_before_insert_document antes da criação do documento
+* FEATURE: Adicionado filtro moloni_after_insert_document após da criação do documento
+
 = 3.0.46 =
 * MINOR: Testado até à versão 5.7 do Wordpress
 * MINOR: Testado até à versão 5.1.0 do WooCommerce
