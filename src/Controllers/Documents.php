@@ -562,7 +562,6 @@ class Documents
             'Reply-To' => $meInfo['mails_sender_name'] . ' <' . $meInfo['mails_sender_address'] . '>'
         ];
 
-        add_filter('wp_mail_content_type', create_function('', 'return "text/html"; '));
         wp_mail($email, $subject, $message, $headers);
     }
 
