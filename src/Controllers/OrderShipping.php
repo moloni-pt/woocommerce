@@ -161,7 +161,12 @@ class OrderShipping
     private function setDiscount()
     {
         $this->discount = $this->price <= 0 ? 100 : 0;
-        $this->discount = $this->discount < 0 ? 0 : $this->discount > 100 ? 100 : $this->discount;
+
+        if ($this->discount < 0) {
+            $this->discount = 0;
+        } elseif ($this->discount > 100) {
+            $this->discount = 100;
+        }
 
         return $this;
     }
