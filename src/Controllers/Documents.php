@@ -39,64 +39,64 @@ class Documents
     public $document_id;
 
     /** @var int */
-    private $customer_id;
+    public $customer_id;
 
     /** @var int */
-    private $document_set_id;
+    public $document_set_id;
 
     /** @var int */
-    private $documentId;
+    public $documentId;
 
     /** @var string */
-    private $our_reference = '';
+    public $our_reference = '';
 
     /** @var string */
-    private $your_reference = '';
+    public $your_reference = '';
 
     /** @var string in Y-m-d */
-    private $date;
+    public $date;
 
     /** @var string in Y-m-d */
-    private $expiration_date;
+    public $expiration_date;
 
     /** @var float */
-    private $financial_discount = 0;
+    public $financial_discount = 0;
 
     /** @var float */
-    private $special_discount = 0;
+    public $special_discount = 0;
 
     /** @var int */
-    private $salesman_id = 0;
+    public $salesman_id = 0;
 
     /** @var int */
-    private $salesman_commission = 0;
+    public $salesman_commission = 0;
 
 
     // Delivery parameters being used if the option is set
-    private $delivery_datetime;
-    private $delivery_method_id = 0;
+    public $delivery_datetime;
+    public $delivery_method_id = 0;
 
-    private $delivery_departure_address = '';
-    private $delivery_departure_city = '';
-    private $delivery_departure_zip_code = '';
-    private $delivery_departure_country = '';
+    public $delivery_departure_address = '';
+    public $delivery_departure_city = '';
+    public $delivery_departure_zip_code = '';
+    public $delivery_departure_country = '';
 
-    private $delivery_destination_address = '';
-    private $delivery_destination_city = '';
-    private $delivery_destination_country = '';
-    private $delivery_destination_zip_code = '';
-    private $notes = '';
+    public $delivery_destination_address = '';
+    public $delivery_destination_city = '';
+    public $delivery_destination_country = '';
+    public $delivery_destination_zip_code = '';
+    public $notes = '';
 
-    private $status = 0;
+    public $status = 0;
 
-    private $products = [];
-    private $payments = [];
+    public $products = [];
+    public $payments = [];
 
     public $documentType;
 
     /** @var int */
-    private $exchange_currency_id;
-    private $exchange_rate;
+    public $exchange_currency_id;
+    public $exchange_rate;
 
     /**
      * Documents constructor.
