@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.48
+Stable tag: 3.0.49
 Tested up to: 5.7
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,7 +66,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
-= 3.0.45 =
+= 3.0.49 =
+* CHANGE: Alterada visibilidade de algumas propriedades para poderem ser alteradas nos filtros de criação de documentos
+
+= 3.0.48 =
 * FIX: Correção de erro no PHP 8.
 
 = 3.0.47 =

@@ -11,12 +11,12 @@
     </a>
 
     <a href="<?= admin_url('admin.php?page=moloni&tab=settings') ?>"
-       class="nav-tab <?= ($_GET['tab'] === 'settings') ? 'nav-tab-active' : '' ?>">
+       class="nav-tab <?= (isset($_GET['tab']) && $_GET['tab'] === 'settings') ? 'nav-tab-active' : '' ?>">
         <?= __('Configurações') ?>
     </a>
 
     <a href="<?= admin_url('admin.php?page=moloni&tab=tools') ?>"
-       class="nav-tab <?= ($_GET['tab'] === 'tools') ? 'nav-tab-active' : '' ?>">
+       class="nav-tab <?= (isset($_GET['tab']) && $_GET['tab'] === 'tools') ? 'nav-tab-active' : '' ?>">
         <?= __('Ferramentas') ?>
     </a>
 </nav>
