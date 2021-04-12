@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.50 =
+* FIX: Alterada a forma como é definido o stock de um artigo durante a sincronização
+
 = 3.0.49 =
 * CHANGE: Alterada visibilidade de algumas propriedades para poderem ser alteradas nos filtros de criação de documentos
 
