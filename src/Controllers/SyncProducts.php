@@ -80,9 +80,7 @@ class SyncProducts
                         } else {
                             Log::write('Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock);
                             $this->updated[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
-                            update_post_meta($wcProductId, '_stock', $newStock);
-                            update_post_meta($wcProductId, '_stock_status', ($newStock > 0 ? 'instock' : $this->outOfStockStatus));
-                            update_post_meta($wcProductId, 'outofstock', ($newStock > 0 ? '0' : '1'));
+                            wc_update_product_stock($wcProductId, $newStock);
                         }
                     } else {
                         Log::write('Artigo não encontrado ou sem stock ativo: ' . $product['reference']);
