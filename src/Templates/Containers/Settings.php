@@ -162,7 +162,7 @@ use Moloni\Model;
 
             <tr>
                 <th>
-                    <label for="exemption_reason"><?= __('Razão de Isenção') ?></label>
+                    <label for="exemption_reason"><?= __('Razão de isenção') ?></label>
                 </th>
                 <td>
                     <select id="exemption_reason" name='opt[exemption_reason]' class='inputOut'>
@@ -180,7 +180,7 @@ use Moloni\Model;
 
             <tr>
                 <th>
-                    <label for="exemption_reason_shipping"><?= __('Razão de Isenção de Portes') ?></label>
+                    <label for="exemption_reason_shipping"><?= __('Razão de isenção de portes') ?></label>
                 </th>
                 <td>
                     <select id="exemption_reason_shipping" name='opt[exemption_reason_shipping]' class='inputOut'>
@@ -192,6 +192,27 @@ use Moloni\Model;
                         <?php endif; ?>
                     </select>
                     <p class='description'><?= __('Será usada se os portes não tiverem uma taxa de IVA') ?></p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="exemption_reason_extra_community"><?= __('Razão de isenção de vendas extra-comunitárias') ?></label>
+                </th>
+                <td>
+                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]' class='inputOut'>
+                        <option value='' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
+                        <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
+                        <?php if (is_array($exemptionReasons)): ?>
+                            <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Razão de isenção "especial" usada nos artigos que não tiverem uma taxa de IVA e, na encomenda, o país de faturação do cliente <b>não</b> pertença à União Europeia') ?>
+                        <a style="cursor: help;" title="<?=__('Países da União Europeia') . ': ' . implode(", ", \Moloni\Tools::$europeanCountryCodes)?>">(?)</a>
+                    </p>
                 </td>
             </tr>
 
