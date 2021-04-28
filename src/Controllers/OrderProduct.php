@@ -11,7 +11,6 @@ use WC_Tax;
 
 class OrderProduct
 {
-
     /** @var int */
     public $product_id = 0;
 
@@ -224,7 +223,6 @@ class OrderProduct
         return $this;
     }
 
-
     /**
      * Set the discount in percentage
      * @return $this
@@ -261,8 +259,13 @@ class OrderProduct
         }
 
         if (!$this->hasIVA) {
-            if (defined('EXEMPTION_REASON') && EXEMPTION_REASON !== '') {
-                $this->exemption_reason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
+            $billingCountryCode = $this->wc_order->get_billing_country();
+
+            if (defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY !== '' &&
+                !empty($billingCountryCode) && !isset(Tools::$europeanCountryCodes[$billingCountryCode])) {
+                $this->exemption_reason = EXEMPTION_REASON_EXTRA_COMMUNITY;
+            } elseif (defined('EXEMPTION_REASON') && EXEMPTION_REASON !== '') {
+                $this->exemption_reason = EXEMPTION_REASON;
             } else {
                 $this->taxes[] = $this->moloniProduct->getDefaultTax();
             }

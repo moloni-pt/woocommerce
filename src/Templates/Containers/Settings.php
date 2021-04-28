@@ -67,8 +67,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="document_status" name='opt[document_status]' class='inputOut'>
-                        <option value='0' <?= (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS == '0' ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
-                        <option value='1' <?= (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS == '1' ? 'selected' : '') ?>><?= __('Fechado') ?></option>
+                        <option value='0' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 0 ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
+                        <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?= __('Fechado') ?></option>
                     </select>
                     <p class='description'><?= __('Obrigatório') ?></p>
                 </td>
@@ -82,7 +82,7 @@ use Moloni\Model;
                     <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
                         <?php $documentSets = Curl::simple('documentSets/getAll', []); ?>
                         <?php foreach ($documentSets as $documentSet) : ?>
-                            <option value='<?= $documentSet['document_set_id'] ?>' <?= defined('DOCUMENT_SET_ID') && DOCUMENT_SET_ID == $documentSet['document_set_id'] ? 'selected' : '' ?>><?= $documentSet['name'] ?></option>
+                            <option value='<?= $documentSet['document_set_id'] ?>' <?= defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID === (int)$documentSet['document_set_id'] ? 'selected' : '' ?>><?= $documentSet['name'] ?></option>
                         <?php endforeach; ?>
                     </select>
                     <p class='description'><?= __('Obrigatório') ?></p>
@@ -95,8 +95,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="shipping_info" name='opt[shipping_info]' class='inputOut'>
-                        <option value='0' <?= (defined('SHIPPING_INFO') && SHIPPING_INFO == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('SHIPPING_INFO') && SHIPPING_INFO == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Colocar dados de transporte nos documentos') ?></p>
                 </td>
@@ -108,8 +108,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="email_send" name='opt[email_send]' class='inputOut'>
-                        <option value='0' <?= (defined('EMAIL_SEND') && EMAIL_SEND == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('EMAIL_SEND') && EMAIL_SEND == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('O documento só é enviado para o cliente se for inserido fechado') ?></p>
                 </td>
@@ -132,7 +132,7 @@ use Moloni\Model;
                         <select id="moloni_product_warehouse" name='opt[moloni_product_warehouse]' class='inputOut'>
                             <option value='0'><?= __('Armazém pré-definido') ?></option>
                             <?php foreach ($warehouses as $warehouse) : ?>
-                                <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_PRODUCT_WAREHOUSE') && MOLONI_PRODUCT_WAREHOUSE == $warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE === (int)$warehouse['warehouse_id'] ? 'selected' : '' ?>>
                                     <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
                                 </option>
                             <?php endforeach; ?>
@@ -152,7 +152,7 @@ use Moloni\Model;
                         <?php $measurementUnits = Curl::simple('measurementUnits/getAll', []); ?>
                         <?php if (is_array($measurementUnits)): ?>
                             <?php foreach ($measurementUnits as $measurementUnit) : ?>
-                                <option value='<?= $measurementUnit['unit_id'] ?>' <?= defined('MEASURE_UNIT') && MEASURE_UNIT == $measurementUnit['unit_id'] ? 'selected' : '' ?>><?= $measurementUnit['name'] ?></option>
+                                <option value='<?= $measurementUnit['unit_id'] ?>' <?= defined('MEASURE_UNIT') && (int)MEASURE_UNIT === (int)$measurementUnit['unit_id'] ? 'selected' : '' ?>><?= $measurementUnit['name'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -162,15 +162,15 @@ use Moloni\Model;
 
             <tr>
                 <th>
-                    <label for="exemption_reason"><?= __('Razão de Isenção') ?></label>
+                    <label for="exemption_reason"><?= __('Razão de isenção') ?></label>
                 </th>
                 <td>
                     <select id="exemption_reason" name='opt[exemption_reason]' class='inputOut'>
-                        <option value='' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON == '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
+                        <option value='' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
                         <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
                         <?php if (is_array($exemptionReasons)): ?>
                             <?php foreach ($exemptionReasons as $exemptionReason) : ?>
-                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON == $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
+                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -180,14 +180,14 @@ use Moloni\Model;
 
             <tr>
                 <th>
-                    <label for="exemption_reason_shipping"><?= __('Razão de Isenção de Portes') ?></label>
+                    <label for="exemption_reason_shipping"><?= __('Razão de isenção de portes') ?></label>
                 </th>
                 <td>
                     <select id="exemption_reason_shipping" name='opt[exemption_reason_shipping]' class='inputOut'>
-                        <option value='' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING == '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
+                        <option value='' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
                         <?php if (is_array($exemptionReasons)): ?>
                             <?php foreach ($exemptionReasons as $exemptionReason) : ?>
-                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING == $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
+                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -197,12 +197,33 @@ use Moloni\Model;
 
             <tr>
                 <th>
+                    <label for="exemption_reason_extra_community"><?= __('Razão de isenção de vendas extra-comunitárias') ?></label>
+                </th>
+                <td>
+                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]' class='inputOut'>
+                        <option value='' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
+                        <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
+                        <?php if (is_array($exemptionReasons)): ?>
+                            <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Razão de isenção "especial" usada nos artigos que não tiverem uma taxa de IVA e, na encomenda, o país de faturação do cliente <b>não</b> pertença à União Europeia') ?>
+                        <a style="cursor: help;" title="<?=__('Países da União Europeia') . ': ' . implode(", ", \Moloni\Tools::$europeanCountryCodes)?>">(?)</a>
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
                     <label for="use_moloni_product_details"><?= __('Usar dados do Moloni ') ?></label>
                 </th>
                 <td>
                     <select id="use_moloni_product_details" name='opt[use_moloni_product_details]' class='inputOut'>
-                        <option value='0' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Se o artigo já existir no Moloni, será usado o Nome e o Resumo que existem no Moloni, em vez dos que estão na encomenda') ?></p>
                 </td>
@@ -215,8 +236,8 @@ use Moloni\Model;
                 <td>
                     <select id="use_name_for_moloni_reference" name='opt[use_name_for_moloni_reference]'
                             class='inputOut'>
-                        <option value='0' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && USE_NAME_FOR_MOLONI_REFERENCE == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && USE_NAME_FOR_MOLONI_REFERENCE == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'>
                         <?= __('Caso um artigo não tenha referência é criada uma automáticamente para o mesmo.') ?><br>
@@ -237,11 +258,11 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="maturity_date_id" name='opt[maturity_date]' class='inputOut'>
-                        <option value='0' <?= defined('MATURITY_DATE') && MATURITY_DATE == 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
+                        <option value='0' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
                         <?php $maturityDates = Curl::simple('maturityDates/getAll', []); ?>
                         <?php if (is_array($maturityDates)): ?>
                             <?php foreach ($maturityDates as $maturityDate) : ?>
-                                <option value='<?= $maturityDate['maturity_date_id'] ?>' <?= defined('MATURITY_DATE') && MATURITY_DATE == $maturityDate['maturity_date_id'] ? 'selected' : '' ?>><?= $maturityDate['name'] ?></option>
+                                <option value='<?= $maturityDate['maturity_date_id'] ?>' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === (int)$maturityDate['maturity_date_id'] ? 'selected' : '' ?>><?= $maturityDate['name'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -255,11 +276,11 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="payment_method_id" name='opt[payment_method]' class='inputOut'>
-                        <option value='0' <?= defined('PAYMENT_METHOD') && PAYMENT_METHOD == 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
+                        <option value='0' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
                         <?php $paymentMethods = Curl::simple('paymentMethods/getAll', []); ?>
                         <?php if (is_array($paymentMethods)): ?>
                             <?php foreach ($paymentMethods as $paymentMethod) : ?>
-                                <option value='<?= $paymentMethod['payment_method_id'] ?>' <?= defined('PAYMENT_METHOD') && PAYMENT_METHOD == $paymentMethod['payment_method_id'] ? 'selected' : '' ?>><?= $paymentMethod['name'] ?></option>
+                                <option value='<?= $paymentMethod['payment_method_id'] ?>' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === (int)$paymentMethod['payment_method_id'] ? 'selected' : '' ?>><?= $paymentMethod['name'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -273,11 +294,11 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="vat_field" name='opt[vat_field]' class='inputOut'>
-                        <option value='' <?= defined('VAT_FIELD') && VAT_FIELD == '' ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
+                        <option value='' <?= defined('VAT_FIELD') && VAT_FIELD === '' ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
                         <?php $customFields = Model::getCustomFields(); ?>
                         <?php if (is_array($customFields)): ?>
                             <?php foreach ($customFields as $customField) : ?>
-                                <option value='<?= $customField['meta_key'] ?>' <?= defined('VAT_FIELD') && VAT_FIELD == $customField['meta_key'] ? 'selected' : '' ?>><?= $customField['meta_key'] ?></option>
+                                <option value='<?= $customField['meta_key'] ?>' <?= defined('VAT_FIELD') && VAT_FIELD === $customField['meta_key'] ? 'selected' : '' ?>><?= $customField['meta_key'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -303,8 +324,8 @@ use Moloni\Model;
                 <td>
                     <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'
                             onchange="onInvoiceAutoChange()">
-                        <option value='0' <?= (defined('INVOICE_AUTO') && INVOICE_AUTO == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('INVOICE_AUTO') && INVOICE_AUTO == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Criar documentos automaticamente') ?></p>
                 </td>
@@ -312,6 +333,7 @@ use Moloni\Model;
                 <script>
                     function onInvoiceAutoChange() {
                         var selectedOption = document.getElementById('invoice_auto');
+
                         if (selectedOption && selectedOption.value === '1') {
                             document.getElementById('invoice_auto_status_line').style['display'] = 'table-row';
                         } else {
@@ -321,7 +343,7 @@ use Moloni\Model;
                 </script>
             </tr>
 
-            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && INVOICE_AUTO == '0' ? 'style="display: none;"' : '') ?>>
+            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
                 <th>
                     <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
                 </th>
@@ -340,8 +362,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="moloni_stock_sync" name='opt[moloni_stock_sync]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC === '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && MOLONI_STOCK_SYNC === '1' ? 'selected' : '') ?>><?= __('Sim, de todos os armazéns') ?></option>
+                        <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim, de todos os armazéns') ?></option>
 
                         <?php if (is_array($warehouses)): ?>
                             <optgroup label="<?= __('Sim, apenas do armazém:') ?>">
@@ -362,7 +384,7 @@ use Moloni\Model;
 
             <tr>
                 <th>
-                    <label for="moloni_product_sync"><?= __('Estado do Stock') ?></label>
+                    <label for="moloni_stock_status"><?= __('Estado do Stock') ?></label>
                 </th>
                 <td>
                     <select id="moloni_stock_status" name='opt[moloni_stock_status]' class='inputOut'>
@@ -379,8 +401,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="moloni_product_sync" name='opt[moloni_product_sync]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
                 </td>
@@ -392,8 +414,8 @@ use Moloni\Model;
                 </th>
                 <td>
                     <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && MOLONI_PRODUCT_SYNC_UPDATE == '0' ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && MOLONI_PRODUCT_SYNC_UPDATE == '1' ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
                 </td>

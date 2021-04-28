@@ -136,18 +136,19 @@ class OrderCustomer
     {
         $billingName = $this->order->get_billing_first_name();
         $billingLastName = $this->order->get_billing_last_name();
+
         if (!empty($billingLastName)) {
             $billingName .= ' ' . $this->order->get_billing_last_name();
         }
 
         $billingCompany = trim($this->order->get_billing_company());
+
         if (!empty($billingCompany)) {
             $this->name = $billingCompany;
             $this->contactName = $billingName;
         } elseif (!empty($billingName)) {
             $this->name = $billingName;
         }
-
 
         return $this->name;
     }
