@@ -30,13 +30,16 @@ class OrderPaid
             /** @noinspection NotOptimalIfConditionsInspection */
             if (Start::login(true) && defined('INVOICE_AUTO') && INVOICE_AUTO) {
                 if (!defined('INVOICE_AUTO_STATUS') || (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed')) {
-                    Log::setFileName('DocumentsAuto');
-                    Log::write('A gerar automaticamente o documento da encomenda no estado "Completed" ' . $orderId);
+                    if ($this->addOrderToDocumentsInProgress($orderId)) {
+                        Log::setFileName('DocumentsAuto');
+                        Log::write('A gerar automaticamente o documento da encomenda no estado "Completed" ' . $orderId);
 
-                    $document = new Documents($orderId);
-                    $document->createDocument();
+                        $document = new Documents($orderId);
+                        $document->createDocument();
 
-                    $this->throwMessages($document);
+                        $this->throwMessages($document);
+                        $this->removeOrderFromDocumentsInProgress($orderId);
+                    }
                 }
             }
         } catch (Exception $ex) {
@@ -49,7 +52,7 @@ class OrderPaid
         try {
             /** @noinspection NotOptimalIfConditionsInspection */
             if (Start::login(true) && defined('INVOICE_AUTO') && INVOICE_AUTO) {
-                if (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing') {
+                if (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' && $this->addOrderToDocumentsInProgress($orderId)) {
                     Log::setFileName('DocumentsAuto');
                     Log::write('A gerar automaticamente o documento da encomenda no estado "Processing" ' . $orderId);
 
@@ -57,10 +60,39 @@ class OrderPaid
                     $document->createDocument();
 
                     $this->throwMessages($document);
+                    $this->removeOrderFromDocumentsInProgress($orderId);
                 }
             }
         } catch (Exception $ex) {
             Log::write('Fatal error: ' . $ex->getMessage());
+        }
+    }
+
+    public function addOrderToDocumentsInProgress($orderId)
+    {
+        $moloniDocuments = get_option('_moloni_documents_in_progress');
+
+        if ($moloniDocuments !== false && isset($moloniDocuments[$orderId])) {
+            return false;
+        }
+
+        if ($moloniDocuments === false) {
+            add_option('_moloni_documents_in_progress', [$orderId => true]);
+        } else {
+            $moloniDocuments[$orderId] = true;
+            update_option('_moloni_documents_in_progress', $moloniDocuments);
+        }
+
+        return true;
+    }
+
+    public function removeOrderFromDocumentsInProgress($orderId) {
+        $moloniDocuments = get_option('_moloni_documents_in_progress');
+
+        if (is_array($moloniDocuments)) {
+            unset($moloniDocuments[$orderId]);
+
+            update_option('_moloni_documents_in_progress', $moloniDocuments);
         }
     }
 
