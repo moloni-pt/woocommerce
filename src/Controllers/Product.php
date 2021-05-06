@@ -393,6 +393,7 @@ class Product
         $values['at_product_category'] = $this->at_product_category;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
+        $values['visibility_id'] = $this->visibility_id;
 
         return $values;
     }
