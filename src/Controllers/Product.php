@@ -35,6 +35,7 @@ class Product
     private $at_product_category = 'M';
     private $exemption_reason;
     public $taxes;
+    public $visibility_id = 1;
 
     public $composition_type = 0;
     /** @var false|array */
@@ -62,7 +63,7 @@ class Product
     {
         $this->setReference();
 
-        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'with_invisible' => true,'exact' => 1]);
 
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
             $product = $searchProduct[0];
@@ -76,6 +77,8 @@ class Product
             $this->child_products = $product['child_products'];
             $this->composition_type = $product['composition_type'];
             $this->taxes = $product['taxes'];
+            $this->visibility_id = $product['visibility_id'];
+
             return $this;
         }
 

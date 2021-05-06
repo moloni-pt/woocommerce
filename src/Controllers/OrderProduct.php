@@ -217,6 +217,10 @@ class OrderProduct
             $this->summary = $this->moloniProduct->summary;
         }
 
+        if ($this->moloniProduct->visibility_id === 0) {
+            throw new Error('Produto com referência ' . $this->moloniProduct->reference . ' tem de estar ativo.');
+        }
+
         $this->composition_type = $this->moloniProduct->composition_type;
         $this->product_id = $this->moloniProduct->getProductId();
 

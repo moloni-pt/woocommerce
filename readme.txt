@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.52
+Stable tag: 3.0.53
 Tested up to: 5.7
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.53 =
+* FIX: Prevenção de criação de documentos repetidos (através de hooks)
+* MINOR: Pesquisa de produtos retorna produtos inativos.
+
 = 3.0.52 =
 * FEATURE: Possibilidade de definir uma razão de isenção para vendas fora da Europa
 * MINOR: Comparações rigorosa

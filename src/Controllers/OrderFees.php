@@ -100,9 +100,15 @@ class OrderFees
      */
     private function setProductId()
     {
-        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'exact' => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'with_invisible' => true, 'exact' => 1]);
+
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
-            $this->product_id = $searchProduct[0]['product_id'];
+            if ($searchProduct[0]['visibility_id'] === 1) {
+                $this->product_id = $searchProduct[0]['product_id'];
+            } else {
+                throw new Error('Produto com referência ' . $this->reference . ' tem de estar ativo.');
+            }
+
             return $this;
         }
 
