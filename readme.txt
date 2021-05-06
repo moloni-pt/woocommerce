@@ -68,6 +68,7 @@ New plugin version fully re-written
 == changelog ==
 = 3.0.53 =
 * FIX: Prevenção de criação de documentos repetidos (através de hooks)
+* MINOR: Pesquisa de produtos retorna produtos inativos.
 
 = 3.0.52 =
 * FEATURE: Possibilidade de definir uma razão de isenção para vendas fora da Europa

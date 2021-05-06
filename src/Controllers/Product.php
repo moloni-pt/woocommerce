@@ -77,7 +77,7 @@ class Product
             $this->child_products = $product['child_products'];
             $this->composition_type = $product['composition_type'];
             $this->taxes = $product['taxes'];
-            $this->visibility_id = $searchProduct[0]['visibility_id'];
+            $this->visibility_id = $product['visibility_id'];
 
             return $this;
         }
