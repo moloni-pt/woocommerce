@@ -63,13 +63,14 @@ class Start
         if (!empty($tokensRow['main_token']) && !empty($tokensRow['refresh_token'])) {
             Model::refreshTokens();
             Model::defineValues();
-            if (defined('MOLONI_COMPANY_ID')) {
+
+            if (Storage::$MOLONI_COMPANY_ID) {
                 Model::defineConfigs();
                 return true;
             }
 
             if (isset($_GET['company_id'])) {
-                $wpdb->update('moloni_api', ['company_id' => (int)$_GET['company_id']], ['id' => MOLONI_SESSION_ID]);
+                $wpdb->update('moloni_api', ['company_id' => (int)$_GET['company_id']], ['id' => Storage::$MOLONI_SESSION_ID]);
                 Model::defineValues();
                 Model::defineConfigs();
                 return true;

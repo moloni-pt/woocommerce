@@ -46,11 +46,11 @@ class Curl
             return self::$cache[$action];
         }
 
-        if (is_array($values) && defined('MOLONI_COMPANY_ID')) {
-            $values['company_id'] = MOLONI_COMPANY_ID;
+        if (is_array($values) && Storage::$MOLONI_COMPANY_ID) {
+            $values['company_id'] = Storage::$MOLONI_COMPANY_ID;
         }
 
-        $url = 'https://api.moloni.pt/v1/' . $action . '/?human_errors=true&access_token=' . MOLONI_ACCESS_TOKEN;
+        $url = 'https://api.moloni.pt/v1/' . $action . '/?human_errors=true&access_token=' . Storage::$MOLONI_ACCESS_TOKEN;
 
         $response = wp_remote_post($url, ['body' => http_build_query($values)]);
         $raw = wp_remote_retrieve_body($response);

@@ -6,6 +6,7 @@ use Exception;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Log;
+use Moloni\Storage;
 
 class SyncProducts
 {
@@ -171,7 +172,7 @@ class SyncProducts
 
         while (true) {
             $values = [
-                'company_id' => MOLONI_COMPANY_ID,
+                'company_id' => Storage::$MOLONI_COMPANY_ID,
                 'lastmodified' => $this->since,
                 'offset' => $this->offset
             ];

@@ -104,11 +104,12 @@ class Model
     public static function defineValues()
     {
         $tokensRow = self::getTokensRow();
-        define("MOLONI_SESSION_ID", $tokensRow['id']);
-        define("MOLONI_ACCESS_TOKEN", $tokensRow['main_token']);
+
+        Storage::$MOLONI_SESSION_ID = $tokensRow['id'];
+        Storage::$MOLONI_ACCESS_TOKEN = $tokensRow['main_token'];
 
         if (!empty($tokensRow['company_id'])) {
-            define("MOLONI_COMPANY_ID", $tokensRow['company_id']);
+            Storage::$MOLONI_COMPANY_ID = $tokensRow['company_id'];
         }
     }
 
