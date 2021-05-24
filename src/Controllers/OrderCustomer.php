@@ -55,11 +55,11 @@ class OrderCustomer
         $this->email = $this->order->get_billing_email();
 
         $values['name'] = $this->getCustomerName();
-        $values['language_id'] = $this->getCustomerLanguageId();
         $values['address'] = $this->getCustomerBillingAddress();
         $values['zip_code'] = $this->getCustomerZip();
         $values['city'] = $this->getCustomerBillingCity();
         $values['country_id'] = $this->getCustomerCountryId();
+        $values['language_id'] = $this->getCustomerLanguageId();
         $values['email'] = $this->order->get_billing_email();
         $values['phone'] = $this->order->get_billing_phone();
         $values['contact_name'] = $this->contactName;
