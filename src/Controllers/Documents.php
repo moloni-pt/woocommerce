@@ -233,6 +233,8 @@ class Documents
 
                 Curl::simple($this->documentType . '/update', $closeDocument);
 
+                apply_filters('moloni_after_close_document', $this);
+
                 $this->order->add_order_note(__('Documento inserido no Moloni'));
             } else {
                 $this->order->add_order_note(__('Documento inserido como rascunho no Moloni'));
@@ -333,10 +335,17 @@ class Documents
             }
 
             if ((int)$paymentMethod->payment_method_id > 0) {
+                $orderTotal = (float)$this->order->get_total() - (float)$this->order->get_total_refunded();
+
+                //Use exchange rate value on payment method value
+                if ($this->exchange_rate && $this->exchange_rate > 0) {
+                    $orderTotal /= $this->exchange_rate;
+                }
+
                 $this->payments[] = [
                     'payment_method_id' => (int)$paymentMethod->payment_method_id,
                     'date' => date('Y-m-d H:i:s'),
-                    'value' => $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded())
+                    'value' => $orderTotal
                 ];
             }
         }
