@@ -233,6 +233,8 @@ class Documents
 
                 Curl::simple($this->documentType . '/update', $closeDocument);
 
+                apply_filters('moloni_after_close_document', $this);
+
                 $this->order->add_order_note(__('Documento inserido no Moloni'));
             } else {
                 $this->order->add_order_note(__('Documento inserido como rascunho no Moloni'));
