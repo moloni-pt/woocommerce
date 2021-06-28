@@ -455,18 +455,20 @@ class Documents
         $values['notes'] = $this->notes;
         $values['status'] = $this->status;
 
-        $values['delivery_datetime'] = $this->delivery_datetime;
-        $values['delivery_method_id'] = $this->delivery_method_id;
+        if ((int)$this->delivery_method_id > 0) {
+            $values['delivery_datetime'] = $this->delivery_datetime;
+            $values['delivery_method_id'] = $this->delivery_method_id;
 
-        $values['delivery_departure_address'] = $this->delivery_departure_address;
-        $values['delivery_departure_city'] = $this->delivery_departure_city;
-        $values['delivery_departure_zip_code'] = $this->delivery_departure_zip_code;
-        $values['delivery_departure_country'] = $this->delivery_departure_country;
+            $values['delivery_departure_address'] = $this->delivery_departure_address;
+            $values['delivery_departure_city'] = $this->delivery_departure_city;
+            $values['delivery_departure_zip_code'] = $this->delivery_departure_zip_code;
+            $values['delivery_departure_country'] = $this->delivery_departure_country;
 
-        $values['delivery_destination_address'] = $this->delivery_destination_address;
-        $values['delivery_destination_city'] = $this->delivery_destination_city;
-        $values['delivery_destination_zip_code'] = $this->delivery_destination_zip_code;
-        $values['delivery_destination_country'] = $this->delivery_destination_country;
+            $values['delivery_destination_address'] = $this->delivery_destination_address;
+            $values['delivery_destination_city'] = $this->delivery_destination_city;
+            $values['delivery_destination_zip_code'] = $this->delivery_destination_zip_code;
+            $values['delivery_destination_country'] = $this->delivery_destination_country;
+        }
 
         $values['payments'] = $this->payments;
 
