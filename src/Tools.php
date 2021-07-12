@@ -83,32 +83,6 @@ class Tools
     }
 
     /**
-     * Get a tax id given a tax rate
-     * As a fallback if we don't find a tax with the same rate we return the company default
-     * @param $taxRate
-     * @return mixed
-     * @throws Error
-     */
-    public static function getTaxIdFromRate($taxRate)
-    {
-        $defaultTax = 0;
-        $taxesList = Curl::simple('taxes/getAll', []);
-        if (!empty($taxesList) && is_array($taxesList)) {
-            foreach ($taxesList as $tax) {
-                if ((int)$tax['active_by_default'] === 1) {
-                    $defaultTax = $tax['tax_id'];
-                }
-
-                if ((float)$tax['value'] === (float)$taxRate) {
-                    return $tax['tax_id'];
-                }
-            }
-        }
-
-        return $defaultTax;
-    }
-
-    /**
      * Get full tax Object given a tax rate
      *
      * @param float $taxRate Tax rate value
