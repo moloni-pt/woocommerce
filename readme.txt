@@ -67,6 +67,7 @@ New plugin version fully re-written
 
 == changelog ==
 = 3.0.57 =
+* CHANGE: Alteração nas taxas de produtos compostos
 * FIX: Corrigido de erro com métodos de entrega inválidos
 
 = 3.0.56 =
