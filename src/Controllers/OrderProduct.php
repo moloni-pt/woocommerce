@@ -256,6 +256,7 @@ class OrderProduct
         foreach ($taxes['subtotal'] as $taxId => $value) {
             if (!empty($value)) {
                 $taxRate = preg_replace('/[^0-9.]/', '', WC_Tax::get_rate_percent($taxId));
+
                 if ((float)$taxRate > 0) {
                     $this->taxes[] = $this->setTax($taxRate);
                 }
@@ -285,7 +286,7 @@ class OrderProduct
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate);
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->wc_order->get_billing_country());
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
@@ -340,15 +341,30 @@ class OrderProduct
 
                     $this->price += (($childProduct['price'] * $priceChangePercent) * $childProduct['qty']);
 
-                    // If the parent product does not have taxes
-                    // For example when a item is sold to a foreign country
-                    if (empty($this->taxes)) {
-                        unset($this->child_products[$index]['taxes']);
-                        $this->child_products['exemption_reason'] = $this->exemption_reason;
+                    //If billing country is not PT, change child products taxes to match order taxes
+                    if ($this->wc_order->get_billing_country() !== 'PT') {
+                        if (!empty($this->exemption_reason)) {
+                            //Delete moloni taxes data
+                            unset($this->child_products[$index]['taxes']);
+
+                            //Keep this order defined exemption reason
+                            $this->child_products[$index]['exemption_reason'] = $this->exemption_reason;
+                        } else {
+                            //Delete moloni exemption reason data
+                            unset($this->child_products[$index]['exemption_reason']);
+
+                            //Keep this order defined taxes
+                            $this->child_products[$index]['taxes'] = $this->taxes;
+                        }
+                    } else {
+                        //If billing country is PT, use Moloni defined taxes and/or exemption reason
+                        if (empty($this->taxes)) {
+                            unset($this->child_products[$index]['taxes']);
+
+                            $this->child_products[$index]['exemption_reason'] = $this->exemption_reason;
+                        }
                     }
-
                 }
-
             }
         }
 

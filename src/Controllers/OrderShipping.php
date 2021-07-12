@@ -211,7 +211,7 @@ class OrderShipping
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate);
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->order->get_billing_country());
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
