@@ -83,55 +83,76 @@ class Tools
     }
 
     /**
-     * Get a tax id given a tax rate
-     * As a fallback if we don't find a tax with the same rate we return the company default
-     * @param $taxRate
-     * @return mixed
-     * @throws Error
-     */
-    public static function getTaxIdFromRate($taxRate)
-    {
-        $defaultTax = 0;
-        $taxesList = Curl::simple('taxes/getAll', []);
-        if (!empty($taxesList) && is_array($taxesList)) {
-            foreach ($taxesList as $tax) {
-                if ((int)$tax['active_by_default'] === 1) {
-                    $defaultTax = $tax['tax_id'];
-                }
-
-                if ((float)$tax['value'] === (float)$taxRate) {
-                    return $tax['tax_id'];
-                }
-            }
-        }
-
-        return $defaultTax;
-    }
-
-    /**
      * Get full tax Object given a tax rate
-     * As a fallback if we don't find a tax with the same rate we return the company default
-     * @param $taxRate
-     * @return mixed
+     *
+     * @param float $taxRate Tax rate value
+     * @param string $countryCode Country code string
+     *
+     * @return array
+     *
      * @throws Error
      */
-    public static function getTaxFromRate($taxRate)
+    public static function getTaxFromRate($taxRate, $countryCode = 'PT')
     {
-        $defaultTax = 0;
         $taxesList = Curl::simple('taxes/getAll', []);
+        $moloniTax = false;
+        $defaultTax = 0;
+
         if (!empty($taxesList) && is_array($taxesList)) {
             foreach ($taxesList as $tax) {
                 if ((int)$tax['active_by_default'] === 1) {
                     $defaultTax = $tax;
                 }
 
-                if ((float)$tax['value'] === (float)$taxRate) {
-                    return $tax;
+                if ($tax['fiscal_zone'] === $countryCode && (float)$tax['value'] === (float)$taxRate) {
+                    $moloniTax = $tax;
+                    break;
                 }
             }
         }
 
-        return $defaultTax;
+        if (!$moloniTax) {
+            $newTax = self::createTax($taxRate, $countryCode);
+
+            if (isset($newTax['tax_id'])) {
+                $moloniTax = $newTax;
+
+                //The value here will always be this, we save a request to get the inserted tax
+                $moloniTax['saft_type'] = "1";
+            } else {
+                //Fallback tax
+                $moloniTax = $defaultTax;
+            }
+        }
+
+        return $moloniTax;
+    }
+
+    /**
+     * Creates a tax in Moloni
+     *
+     * @param float $taxRate Tax rate value
+     * @param string $countryCode Country code string
+     *
+     * @return array|bool
+     *
+     * @throws Error
+     */
+    public static function createTax($taxRate, $countryCode = 'PT')
+    {
+        $values = [];
+
+        $values['name'] = 'VAT ' . $countryCode;
+        $values['value'] = $taxRate;
+        $values['type'] = "1";
+        $values['saft_type'] = "1";
+        $values['vat_type'] = "OUT";
+        $values['stamp_tax'] = "0";
+        $values['exemption_reason'] = EXEMPTION_REASON;
+        $values['fiscal_zone'] = $countryCode;
+        $values['active_by_default'] = "0";
+
+        return Curl::simple('taxes/insert', $values);
     }
 
     /**
@@ -246,6 +267,5 @@ class Tools
 
         return (false);
     }
-
 
 }

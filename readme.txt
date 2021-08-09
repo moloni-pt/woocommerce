@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.56
+Stable tag: 3.0.57
 Tested up to: 5.7
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.57 =
+* CHANGE: Alteração nas taxas de produtos compostos
+* FIX: Corrigido de erro com métodos de entrega inválidos
+
 = 3.0.56 =
 * FEATURE: Adicionado filtro moloni_after_close_document após fecho de documentos
 * FIX: Corrigido método de cálculo do valor de pagamento
