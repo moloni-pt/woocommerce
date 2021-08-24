@@ -82,8 +82,8 @@ class OrderProduct
     {
         $this
             ->setName()
-            ->setPrice()
             ->setQty()
+            ->setPrice()
             ->setSummary()
             ->setProductId()
             ->setDiscount()
@@ -173,11 +173,14 @@ class OrderProduct
      */
     public function setPrice()
     {
-        $this->price = (float)$this->product->get_subtotal() / (float)$this->product->get_quantity();
+        $this->price = (float)$this->product->get_subtotal() / $this->qty;
 
         $refundedValue = $this->wc_order->get_total_refunded_for_item($this->product->get_id());
-        if ((float)$refundedValue > 0) {
-            $this->price -= (float)$refundedValue;
+
+        if ($refundedValue !== 0) {
+            $refundedValue /= $this->qty;
+
+            $this->price -= $refundedValue;
         }
 
         if ($this->price < 0) {
@@ -194,9 +197,10 @@ class OrderProduct
     {
         $this->qty = (float)$this->product->get_quantity();
 
-        $refundedQty = $this->wc_order->get_qty_refunded_for_item($this->product->get_id());
-        if ((float)$refundedQty > 0) {
-            $this->qty -= (float)$refundedQty;
+        $refundedQty = absint($this->wc_order->get_qty_refunded_for_item($this->product->get_id()));
+
+        if ($refundedQty !== 0) {
+            $this->qty -= $refundedQty;
         }
 
         return $this;
