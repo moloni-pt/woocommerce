@@ -115,6 +115,19 @@ use Moloni\Model;
                 </td>
             </tr>
 
+            <tr>
+                <th>
+                    <label for="moloni_show_download_column"><?= __('Listagem de encomendas WooCommerce') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_show_download_column" name='opt[moloni_show_download_column]' class='inputOut'>
+                        <option value='0' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF.') ?></p>
+                </td>
+            </tr>
+
             </tbody>
         </table>
 

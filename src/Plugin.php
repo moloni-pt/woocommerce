@@ -40,6 +40,7 @@ class Plugin
         new Hooks\ProductView($this);
         new Hooks\OrderView($this);
         new Hooks\OrderPaid($this);
+        new Hooks\OrderList($this);
         new Ajax($this);
     }
 
@@ -103,6 +104,16 @@ class Plugin
                         if (!$document) {
                             add_settings_error('moloni', 'moloni-document-not-found', __('Documento não encontrado'));
                         }
+                        break;
+
+                    case 'downloadDocument';
+                        $documentId = (int)$_REQUEST['id'];
+
+                        if ($documentId > 0) {
+                            Documents::downloadDocument($documentId);
+                            exit;
+                        }
+
                         break;
                 }
 
