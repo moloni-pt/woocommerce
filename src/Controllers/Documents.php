@@ -516,6 +516,34 @@ class Documents
     }
 
     /**
+     * Download a document
+     *
+     * @param int $documentId Moloni document ID
+     *
+     * @return void
+     *
+     * @throws Error
+     */
+    public static function downloadDocument($documentId)
+    {
+        $result = Curl::simple('documents/getPDFLink', ['document_id' => $documentId]);
+
+        if (isset($result['url'])) {
+            $downloadUrl = 'https://www.moloni.com/downloads/index.php?action=getDownload&';
+            $downloadUrl .= substr($result['url'], strpos($result['url'], '?') + 1);
+            $downloadUrl .= '&e=wordpress.auto.download@moloni.com';
+            $downloadUrl .= '&t=n';
+
+            header('Location: ' . $downloadUrl);
+        } else {
+            echo "<script>";
+            echo "  alert('" . _('Documento não existe') . "');";
+            echo "  window.close();";
+            echo "</script>";
+        }
+    }
+
+    /**
      * @param int $documentId
      * @throws Error
      * @deprecated In favor of API sending methods
