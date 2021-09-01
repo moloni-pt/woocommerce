@@ -39,31 +39,31 @@ class OrderView
         ?>
 
         <select id="moloni_document_type" style="float:right">
-            <option value='invoices' <?= (DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
+            <option value='invoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
                 <?= __('Fatura') ?>
             </option>
 
-            <option value='invoiceReceipts' <?= (DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
+            <option value='invoiceReceipts' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
                 <?= __('Factura/Recibo') ?>
             </option>
 
-            <option value='simplifiedInvoices'<?= (DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
+            <option value='simplifiedInvoices'<?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
                 <?= __('Factura Simplificada') ?>
             </option>
 
-            <option value='proFormaInvoices' <?= (DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
+            <option value='proFormaInvoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
                 <?= __('Fatura Pró-Forma') ?>
             </option>
 
-            <option value='billsOfLading' <?= (DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
+            <option value='billsOfLading' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
                 <?= __('Guia de Transporte') ?>
             </option>
 
-            <option value='purchaseOrder' <?= (DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
+            <option value='purchaseOrder' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
                 <?= __('Nota de Encomenda') ?>
             </option>
 
-            <option value='estimates' <?= (DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
+            <option value='estimates' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
                 <?= __('Orçamento') ?>
             </option>
         </select>
