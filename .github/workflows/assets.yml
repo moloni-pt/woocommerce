@@ -1,8 +1,8 @@
 name: Publishing new assets
 on:
   push:
-    branches:
-      - master
+    tags:
+      - "v*"
 jobs:
   trunk:
     name: Push to trunk
