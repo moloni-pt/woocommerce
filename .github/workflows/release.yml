@@ -2,7 +2,7 @@ name: Publishing new release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 jobs:
   build:
     runs-on: ubuntu-latest
