@@ -2,6 +2,7 @@
 
 namespace Moloni;
 
+use Moloni\Activators\Updater;
 use Moloni\Controllers\Documents;
 
 /**
@@ -13,6 +14,8 @@ class Plugin
 {
     public function __construct()
     {
+        $this->updater();
+
         $this->actions();
         $this->crons();
     }
@@ -29,9 +32,17 @@ class Plugin
 
             wp_enqueue_style('moloni-styles', plugins_url('assets/css/moloni.css', MOLONI_PLUGIN_FILE));
             wp_enqueue_script('moloni-actions-bulk-documentes-js', plugins_url('assets/js/BulkDocuments.js', MOLONI_PLUGIN_FILE));
-
         }
     }
+
+    /**
+     * Lets see if we need any update
+     */
+    private function updater()
+    {
+        new Updater();
+    }
+
 
     private function actions()
     {
@@ -80,7 +91,6 @@ class Plugin
                     case 'genInvoice':
                         $orderId = (int)$_REQUEST['id'];
                         /** @var Documents $document intended */
-                        /** @noinspection PhpUnusedLocalVariableInspection */
                         $document = $this->createDocument($orderId);
                         break;
 
