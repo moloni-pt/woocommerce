@@ -78,11 +78,10 @@ class OrderView
            class="button button-primary"
            target="_BLANK"
            href="<?= admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId) ?>"
-           style="margin-top: 10px; float:right;"
+           style="margin-top: 10px; margin-left: 10px; float:right;"
         >
             <?= __('Ver documento') ?>
         </a>
-        <div style="clear:both"></div>
 
         <?php
     }
