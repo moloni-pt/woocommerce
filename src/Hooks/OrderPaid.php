@@ -11,7 +11,6 @@ use Moloni\Controllers\Documents;
 
 class OrderPaid
 {
-
     public $parent;
 
     /**

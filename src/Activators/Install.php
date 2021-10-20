@@ -33,7 +33,7 @@ class Install
     {
         global $wpdb;
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `moloni_api`( 
+            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_api`( 
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                 main_token VARCHAR(100), 
                 refresh_token VARCHAR(100), 
@@ -45,7 +45,7 @@ class Install
         );
 
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `moloni_api_config`( 
+            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_api_config`( 
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                 config VARCHAR(100), 
                 description VARCHAR(100), 
@@ -61,24 +61,26 @@ class Install
     private static function insertSettings()
     {
         global $wpdb;
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('document_set_id', 'Escolha uma Série de Documentos para melhor organização')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('exemption_reason', 'Escolha uma Isenção de Impostos para os produtos que não têm impostos')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('exemption_reason_shipping', 'Escolha uma Isenção de Impostos para os portes que não têmimpostos')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('payment_method', 'Escolha um metodo de pagamento por defeito')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('measure_unit', 'Escolha a unidade de medida a usar')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('maturity_date', 'Prazo de Pagamento')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('document_status', 'Escolha o estado do documento (fechado ou em rascunho)')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('document_type', 'Escolha o tipo de documentos que deseja emitir')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('client_prefix', 'Prefixo da referência do cliente')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('product_prefix', 'Prefixo da referência do produto')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('use_moloni_product_details', 'Usar os detalhes do artigo já existente no Moloni')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('update_final_consumer', 'Actualizar consumidor final')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('shipping_info', 'Informação de envio')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('vat_field', 'Número de contribuinte')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('email_send', 'Enviar email')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_stock_sync', 'Sincronizar Stocks')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_product_sync', 'Inserir Artigos')");
-        $wpdb->query("INSERT INTO `moloni_api_config`(config, description) VALUES('moloni_product_sync_update', 'Actualizar Artigos')");
+        $wpdb->query("INSERT INTO `" . $wpdb->prefix . "moloni_api_config`(config, description) 
+                        VALUES('document_set_id', 'Escolha uma Série de Documentos para melhor organização'),
+                        VALUES('exemption_reason', 'Escolha uma Isenção de Impostos para os produtos que não têm impostos'),
+                        VALUES('exemption_reason_shipping', 'Escolha uma Isenção de Impostos para os portes que não têmimpostos'),
+                        VALUES('payment_method', 'Escolha um metodo de pagamento por defeito'),
+                        VALUES('measure_unit', 'Escolha a unidade de medida a usar'),
+                        VALUES('maturity_date', 'Prazo de Pagamento'),
+                        VALUES('document_status', 'Escolha o estado do documento (fechado ou em rascunho)'),
+                        VALUES('document_type', 'Escolha o tipo de documentos que deseja emitir'),
+                        VALUES('client_prefix', 'Prefixo da referência do cliente'),
+                        VALUES('product_prefix', 'Prefixo da referência do produto'),
+                        VALUES('use_moloni_product_details', 'Usar os detalhes do artigo já existente no Moloni'),
+                        VALUES('update_final_consumer', 'Actualizar consumidor final'),
+                        VALUES('shipping_info', 'Informação de envio'),
+                        VALUES('vat_field', 'Número de contribuinte'),
+                        VALUES('email_send', 'Enviar email'),
+                        VALUES('moloni_stock_sync', 'Sincronizar Stocks'),
+                        VALUES('moloni_product_sync', 'Inserir Artigos'),
+                        VALUES('moloni_product_sync_update', 'Actualizar Artigos')
+                        ");
     }
 
 }
