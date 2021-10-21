@@ -55,6 +55,9 @@ class OrderProduct
     /** @var bool */
     private $hasIVA = false;
 
+    /** @var bool */
+    private $fiscalZone;
+
     /** @var int */
     public $composition_type = 0;
 
@@ -67,11 +70,12 @@ class OrderProduct
      * @param WC_Order $wcOrder
      * @param int $order
      */
-    public function __construct($product, $wcOrder, $order = 0)
+    public function __construct($product, $wcOrder, $order = 0, $fiscalZone = 'PT')
     {
         $this->product = $product;
         $this->wc_order = $wcOrder;
         $this->order = $order;
+        $this->fiscalZone = $fiscalZone;
     }
 
     /**
@@ -215,6 +219,7 @@ class OrderProduct
         $this->moloniProduct = new Product($this->product->get_product());
 
         if (!$this->moloniProduct->loadByReference()) {
+            $this->moloniProduct->fiscalZone = $this->fiscalZone;
             $this->moloniProduct->create();
         } elseif (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS) {
             $this->name = $this->moloniProduct->name;
@@ -290,7 +295,7 @@ class OrderProduct
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->wc_order->get_billing_country());
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalZone);
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];

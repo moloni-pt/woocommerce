@@ -94,6 +94,7 @@ class Tools
      */
     public static function getTaxFromRate($taxRate, $countryCode = 'PT')
     {
+        $countryCode = strtoupper($countryCode);
         $taxesList = Curl::simple('taxes/getAll', []);
         $moloniTax = false;
         $defaultTax = 0;

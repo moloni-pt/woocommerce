@@ -36,6 +36,7 @@ class Product
     private $exemption_reason;
     public $taxes;
     public $visibility_id = 1;
+    public $fiscalZone;
 
     public $composition_type = 0;
     /** @var false|array */
@@ -84,7 +85,6 @@ class Product
 
         return false;
     }
-
 
     /**
      * Create a product based on a WooCommerce Product
@@ -238,7 +238,6 @@ class Product
         return $this;
     }
 
-
     /**
      * Set the name of the product
      * @return $this
@@ -315,8 +314,13 @@ class Product
             $productTaxes = $this->product->get_tax_class();
             $taxRates = WC_Tax::get_base_tax_rates($productTaxes);
 
+            if (empty($this->fiscalZone)) {
+                $company = Curl::simple('companies/getOne', []);
+                $this->fiscalZone = $company['country']['iso_3166_1'];
+            }
+
             foreach ($taxRates as $order => $taxRate) {
-                $moloniTax = Tools::getTaxFromRate((float)$taxRate['rate']);
+                $moloniTax = Tools::getTaxFromRate((float)$taxRate['rate'], $this->fiscalZone);
 
                 if (!$moloniTax) {
                     continue;

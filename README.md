@@ -14,7 +14,7 @@
 **Requires PHP:**      5.6  
 **Requires at least:** 4.6  
 **Tested up to:**      5.8  
-**Stable tag:**        3.0.61  
+**Stable tag:**        3.0.62
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -69,7 +69,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * New plugin version fully re-written
 
 ## Changelog
-= 3.0.61 =
+### 3.0.62
+* CHANGE: Alteração na definição da zona fiscal
+
+### 3.0.61
 * FIX: Correcção de impostos de taxas com valor reduzido
 
 ### 3.0.60

@@ -19,6 +19,9 @@ class Documents
     /** @var array */
     private $company = [];
 
+    /** @var string */
+    private $fiscalZone;
+
     /** @var int */
     private $orderId;
 
@@ -149,6 +152,8 @@ class Documents
                 return $this;
             }
 
+            $this->company = Curl::simple('companies/getOne', []);
+
             $this->customer_id = (new OrderCustomer($this->order))->create();
             $this->document_set_id = $this->getDocumentSetId();
 
@@ -157,7 +162,10 @@ class Documents
 
             $this->your_reference = '#' . $this->order->get_order_number();
 
+            $this->checkForWarnings();
+
             $this
+                ->setFiscalZone()
                 ->setProducts()
                 ->setShipping()
                 ->setFees()
@@ -165,20 +173,6 @@ class Documents
                 ->setShippingInfo()
                 ->setPaymentMethod()
                 ->setNotes();
-
-            // One last validation
-            if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
-                $forceUrl = 'admin.php?page=moloni&action=genInvoice&id=' . $this->orderId . '&force=true';
-
-                if (isset($_GET['document_type'])) {
-                    $forceUrl .= '&document_type=' . sanitize_text_field($_GET['document_type']);
-                }
-
-                throw new Error(
-                    __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
-                    " <a href='$forceUrl'>" . __('Gerar novamente') . '</a>'
-                );
-            }
 
             apply_filters('moloni_before_insert_document', $this);
 
@@ -248,6 +242,39 @@ class Documents
     }
 
     /**
+     * Set fiscal zone
+     *
+     * @return $this
+     */
+    private function setFiscalZone()
+    {
+        $fiscalZone = null;
+
+        switch (get_option('woocommerce_tax_based_on')) {
+            case 'billing':
+                $fiscalZone = $this->order->get_billing_country();
+
+                break;
+            case 'shipping':
+                $fiscalZone = $this->order->get_shipping_country();
+
+                break;
+            case 'base':
+                $fiscalZone = $this->company['country']['iso_3166_1'];
+
+                break;
+        }
+
+        if ($fiscalZone === null) {
+            $fiscalZone = $this->company['country']['iso_3166_1'];
+        }
+
+        $this->fiscalZone = $fiscalZone;
+
+        return $this;
+    }
+
+    /**
      * @return $this
      * @throws Error
      */
@@ -255,7 +282,7 @@ class Documents
     {
         foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
             /** @var $orderProduct WC_Order_Item_Product */
-            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products));
+            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalZone);
             $this->products[] = $newOrderProduct->create()->mapPropsToValues();
 
         }
@@ -270,7 +297,7 @@ class Documents
     private function setShipping()
     {
         if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
-            $newOrderShipping = new OrderShipping($this->order, count($this->products));
+            $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalZone);
             $this->products[] = $newOrderShipping->create()->mapPropsToValues();
         }
 
@@ -288,7 +315,7 @@ class Documents
             $feePrice = abs($item['line_total']);
 
             if ($feePrice > 0) {
-                $newOrderFee = new OrderFees($item, count($this->products));
+                $newOrderFee = new OrderFees($item, count($this->products), $this->fiscalZone);
                 $this->products[] = $newOrderFee->create()->mapPropsToValues();
 
             }
@@ -382,7 +409,6 @@ class Documents
                 return $this;
             }
 
-            $this->company = Curl::simple('companies/getOne', []);
             $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
             if ($this->order->get_shipping_country() === 'PT') {
                 $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
@@ -544,8 +570,12 @@ class Documents
     }
 
     /**
+     * Deprecated
+     *
      * @param int $documentId
+     *
      * @throws Error
+     *
      * @deprecated In favor of API sending methods
      */
     private function sendOldEmail($documentId)
@@ -602,6 +632,27 @@ class Documents
         ];
 
         wp_mail($email, $subject, $message, $headers);
+    }
+
+    /**
+     * Checks for warnings
+     *
+     * @throws Error
+     */
+    private function checkForWarnings()
+    {
+        if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
+            $forceUrl = 'admin.php?page=moloni&action=genInvoice&id=' . $this->orderId . '&force=true';
+
+            if (isset($_GET['document_type'])) {
+                $forceUrl .= '&document_type=' . sanitize_text_field($_GET['document_type']);
+            }
+
+            throw new Error(
+                __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
+                " <a href='$forceUrl'>" . __('Gerar novamente') . '</a>'
+            );
+        }
     }
 
     private static function getDocumentTypeName($invoice)
