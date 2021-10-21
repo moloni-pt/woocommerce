@@ -51,17 +51,22 @@ class OrderFees
     private $stock = 0;
     private $at_product_category = 'M';
 
+    /** @var bool */
     private $hasIVA = false;
+
+    /** @var bool */
+    private $fiscalZone;
 
     /**
      * OrderProduct constructor.
      * @param WC_Order_Item_Fee $fee
      * @param int $index
      */
-    public function __construct($fee, $index = 0)
+    public function __construct($fee, $index = 0, $fiscalZone = 'PT')
     {
         $this->fee = $fee;
         $this->index = $index;
+        $this->fiscalZone = $fiscalZone;
     }
 
     /**
@@ -212,7 +217,7 @@ class OrderFees
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate);
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalZone);
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
