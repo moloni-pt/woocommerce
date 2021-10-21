@@ -71,8 +71,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ## Changelog
 ### 3.0.62
 * CHANGE: Alteração na definição da zona fiscal
+* FIX: Melhorias nas rotinas de sincronização de stocks
 
 ### 3.0.61
+* CHANGE: Alteração das tabelas da base de dados para usarem o prefixo definido no WooCommerce
 * FIX: Correcção de impostos de taxas com valor reduzido
 
 ### 3.0.60
