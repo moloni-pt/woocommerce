@@ -64,6 +64,11 @@ class Start
             Model::refreshTokens();
             Model::defineValues();
 
+            if (empty(Storage::$MOLONI_ACCESS_TOKEN)) {
+                self::loginForm();
+                return false;
+            }
+
             if (Storage::$MOLONI_COMPANY_ID) {
                 Model::defineConfigs();
                 return true;
@@ -77,6 +82,7 @@ class Start
                         'id' => Storage::$MOLONI_SESSION_ID
                     ]
                 );
+
                 Model::defineValues();
                 Model::defineConfigs();
                 return true;
