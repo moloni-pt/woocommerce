@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.61
+Stable tag: 3.0.62
 Tested up to: 5.8
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.62 =
+* CHANGE: Alteração na definição da zona fiscal
+
 = 3.0.61 =
 * FIX: Correcção de impostos de taxas com valor reduzido
 
