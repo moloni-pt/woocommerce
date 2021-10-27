@@ -265,7 +265,7 @@ class Documents
                 break;
         }
 
-        if ($fiscalZone === null) {
+        if (empty($fiscalZone)) {
             $fiscalZone = $this->company['country']['iso_3166_1'];
         }
 
