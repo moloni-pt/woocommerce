@@ -480,6 +480,11 @@ class Documents
 
         $values['notes'] = $this->notes;
         $values['status'] = $this->status;
+        $values['eac_id'] = 0;
+
+        if (defined('DOCUMENT_SET_CAE_ID') && (int)DOCUMENT_SET_CAE_ID > 0) {
+            $values['eac_id'] = DOCUMENT_SET_CAE_ID;
+        }
 
         if ((int)$this->delivery_method_id > 0) {
             $values['delivery_datetime'] = $this->delivery_datetime;
