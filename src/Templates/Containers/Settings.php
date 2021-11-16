@@ -114,7 +114,7 @@ use Moloni\Model;
                     <input id="document_set_cae_name" type="text" value="Placeholder" readonly style="width: 330px;">
 
                     <p id="document_set_cae_warning" class='description txt--red' style="display: none;">
-                        <?=__('Guarde para manter esta CAE') ?>
+                        <?=__('Guarde alterações para associar a CAE ao plugin') ?>
                     </p>
                 </td>
             </tr>
