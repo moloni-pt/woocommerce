@@ -2,8 +2,8 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.64
-Tested up to: 5.8
+Stable tag: 3.0.65
+Tested up to: 5.8.2
 Requires PHP: 5.6
 Requires at least: 4.6
 License: GPLv2 or later
@@ -66,6 +66,12 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.65 =
+* FEATURE: Novo hook que corre após atualização do plugin
+* FEATURE: Nova opção para CAE
+* MINOR: Testado até à versão 5.8.2 do Wordpress
+* MINOR: Testado até à versão 5.9.0 do WooCommerce
+
 = 3.0.64 =
 * FIX: Correcção da verificação da zona fiscal
 
