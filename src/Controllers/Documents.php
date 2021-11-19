@@ -280,11 +280,17 @@ class Documents
      */
     private function setProducts()
     {
-        foreach ($this->order->get_items() as $itemIndex => $orderProduct) {
-            /** @var $orderProduct WC_Order_Item_Product */
+        foreach ($this->order->get_items() as $orderProduct) {
+            // Skip "child" products created by "YITH WooCommerce Product Bundles" plugin
+            if ($orderProduct->get_meta('_bundled_by')) {
+                continue;
+            }
+
+            /**
+             * @var $orderProduct WC_Order_Item_Product
+             */
             $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalZone);
             $this->products[] = $newOrderProduct->create()->mapPropsToValues();
-
         }
 
         return $this;
