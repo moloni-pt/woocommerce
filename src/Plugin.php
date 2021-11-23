@@ -2,7 +2,6 @@
 
 namespace Moloni;
 
-use Moloni\Activators\Updater;
 use Moloni\Controllers\Documents;
 
 /**
@@ -14,8 +13,6 @@ class Plugin
 {
     public function __construct()
     {
-        $this->updater();
-
         $this->actions();
         $this->crons();
     }
@@ -35,15 +32,6 @@ class Plugin
         }
     }
 
-    /**
-     * Lets see if we need any update
-     */
-    private function updater()
-    {
-        new Updater();
-    }
-
-
     private function actions()
     {
         new Menus\Admin($this);
@@ -52,6 +40,7 @@ class Plugin
         new Hooks\OrderView($this);
         new Hooks\OrderPaid($this);
         new Hooks\OrderList($this);
+        new Hooks\UpgradeProcess($this);
         new Ajax($this);
     }
 

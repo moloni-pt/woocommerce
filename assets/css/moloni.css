@@ -195,8 +195,13 @@ li#toplevel_page_moloni img {
 }
 
 /** =========== Definições ========== */
+
 #formOpcoes a[title]:hover::after {
     content: attr(title);
     display: block;
     cursor: help;
+}
+
+#formOpcoes .txt--red {
+    color: #a44;
 }

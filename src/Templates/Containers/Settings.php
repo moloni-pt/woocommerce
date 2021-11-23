@@ -79,13 +79,43 @@ use Moloni\Model;
                     <label for="document_set_id"><?= __('Série de documento') ?></label>
                 </th>
                 <td>
-                    <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
-                        <?php $documentSets = Curl::simple('documentSets/getAll', []); ?>
+                    <?php $documentSets = Curl::simple('documentSets/getAll', []); ?>
+                    <select id="document_set_id" name='opt[document_set_id]' class='inputOut' onchange="onDocumentSetChange()">
                         <?php foreach ($documentSets as $documentSet) : ?>
-                            <option value='<?= $documentSet['document_set_id'] ?>' <?= defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID === (int)$documentSet['document_set_id'] ? 'selected' : '' ?>><?= $documentSet['name'] ?></option>
+                            <?php
+                                $htmlProps = '';
+                                $documentSetId = $documentSet['document_set_id'];
+
+                                if ((int)$documentSet['eac_id'] > 0 && !empty($documentSet['eac'])) {
+                                    $htmlProps .= ' data-eac-id="' . $documentSet['eac']['eac_id'] . '"';
+                                    $htmlProps .= ' data-eac-name="' . htmlspecialchars($documentSet['eac']['description'], ENT_QUOTES) . '"';
+                                }
+
+                                if (defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID === (int)$documentSet['document_set_id']) {
+                                    $htmlProps .= ' selected';
+                                }
+                            ?>
+
+                            <option value='<?= $documentSetId ?>' <?= $htmlProps ?>>
+                                <?= $documentSet['name'] ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                     <p class='description'><?= __('Obrigatório') ?></p>
+                </td>
+            </tr>
+
+            <tr id="document_set_cae_line" style="display: none;">
+                <th>
+                    <label for="document_set_cae_name"><?= __('CAE da série') ?></label>
+                </th>
+                <td>
+                    <input id="document_set_cae_id" name="opt[document_set_cae_id]" type="hidden" value="0">
+                    <input id="document_set_cae_name" type="text" value="Placeholder" readonly style="width: 330px;">
+
+                    <p id="document_set_cae_warning" class='description txt--red' style="display: none;">
+                        <?=__('Guarde alterações para associar a CAE ao plugin') ?>
+                    </p>
                 </td>
             </tr>
 
@@ -342,18 +372,6 @@ use Moloni\Model;
                     </select>
                     <p class='description'><?= __('Criar documentos automaticamente') ?></p>
                 </td>
-
-                <script>
-                    function onInvoiceAutoChange() {
-                        var selectedOption = document.getElementById('invoice_auto');
-
-                        if (selectedOption && selectedOption.value === '1') {
-                            document.getElementById('invoice_auto_status_line').style['display'] = 'table-row';
-                        } else {
-                            document.getElementById('invoice_auto_status_line').style['display'] = 'none';
-                        }
-                    }
-                </script>
             </tr>
 
             <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
@@ -445,3 +463,61 @@ use Moloni\Model;
         </table>
     </div>
 </form>
+
+<script>
+    var originalCAE = <?= (defined('DOCUMENT_SET_CAE_ID') && (int)DOCUMENT_SET_CAE_ID > 0 ? (int)DOCUMENT_SET_CAE_ID : 0) ?>;
+
+    function onDocumentSetChange() {
+        var select = document.getElementById('document_set_id');
+        var line = document.getElementById('document_set_cae_line');
+
+        if (!select || !line) {
+            return false;
+        }
+
+        var selectedDocumentSet = select.selectedOptions;
+
+        if (!selectedDocumentSet.length) {
+            return false;
+        }
+
+        selectedDocumentSet = selectedDocumentSet[0];
+
+        var caeElementId = document.getElementById('document_set_cae_id');
+        var caeElementName = document.getElementById('document_set_cae_name');
+        var caeElementWarning = document.getElementById('document_set_cae_warning');
+
+        if (!caeElementId || !caeElementName || !caeElementWarning) {
+            return false;
+        }
+
+        caeElementId.value = selectedDocumentSet.getAttribute('data-eac-id') || 0;
+        caeElementName.value = selectedDocumentSet.getAttribute('data-eac-name') || 'Placeholder';
+
+        if (parseInt(originalCAE) !== parseInt(caeElementId.value)) {
+            caeElementWarning.style['display'] = 'table-row';
+        } else {
+            caeElementWarning.style['display'] = 'none';
+        }
+
+        if (parseInt(caeElementId.value) > 0) {
+            line.style['display'] = 'table-row';
+        } else {
+            line.style['display'] = 'none';
+        }
+
+        return true;
+    }
+
+    function onInvoiceAutoChange() {
+        var selectedOption = document.getElementById('invoice_auto');
+
+        if (selectedOption && selectedOption.value === '1') {
+            document.getElementById('invoice_auto_status_line').style['display'] = 'table-row';
+        } else {
+            document.getElementById('invoice_auto_status_line').style['display'] = 'none';
+        }
+    }
+
+    onDocumentSetChange();
+</script>
