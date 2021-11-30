@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.65
+Stable tag: 3.0.66
 Tested up to: 5.8.2
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,6 +66,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.66 =
+* FIX: Removido uso ad taxa por defeito da empresa.
+* FIX: Restaurada cache de taxas na inserção.
+
 = 3.0.65 =
 * FEATURE: Novo hook que corre após atualização do plugin
 * FEATURE: Nova opção para CAE
@@ -73,10 +77,10 @@ New plugin version fully re-written
 * MINOR: Testado até à versão 5.9.0 do WooCommerce
 
 = 3.0.64 =
-* FIX: Correcção da verificação da zona fiscal
+* FIX: Correção da verificação da zona fiscal
 
 = 3.0.63 =
-* FIX: Correcção da verificação da zona fiscal
+* FIX: Correção da verificação da zona fiscal
 
 = 3.0.62 =
 * CHANGE: Alteração na definição da zona fiscal
