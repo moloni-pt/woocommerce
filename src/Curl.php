@@ -28,6 +28,15 @@ class Curl
     ];
 
     /**
+     * Hold a list of methods that need to clean cache
+     *
+     * @var array
+     */
+    private static $resetCacheMethods = [
+        'taxes/insert' => 'taxes/getAll'
+    ];
+
+    /**
      * Save a request cache
      * @var array
      */
@@ -72,9 +81,12 @@ class Curl
         }
 
         if (!isset($parsed['error'])) {
-
             if (!isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
                 self::$cache[$action] = $parsed;
+            }
+
+            if (isset(self::$resetCacheMethods[$action])) {
+                unset(self::$cache[self::$resetCacheMethods[$action]]);
             }
 
             return $parsed;
