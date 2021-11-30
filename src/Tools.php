@@ -97,14 +97,9 @@ class Tools
         $countryCode = strtoupper($countryCode);
         $taxesList = Curl::simple('taxes/getAll', []);
         $moloniTax = false;
-        $defaultTax = 0;
 
         if (!empty($taxesList) && is_array($taxesList)) {
             foreach ($taxesList as $tax) {
-                if ((int)$tax['active_by_default'] === 1) {
-                    $defaultTax = $tax;
-                }
-
                 if ($tax['fiscal_zone'] === $countryCode && (float)$tax['value'] === (float)$taxRate) {
                     $moloniTax = $tax;
                     break;
@@ -120,9 +115,6 @@ class Tools
 
                 //The value here will always be this, we save a request to get the inserted tax
                 $moloniTax['saft_type'] = "1";
-            } else {
-                //Fallback tax
-                $moloniTax = $defaultTax;
             }
         }
 
