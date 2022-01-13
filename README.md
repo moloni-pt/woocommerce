@@ -14,7 +14,7 @@
 **Requires PHP:**      5.6  
 **Requires at least:** 4.6  
 **Tested up to:**      5.8.2  
-**Stable tag:**        3.0.66
+**Stable tag:**        3.0.67
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -67,6 +67,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+##
+### 3.0.67
+* FIX: Aplicação da taxa por defeito da empresa caso o artigo não tenha impostos.
 
 ##
 ### 3.0.66

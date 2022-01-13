@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.66
+Stable tag: 3.0.67
 Tested up to: 5.8.2
 Requires PHP: 5.6
 Requires at least: 4.6
@@ -66,8 +66,11 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.67 =
+* FIX: Aplicação da taxa por defeito da empresa caso o artigo não tenha impostos.
+
 = 3.0.66 =
-* FIX: Removido uso ad taxa por defeito da empresa.
+* FIX: Removido uso da taxa por defeito da empresa.
 * FIX: Restaurada cache de taxas na inserção.
 
 = 3.0.65 =

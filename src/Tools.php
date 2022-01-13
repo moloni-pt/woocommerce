@@ -16,32 +16,32 @@ class Tools
      */
     public static $europeanCountryCodes = [
         'AT' => 'Austria',
-        'BE'=> 'Belgium',
-        'BG'=> 'Bulgaria',
-        'HR'=> 'Croatia',
-        'CY'=> 'Cyprus',
-        'CZ'=> 'Czech Republic',
-        'DK'=> 'Denmark',
-        'EE'=> 'Estonia',
-        'FI'=> 'Finland',
-        'FR'=> 'France',
-        'DE'=> 'Germany',
-        'GR'=> 'Greece',
-        'HU'=> 'Hungary',
-        'IE'=> 'Ireland',
-        'IT'=> 'Italy',
-        'LV'=> 'Latvia',
-        'LT'=> 'Lithuania',
-        'LU'=> 'Luxembourg',
-        'MT'=> 'Malta',
-        'NL'=> 'Netherlands',
-        'PL'=> 'Poland',
-        'PT'=> 'Portugal',
-        'RO'=> 'Romania',
-        'SK'=> 'Slovakia',
-        'SI'=> 'Slovenia',
-        'ES'=> 'Spain',
-        'SE'=> 'Sweden',
+        'BE' => 'Belgium',
+        'BG' => 'Bulgaria',
+        'HR' => 'Croatia',
+        'CY' => 'Cyprus',
+        'CZ' => 'Czech Republic',
+        'DK' => 'Denmark',
+        'EE' => 'Estonia',
+        'FI' => 'Finland',
+        'FR' => 'France',
+        'DE' => 'Germany',
+        'GR' => 'Greece',
+        'HU' => 'Hungary',
+        'IE' => 'Ireland',
+        'IT' => 'Italy',
+        'LV' => 'Latvia',
+        'LT' => 'Lithuania',
+        'LU' => 'Luxembourg',
+        'MT' => 'Malta',
+        'NL' => 'Netherlands',
+        'PL' => 'Poland',
+        'PT' => 'Portugal',
+        'RO' => 'Romania',
+        'SK' => 'Slovakia',
+        'SI' => 'Slovenia',
+        'ES' => 'Spain',
+        'SE' => 'Sweden',
     ];
 
     /**
@@ -97,17 +97,25 @@ class Tools
         $countryCode = strtoupper($countryCode);
         $taxesList = Curl::simple('taxes/getAll', []);
         $moloniTax = false;
+        $defaultTax = 0;
 
         if (!empty($taxesList) && is_array($taxesList)) {
             foreach ($taxesList as $tax) {
-                if ($tax['fiscal_zone'] === $countryCode && (float)$tax['value'] === (float)$taxRate) {
-                    $moloniTax = $tax;
-                    break;
+
+                if ($tax['fiscal_zone'] === $countryCode) {
+                    if ((int)$tax['active_by_default'] === 1) {
+                        $defaultTax = $tax;
+                    }
+
+                    if ((float)$tax['value'] === (float)$taxRate) {
+                        $moloniTax = $tax;
+                        break;
+                    }
                 }
             }
         }
 
-        if (!$moloniTax) {
+        if (!$moloniTax && (float)$taxRate > 0) {
             $newTax = self::createTax($taxRate, $countryCode);
 
             if (isset($newTax['tax_id'])) {
@@ -116,6 +124,10 @@ class Tools
                 //The value here will always be this, we save a request to get the inserted tax
                 $moloniTax['saft_type'] = "1";
             }
+        }
+
+        if (!$moloniTax) {
+            $moloniTax = $defaultTax;
         }
 
         return $moloniTax;
