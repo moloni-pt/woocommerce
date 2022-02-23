@@ -48,7 +48,7 @@ register_activation_hook(__FILE__, '\Moloni\Activators\Install::run');
 register_deactivation_hook(__FILE__, '\Moloni\Activators\Remove::run');
 
 add_action('plugins_loaded', Start::class);
-add_action('admin_enqueue_scripts', '\Moloni\Plugin::defines');
+add_action('admin_enqueue_scripts', '\Moloni\Scripts\Enqueue::defines');
 
 function Start()
 {

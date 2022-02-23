@@ -3,6 +3,7 @@
 namespace Moloni;
 
 use Moloni\Controllers\Documents;
+use Moloni\Scripts\Enqueue;
 
 /**
  * Main constructor
@@ -15,21 +16,6 @@ class Plugin
     {
         $this->actions();
         $this->crons();
-    }
-
-    /**
-     * Define some table params
-     * Load scripts and CSS as needed
-     */
-    public static function defines()
-    {
-        if (isset($_REQUEST['page']) && !wp_doing_ajax() && sanitize_text_field($_REQUEST['page']) === 'moloni') {
-            wp_enqueue_style('jquery-modal', plugins_url('assets/external/jquery.modal.min.css', MOLONI_PLUGIN_FILE));
-            wp_enqueue_script('jquery-modal', plugins_url('assets/external/jquery.modal.min.js', MOLONI_PLUGIN_FILE));
-
-            wp_enqueue_style('moloni-styles', plugins_url('assets/css/moloni.css', MOLONI_PLUGIN_FILE));
-            wp_enqueue_script('moloni-actions-bulk-documentes-js', plugins_url('assets/js/BulkDocuments.js', MOLONI_PLUGIN_FILE));
-        }
     }
 
     private function actions()
@@ -72,26 +58,21 @@ class Plugin
                     case 'remInvoice':
                         $this->removeOrder((int)$_GET['id']);
                         break;
-
                     case 'remInvoiceAll':
                         $this->removeOrdersAll();
                         break;
-
                     case 'genInvoice':
                         $orderId = (int)$_REQUEST['id'];
                         /** @var Documents $document intended */
                         $document = $this->createDocument($orderId);
                         break;
-
                     case 'syncStocks':
                         $this->syncStocks();
                         break;
-
                     case 'remLogs':
                         Log::removeLogs();
                         add_settings_error('moloni', 'moloni-rem-logs', __('A limpeza de logs foi concluída.'), 'updated');
                         break;
-
                     case 'getInvoice':
                         $document = false;
                         $documentId = (int)$_REQUEST['id'];
@@ -104,8 +85,7 @@ class Plugin
                             add_settings_error('moloni', 'moloni-document-not-found', __('Documento não encontrado'));
                         }
                         break;
-
-                    case 'downloadDocument';
+                    case 'downloadDocument':
                         $documentId = (int)$_REQUEST['id'];
 
                         if ($documentId > 0) {
@@ -126,8 +106,12 @@ class Plugin
     }
 
     /**
-     * @param $orderId
+     * Create a single document from order
+     *
+     * @param int $orderId Order Id
+     *
      * @return Documents
+     *
      * @throws Error
      */
     private function createDocument($orderId)
@@ -144,7 +128,11 @@ class Plugin
     }
 
     /**
+     * Discard single order from pending list
+     *
      * @param int $orderId
+     *
+     * @return void
      */
     private function removeOrder($orderId)
     {
@@ -160,7 +148,11 @@ class Plugin
         }
     }
 
-
+    /**
+     * Discard all orders from pending list
+     *
+     * @return void
+     */
     private function removeOrdersAll()
     {
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
@@ -180,6 +172,11 @@ class Plugin
         }
     }
 
+    /**
+     * Force stock syncronization
+     *
+     * @return void
+     */
     private function syncStocks()
     {
         $date = isset($_GET['since']) ? sanitize_text_field($_GET['since']) : gmdate('Y-m-d', strtotime('-1 week'));
