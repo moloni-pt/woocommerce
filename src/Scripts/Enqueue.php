@@ -17,6 +17,10 @@ class Enqueue
 
             wp_enqueue_style('moloni-styles', plugins_url('assets/css/moloni.css', MOLONI_PLUGIN_FILE));
 
+            if ($_GET['tab'] === 'settings') {
+                wp_enqueue_script('moloni-settings-js', plugins_url('assets/js/Moloni.Settings.js', MOLONI_PLUGIN_FILE));
+            }
+
             if (!in_array($_GET['tab'], ['settings', 'tools'])) {
                 wp_enqueue_script('moloni-actions-bulk-documentes-js', plugins_url('assets/js/BulkDocuments.js', MOLONI_PLUGIN_FILE));
             }
