@@ -13,8 +13,8 @@
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      5.6  
 **Requires at least:** 4.6  
-**Tested up to:**      5.8.2  
-**Stable tag:**        3.0.67
+**Tested up to:**      5.9.1
+**Stable tag:**        3.0.68
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -69,6 +69,12 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * New plugin version fully re-written
 
 ##
+### 3.0.68
+* FIX: Prevenção de perdas de autenticação
+* FEATURE: Nova opção para definir a morada de carga
+* MINOR: Testado até à versão 5.9.1 do Wordpress
+* MINOR: Testado até à versão 6.2.1 do WooCommerce
+
 ### 3.0.67
 * FIX: Aplicação da taxa por defeito da empresa caso o artigo não tenha impostos.
 

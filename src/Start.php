@@ -43,20 +43,12 @@ class Start
             }
         }
 
-        if ($action === 'logout') {
-            Model::resetTokens();
+        if ($action === 'save') {
+            self::saveSettings();
         }
 
-        if ($action === 'save') {
-            add_settings_error('general', 'settings_updated', __('Alterações guardadas.'), 'updated');
-            $options = $_POST['opt'];
-
-            foreach ($options as $option => $value) {
-                $option = sanitize_text_field($option);
-                $value = sanitize_text_field($value);
-
-                Model::setOption($option, $value);
-            }
+        if ($action === 'logout') {
+            Model::resetTokens();
         }
 
         $tokensRow = Model::getTokensRow();
@@ -126,4 +118,22 @@ class Start
         }
     }
 
+    /**
+     * Save plugin settings
+     *
+     * @return void
+     */
+    private static function saveSettings() {
+        add_settings_error('general', 'settings_updated', __('Alterações guardadas.'), 'updated');
+        $options = $_POST['opt'];
+
+        foreach ($options as $option => $value) {
+            $option = sanitize_text_field($option);
+            $value = sanitize_text_field($value);
+
+            Model::setOption($option, $value);
+        }
+
+        Model::defineConfigs();
+    }
 }

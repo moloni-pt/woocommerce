@@ -430,16 +430,17 @@ class Documents
 
             $this->delivery_datetime = date('Y-m-d H:i:s');
 
-            $this->delivery_departure_address = $this->company['address'];
-            $this->delivery_departure_city = $this->company['city'];
-            $this->delivery_departure_zip_code = $this->company['zip_code'];
-            $this->delivery_departure_country = $this->company['country_id'];
+            $loadAddress = $this->getLoadAddress();
+
+            $this->delivery_departure_address = $loadAddress['address'];
+            $this->delivery_departure_city = $loadAddress['city'];
+            $this->delivery_departure_zip_code = $loadAddress['zip_code'];
+            $this->delivery_departure_country = $loadAddress['country_id'];
 
             $this->delivery_destination_address = $this->order->get_shipping_address_1() . ' ' . $this->order->get_shipping_address_2();
             $this->delivery_destination_city = $this->order->get_shipping_city();
             $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
         }
-
 
         return $this;
     }
@@ -666,6 +667,46 @@ class Documents
         }
     }
 
+    /**
+     * Returns load address to be used in the document
+     *
+     * @return array
+     *
+     * @throws Error
+     */
+    private function getLoadAddress() {
+        $loadSetting = defined('LOAD_ADDRESS') ? (int)LOAD_ADDRESS : 0;
+
+        if ($loadSetting === 1 &&
+            defined('LOAD_ADDRESS_CUSTOM_ADDRESS') &&
+            defined('LOAD_ADDRESS_CUSTOM_CITY') &&
+            defined('LOAD_ADDRESS_CUSTOM_CODE') &&
+            defined('LOAD_ADDRESS_CUSTOM_COUNTRY')) {
+            $address = [
+                'address' => LOAD_ADDRESS_CUSTOM_ADDRESS,
+                'city' => LOAD_ADDRESS_CUSTOM_CITY,
+                'zip_code' => LOAD_ADDRESS_CUSTOM_CODE,
+                'country_id' => (int)LOAD_ADDRESS_CUSTOM_COUNTRY,
+            ];
+        } else {
+            $address = [
+                'address' => $this->company['address'],
+                'city' => $this->company['city'],
+                'zip_code' => $this->company['zip_code'],
+                'country_id' => $this->company['country_id'],
+            ];
+        }
+
+        return $address;
+    }
+
+    /**
+     * Gets document slug by type
+     *
+     * @param $invoice
+     *
+     * @return string
+     */
     private static function getDocumentTypeName($invoice)
     {
         switch ($invoice['document_type']['saft_code']) {
