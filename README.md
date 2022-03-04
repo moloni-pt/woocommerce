@@ -14,7 +14,7 @@
 **Requires PHP:**      5.6  
 **Requires at least:** 4.6  
 **Tested up to:**      5.9.1
-**Stable tag:**        3.0.68
+**Stable tag:**        3.0.69
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -69,6 +69,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * New plugin version fully re-written
 
 ##
+### 3.0.69
+* FIX: Correção de alerta
+
 ### 3.0.68
 * FIX: Prevenção de perdas de autenticação
 * FEATURE: Nova opção para definir a morada de carga
