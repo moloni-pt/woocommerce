@@ -58,14 +58,23 @@
                     </td>
                     <td>
                         <?php
-                        if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
-                            echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
-                        } else {
-                            echo __('Desconhecido');
-                        }
-
+                            if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
+                                echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
+                            } else {
+                                echo __('Desconhecido');
+                            }
                         ?>
-                    <td><?= (isset($order['info'][VAT_FIELD]) && !empty($order['info'][VAT_FIELD])) ? $order['info'][VAT_FIELD] : '999999990' ?></td>
+                    <td>
+                        <?php
+                            if (defined('VAT_FIELD') &&
+                                isset($order['info'][VAT_FIELD]) &&
+                                !empty($order['info'][VAT_FIELD])) {
+                                echo $order['info'][VAT_FIELD];
+                            } else {
+                                echo '999999990';
+                            }
+                        ?>
+                    </td>
                     <td><?= $order['info']['_order_total'] . $order['info']['_order_currency'] ?></td>
                     <td><?= $order['status'] ?></td>
                     <td><?= $order['info']['_completed_date'] ?></td>
