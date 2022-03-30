@@ -58,48 +58,74 @@
                     </td>
                     <td>
                         <?php
-                        if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
-                            echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
-                        } else {
-                            echo __('Desconhecido');
-                        }
-
+                            if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
+                                echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
+                            } else {
+                                echo __('Desconhecido');
+                            }
                         ?>
-                    <td><?= (isset($order['info'][VAT_FIELD]) && !empty($order['info'][VAT_FIELD])) ? $order['info'][VAT_FIELD] : '999999990' ?></td>
+                    <td>
+                        <?php
+                            if (defined('VAT_FIELD') &&
+                                isset($order['info'][VAT_FIELD]) &&
+                                !empty($order['info'][VAT_FIELD])) {
+                                echo $order['info'][VAT_FIELD];
+                            } else {
+                                echo '999999990';
+                            }
+                        ?>
+                    </td>
                     <td><?= $order['info']['_order_total'] . $order['info']['_order_currency'] ?></td>
                     <td><?= $order['status'] ?></td>
-                    <td><?= $order['info']['_completed_date'] ?></td>
+                    <td>
+                        <?php
+                        if (isset($order['info']['_completed_date'])) {
+                            echo $order['info']['_completed_date'];
+                        } else {
+                            echo 'n/a';
+                        }
+                        ?>
+                    </td>
                     <td class="order_status column-order_status" style="text-align: right">
                         <form action="<?= admin_url('admin.php') ?>">
                             <input type="hidden" name="page" value="moloni">
                             <input type="hidden" name="action" value="genInvoice">
                             <input type="hidden" name="id" value="<?= $order['id'] ?>">
+                            
+                            <?php
+                            if (defined('DOCUMENT_TYPE')) {
+                                $documentType = DOCUMENT_TYPE;
+                            } else {
+                                $documentType = 'invoices';
+                            }
+                            ?>
+
                             <select name="document_type" style="margin-right: 5px">
-                                <option value='invoices' <?= (DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
+                                <option value='invoices' <?= ($documentType === 'invoices' ? 'selected' : '') ?>>
                                     <?= __('Faturas') ?>
                                 </option>
 
-                                <option value='invoiceReceipts' <?= (DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
+                                <option value='invoiceReceipts' <?= ($documentType === 'invoiceReceipts' ? 'selected' : '') ?>>
                                     <?= __('Factura/Recibo') ?>
                                 </option>
 
-                                <option value='simplifiedInvoices'<?= (DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
+                                <option value='simplifiedInvoices'<?= ($documentType === 'simplifiedInvoices' ? 'selected' : '') ?>>
                                     <?= __('Factura Simplificada') ?>
                                 </option>
 
-                                <option value='proFormaInvoices' <?= (DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
+                                <option value='proFormaInvoices' <?= ($documentType === 'proFormaInvoices' ? 'selected' : '') ?>>
                                     <?= __('Fatura Pró-Forma') ?>
                                 </option>
 
-                                <option value='billsOfLading' <?= (DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
+                                <option value='billsOfLading' <?= ($documentType === 'billsOfLading' ? 'selected' : '') ?>>
                                     <?= __('Guia de Transporte') ?>
                                 </option>
 
-                                <option value='purchaseOrder' <?= (DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
+                                <option value='purchaseOrder' <?= ($documentType === 'purchaseOrder' ? 'selected' : '') ?>>
                                     <?= __('Nota de Encomenda') ?>
                                 </option>
 
-                                <option value='estimates' <?= (DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
+                                <option value='estimates' <?= ($documentType === 'estimates' ? 'selected' : '') ?>>
                                     <?= __('Orçamento') ?>
                                 </option>
                             </select>

@@ -61,7 +61,11 @@ class Curl
 
         $url = 'https://api.moloni.pt/v1/' . $action . '/?human_errors=true&access_token=' . Storage::$MOLONI_ACCESS_TOKEN;
 
-        $response = wp_remote_post($url, ['body' => http_build_query($values)]);
+        $response = wp_remote_post($url, [
+            'body' => http_build_query($values),
+            'timeout' => 45
+        ]);
+
         $raw = wp_remote_retrieve_body($response);
 
         $parsed = json_decode($raw, true);
