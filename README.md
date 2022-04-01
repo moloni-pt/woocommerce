@@ -14,7 +14,7 @@
 **Requires PHP:**      5.6  
 **Requires at least:** 4.6  
 **Tested up to:**      5.9.1
-**Stable tag:**        3.0.69
+**Stable tag:**        3.0.70
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -67,6 +67,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+##
+### 3.0.70
+* MINOR: Melhoria na pesquisa e criação de categorias
 
 ##
 ### 3.0.69

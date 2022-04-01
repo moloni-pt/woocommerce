@@ -242,6 +242,10 @@ class OrderProduct
      */
     private function setDiscount()
     {
+        if ((float)$this->product->get_subtotal() === 0.0) {
+            return $this;
+        }
+
         $this->discount = (100 - (((float)$this->product->get_total() * 100) / (float)$this->product->get_subtotal()));
 
         if ($this->discount > 100) {

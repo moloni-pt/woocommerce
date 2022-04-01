@@ -33,14 +33,15 @@ class ProductCategory
      */
     public function loadByName()
     {
-        $categoriesList = Curl::simple('productCategories/getAll', ['parent_id' => $this->parent_id]);
+        $categoriesList = Curl::simple('productCategories/getByName', [
+            'parent_id' => $this->parent_id,
+            'name' => $this->name,
+            'exact' => 1
+        ]);
+
         if (!empty($categoriesList) && is_array($categoriesList)) {
-            foreach ($categoriesList as $category) {
-                if (strcmp((string)$category['name'], (string)$this->name) === 0) {
-                    $this->category_id = $category['category_id'];
-                    return $this;
-                }
-            }
+            $this->category_id = $categoriesList[0]['category_id'];
+            return $this;
         }
 
         return false;
