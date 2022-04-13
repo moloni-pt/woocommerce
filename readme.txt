@@ -2,9 +2,10 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.71
-Tested up to: 6.4.0
-Requires PHP: 7.2
+Stable tag: 3.0.72
+Tested up to: 5.9.3
+
+Requires PHP: 5.6
 Requires at least: 4.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
