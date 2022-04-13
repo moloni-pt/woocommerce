@@ -11,10 +11,9 @@
 **Contributors:**      [molonidevteam](https://github.com/molonidevteam)  
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
-**Requires PHP:**      5.6  
-**Requires at least:** 4.6  
-**Tested up to:**      5.9.1
-**Stable tag:**        3.0.70
+**Requires PHP:**      7.2
+**Tested up to:**      6.4.0
+**Stable tag:**        3.0.71
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -69,6 +68,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * New plugin version fully re-written
 
 ##
+### 3.0.70
+* UPDATE: Atualizada a posição do menu para combatibilidade com WooCommerce 6.4.0 
+
 ### 3.0.70
 * MINOR: Melhoria na pesquisa e criação de categorias
 
