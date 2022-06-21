@@ -1,8 +1,7 @@
 # Moloni
 
-![WordPress Plugin Required PHP Version](https://img.shields.io/wordpress/plugin/required-php/moloni)
-![WordPress Plugin: Required WP Version](https://img.shields.io/wordpress/plugin/wp-version/moloni?label=Required%20WordPress%20at%20least)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/wordpress/plugin/tested/moloni?label=WordPress)
+![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-v6.0%20tested-orange)
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
 
@@ -11,9 +10,9 @@
 **Contributors:**      [molonidevteam](https://github.com/molonidevteam)  
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
-**Requires PHP:**      7.2
-**Tested up to:**      5.9.3
-**Stable tag:**        3.0.72
+**Requires PHP:**      7.2  
+**Tested up to:**      6.0  
+**Stable tag:**        3.0.73  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -66,6 +65,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+##
+### 3.0.73
+* UPDATE: Atualizadas todas as URLs do plugin
 
 ##
 ### 3.0.72

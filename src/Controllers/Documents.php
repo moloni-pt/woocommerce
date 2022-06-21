@@ -290,7 +290,11 @@ class Documents
              * @var $orderProduct WC_Order_Item_Product
              */
             $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalZone);
-            $this->products[] = $newOrderProduct->create()->mapPropsToValues();
+            $newOrderProduct->create();
+
+            if ($newOrderProduct->qty > 0) {
+                $this->products[] = $newOrderProduct->mapPropsToValues();
+            }
         }
 
         return $this;
@@ -567,9 +571,9 @@ class Documents
         $result = Curl::simple('documents/getPDFLink', ['document_id' => $documentId]);
 
         if (isset($result['url'])) {
-            $downloadUrl = 'https://www.moloni.com/downloads/index.php?action=getDownload&';
+            $downloadUrl = 'https://www.moloni.pt/downloads/index.php?action=getDownload&';
             $downloadUrl .= substr($result['url'], strpos($result['url'], '?') + 1);
-            $downloadUrl .= '&e=wordpress.auto.download@moloni.com';
+            $downloadUrl .= '&e=wordpress.auto.download@moloni.pt';
             $downloadUrl .= '&t=n';
 
             header('Location: ' . $downloadUrl);
