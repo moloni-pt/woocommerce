@@ -49,7 +49,7 @@ class Curl
      * @return array|bool
      * @throws Error
      */
-    public static function simple($action, $values = false, $debug = false)
+    public static function simple($action, $values = false, $debug = false, $retry = 0)
     {
         if (isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
             return self::$cache[$action];
@@ -65,6 +65,14 @@ class Curl
             'body' => http_build_query($values),
             'timeout' => 45
         ]);
+
+        if ((int)wp_remote_retrieve_response_code($response) === 429) {
+            $retry++;
+            if ($retry < 5) {
+                sleep(2);
+                return self::simple($action, $values, $debug, $retry);
+            }
+        }
 
         $raw = wp_remote_retrieve_body($response);
 
