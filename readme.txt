@@ -15,7 +15,7 @@ Software de faturação inovador que se adapta ao seu negócio! Destinado a prof
 == Description ==
 O Moloni é um inovador software de faturação e POS online que inclui acesso a inúmeras ferramentas úteis e funcionais que permitem a cada empresa gerir a sua faturação, controlar stocks, automatizar processos e emitir documentos de forma rápida, simples e intuitiva.
 
-Certificado com o nº 1455 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
+Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
 
 == Através do plugin é possível:  ==
 * Sincronizar artigos e stocks entre as duas plataformas
