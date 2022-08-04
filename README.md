@@ -12,7 +12,7 @@
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
 **Tested up to:**      6.0  
-**Stable tag:**        3.0.73  
+**Stable tag:**        3.0.74  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -21,7 +21,7 @@ Software de faturação inovador que se adapta ao seu negócio! Destinado a prof
 ## Description
 O Moloni é um inovador software de faturação e POS online que inclui acesso a inúmeras ferramentas úteis e funcionais que permitem a cada empresa gerir a sua faturação, controlar stocks, automatizar processos e emitir documentos de forma rápida, simples e intuitiva.
 
-Certificado com o nº 1455 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
+Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
 
 ## Através do plugin é possível:
 * Sincronizar artigos e stocks entre as duas plataformas
@@ -66,11 +66,12 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * Released plugin version 3.
 * New plugin version fully re-written
 
-##
+### 3.0.74
+* UPDATE: Tentativas depois de falha ao inserir/atualizar documentos
+
 ### 3.0.73
 * UPDATE: Atualizadas todas as URLs do plugin
 
-##
 ### 3.0.72
 * UPDATE: Atualizadas versões testadas
 
@@ -80,7 +81,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0.70
 * MINOR: Melhoria na pesquisa e criação de categorias
 
-##
+
 ### 3.0.69
 * FIX: Correção de alerta
 
@@ -93,7 +94,6 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0.67
 * FIX: Aplicação da taxa por defeito da empresa caso o artigo não tenha impostos.
 
-##
 ### 3.0.66
 * FIX: Removido uso da taxa por defeito da empresa.
 * FIX: Restaurada cache de taxas na inserção.
