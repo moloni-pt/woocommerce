@@ -2,12 +2,15 @@
 
 namespace Moloni\Controllers;
 
-use Moloni\Curl;
-use Moloni\Error;
-use Moloni\Tools;
 use WC_Order;
 use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
+use Moloni\Curl;
+use Moloni\Error;
+use Moloni\Tools;
+use Moloni\Enums\Boolean;
+use Moloni\Enums\DocumentTypes;
+use Moloni\Enums\DocumentStatus;
 
 /**
  * Class Documents
@@ -16,20 +19,40 @@ use WC_Order_Item_Product;
  */
 class Documents
 {
-    /** @var array */
-    private $company = [];
+    /**
+     * Moloni company data
+     *
+     * @var array
+     */
+    private $company;
 
-    /** @var string */
+    /**
+     * Document fiscal zone
+     *
+     * @var string
+     */
     private $fiscalZone;
 
-    /** @var int */
-    private $orderId;
+    /**
+     * Associated documents
+     *
+     * @var array
+     */
+    private $associatedWith = [];
 
-    /** @var WC_Order */
+    /**
+     * WooCommerce order object
+     *
+     * @var WC_Order
+     */
     public $order;
 
-    /** @var bool|Error */
-    private $error = false;
+    /**
+     * WooCommerce order ID
+     *
+     * @var int
+     */
+    private $orderId;
 
     /**
      * Field used in filter to cancel document creation
@@ -38,42 +61,110 @@ class Documents
      */
     public $stopProcess = false;
 
-    /** @var int */
-    public $document_id;
+    /**
+     * Created Moloni document data
+     *
+     * @var array
+     */
+    private $document = [];
 
-    /** @var int */
+    /**
+     * Created Moloni document ID
+     *
+     * @var int
+     */
+    private $document_id = 0;
+
+    /**
+     * Moloni document total
+     *
+     * @var float
+     */
+    private $documentTotal = 0;
+
+    /**
+     * Moloni document exchage total total
+     *
+     * @var float
+     */
+    private $documentExchageTotal = 0;
+
+    /**
+     * CAE ID
+     *
+     * @var int
+     */
+    private $caeId = 0;
+
+    /**
+     * Moloni customer ID
+     *
+     * @var int
+     */
     public $customer_id;
 
-    /** @var int */
+    /**
+     * Document set ID
+     *
+     * @var int
+     */
     public $document_set_id;
 
-    /** @var int */
-    public $documentId;
-
-    /** @var string */
+    /**
+     * Document reference
+     *
+     * @var string
+     */
     public $our_reference = '';
 
-    /** @var string */
+    /**
+     * Document reference
+     *
+     * @var string
+     */
     public $your_reference = '';
 
-    /** @var string in Y-m-d */
+    /**
+     * Document data
+     *
+     * @var string in Y-m-d
+     */
     public $date;
 
-    /** @var string in Y-m-d */
+    /**
+     * Document expiration date
+     *
+     * @var string in Y-m-d
+     */
     public $expiration_date;
 
-    /** @var float */
+    /**
+     * Document financial discount
+     *
+     * @var float
+     */
     public $financial_discount = 0;
 
-    /** @var float */
+    /**
+     * Document special discount
+     *
+     * @var float
+     */
     public $special_discount = 0;
 
-    /** @var int */
+    /**
+     * Document salesman ID
+     *
+     * @var int
+     */
     public $salesman_id = 0;
 
-    /** @var int */
+    /**
+     * Document salesman comission
+     *
+     * @var int
+     */
     public $salesman_commission = 0;
-
 
     // Delivery parameters being used if the option is set
     public $delivery_datetime;
@@ -90,153 +181,468 @@ class Documents
     public $delivery_destination_zip_code = '';
     public $notes = '';
 
-    public $status = 0;
-
     public $products = [];
+
     public $payments = [];
 
-    public $documentType;
+    public $documentType = '';
+    public $documentTypeName = '';
+    public $documentStatus = 0;
+
+    public $useShipping = 0;
+    public $sendEmail = 0;
 
     /** @var int */
     public $exchange_currency_id;
     public $exchange_rate;
 
     /**
-     * Documents constructor.
-     * @param int $orderId
+     * Constructor
+     *
+     * @param WC_Order $order
+     * @param array $company
+     *
      * @throws Error
      */
-    public function __construct($orderId)
+    public function __construct(WC_Order $order, array $company)
     {
-        $this->orderId = $orderId;
-        $this->order = new WC_Order((int)$orderId);
+        $this->order = $order;
+        $this->orderId = $order->get_id();
+        $this->company = $company;
 
-        if (!defined('DOCUMENT_TYPE')) {
+        $this->init();
+    }
+
+    /**
+     * Resets some values after cloning
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->document_id = 0;
+
+        $this->documentTotal = 0;
+        $this->documentExchageTotal = 0;
+
+        $this->associatedWith = [];
+    }
+
+    /**
+     * Associate a document wiht the current one
+     *
+     * @param int $documentId Document id to associate
+     * @param float $value Total value to associate
+     *
+     * @return $this
+     */
+    public function addAssociatedDocument(int $documentId, float $value): Documents
+    {
+        $this->associatedWith[] = [
+            'associated_id' => $documentId,
+            'value' => $value,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Create Moloni document
+     *
+     * @throws Error
+     */
+    public function createDocument(): Documents
+    {
+        apply_filters('moloni_before_insert_document', $this);
+
+        if ($this->stopProcess) {
+            return $this;
+        }
+
+        $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
+
+        if (!isset($insertedDocument['document_id'])) {
+            throw new Error(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
+        }
+
+        $this->document_id = $insertedDocument['document_id'];
+
+        $this->saveRecord();
+
+        $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
+        $this->documentTotal = (float)$this->document['net_value'];
+        $this->documentExchageTotal = (float)$this->document['exchange_total_value'] > 0 ? (float)$this->document['exchange_total_value'] : $this->documentTotal;
+
+        apply_filters('moloni_after_insert_document', $this);
+
+        // If the documents is going to be inserted as closed
+        if ($this->shouldCloseDocument()) {
+            $this->closeDocument();
+        } else {
+            $note = __('Documento inserido como rascunho no Moloni');
+            $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+
+            $this->order->add_order_note($note);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Close Moloni document
+     *
+     * @throws Error
+     */
+    public function closeDocument(): void
+    {
+        // Validate if the document totals match can be closed
+        $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded());
+
+        if ($orderTotal !== $this->getDocumentExchageTotal()) {
+            $note = __('Documento inserido como rascunho no Moloni');
+            $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+
+            $this->order->add_order_note($note);
+
+            $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
+
+            throw new Error(
+                __('O documento foi inserido mas os totais não correspondem. ') .
+                '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
+            );
+        }
+
+        $closeDocument = [];
+        $closeDocument['document_id'] = $this->document_id;
+        $closeDocument['status'] = DocumentStatus::CLOSED;
+
+        // Send email to the client
+        if ($this->shouldSendEmail()) {
+            $this->order->add_order_note(__('Documento enviado por email para o cliente'));
+
+            $closeDocument['send_email'] = [];
+            $closeDocument['send_email'][] = [
+                'email' => $this->order->get_billing_email(),
+                'name' => $this->document['entity_name'],
+                'msg' => ''
+            ];
+        }
+
+        Curl::simple($this->documentType . '/update', $closeDocument);
+
+        apply_filters('moloni_after_close_document', $this);
+
+        $note = __('Documento inserido no Moloni');
+        $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+
+        $this->order->add_order_note($note);
+    }
+
+    //          PRIVATES          //
+
+    /**
+     * Initialize document values
+     *
+     * @return void
+     *
+     * @throws Error
+     */
+    private function init(): void
+    {
+        apply_filters('moloni_before_start_document', $this);
+
+        $this
+            ->setYourReference()
+            ->setDates()
+            ->setDocumentStatus()
+            ->setCustomer()
+            ->setDocumentType()
+            ->setDocumentSetId()
+            ->setSendEmail()
+            ->setFiscalZone()
+            ->setProducts()
+            ->setShipping()
+            ->setFees()
+            ->setExchangeRate()
+            ->setCae()
+            ->setShippingInformation()
+            ->setDelivery()
+            ->setPaymentMethod()
+            ->setNotes();
+    }
+
+    /**
+     * Save document id on order meta
+     *
+     * @return void
+     */
+    private function saveRecord(): void
+    {
+        add_post_meta($this->orderId, '_moloni_sent', $this->document_id, true);
+    }
+
+    /**
+     * Map this object properties to an array to insert/update a moloni document
+     *
+     * @return array
+     */
+    private function mapPropsToValues(): array
+    {
+        $values = [];
+        $values['customer_id'] = $this->customer_id;
+        $values['document_set_id'] = $this->document_set_id;
+        $values['our_reference'] = $this->our_reference;
+        $values['your_reference'] = $this->your_reference;
+        $values['date'] = $this->date;
+        $values['expiration_date'] = $this->expiration_date;
+        $values['financial_discount'] = $this->financial_discount;
+        $values['special_discount'] = $this->special_discount;
+        $values['salesman_id'] = $this->salesman_id;
+        $values['salesman_commission'] = $this->salesman_commission;
+
+        $values['notes'] = $this->notes;
+        $values['status'] = DocumentStatus::DRAFT;
+        $values['eac_id'] = $this->caeId;
+        $values['products'] = $this->products;
+
+        if ($this->shouldAddShippingInformation()) {
+            $values['delivery_datetime'] = $this->delivery_datetime;
+            $values['delivery_method_id'] = $this->delivery_method_id;
+
+            $values['delivery_departure_address'] = $this->delivery_departure_address;
+            $values['delivery_departure_city'] = $this->delivery_departure_city;
+            $values['delivery_departure_zip_code'] = $this->delivery_departure_zip_code;
+            $values['delivery_departure_country'] = $this->delivery_departure_country;
+
+            $values['delivery_destination_address'] = $this->delivery_destination_address;
+            $values['delivery_destination_city'] = $this->delivery_destination_city;
+            $values['delivery_destination_zip_code'] = $this->delivery_destination_zip_code;
+            $values['delivery_destination_country'] = $this->delivery_destination_country;
+        }
+
+        if ($this->shouldAddPayment()) {
+            $values['payments'] = $this->payments;
+        }
+
+        if (!empty($this->exchange_currency_id)) {
+            $values['exchange_currency_id'] = $this->exchange_currency_id;
+            $values['exchange_rate'] = $this->exchange_rate;
+        }
+
+        if (!empty($this->associatedWith)) {
+            $values['associated_documents'] = $this->associatedWith;
+        }
+
+        return $values;
+    }
+
+    //          GETS          //
+
+    /**
+     * Get document id
+     *
+     * @return int
+     */
+    public function getDocumentId(): int
+    {
+        return $this->document_id;
+    }
+
+    /**
+     * Get document total
+     *
+     * @return float|int
+     */
+    public function getDocumentTotal()
+    {
+        return $this->documentTotal;
+    }
+
+    /**
+     * Get document exchange total
+     *
+     * @return float|int
+     */
+    public function getDocumentExchageTotal()
+    {
+        return $this->documentExchageTotal;
+    }
+
+    //          SETS          //
+
+    /**
+     * Set document status
+     *
+     * @param $documentStatus
+     *
+     * @return $this
+     */
+    public function setDocumentStatus($documentStatus = null): Documents
+    {
+        switch (true) {
+            case $documentStatus !== null:
+                $this->documentStatus = (int)$documentStatus;
+
+                break;
+            case defined('DOCUMENT_STATUS'):
+                $this->documentStatus = (int)DOCUMENT_STATUS;
+
+                break;
+            default:
+                $this->documentStatus = DocumentStatus::DRAFT;
+
+                break;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set document type
+     *
+     * @param $documentType
+     *
+     * @return $this
+     *
+     * @throws Error
+     */
+    public function setDocumentType($documentType = null): Documents
+    {
+        switch (true) {
+            case !empty($documentType):
+                $this->documentType = $documentType;
+
+                break;
+            case defined('DOCUMENT_TYPE'):
+                $this->documentType = DOCUMENT_TYPE;
+                break;
+            default:
+                $this->documentType = '';
+
+                break;
+        }
+
+        if (empty($this->documentType)) {
             throw new Error(__('Tipo de documento não definido nas opções'));
         }
 
-        $this->documentType = isset($_GET['document_type']) ? sanitize_text_field($_GET['document_type']) : DOCUMENT_TYPE;
+        $this->documentTypeName = DocumentTypes::getDocumentTypeName($this->documentType);
+
+        return $this;
     }
 
     /**
-     * Gets the error object
-     * @return bool|Error
+     * Set send by email
+     *
+     * @param $sendByEmail
+     *
+     * @return $this
      */
-    public function getError()
+    public function setSendEmail($sendByEmail = null): Documents
     {
-        return $this->error ?: false;
+        switch (true) {
+            case $sendByEmail !== null:
+                $this->sendEmail = (int)$sendByEmail;
+
+                break;
+            case defined('EMAIL_SEND'):
+                $this->sendEmail = (int)EMAIL_SEND;
+
+                break;
+            default:
+                $this->sendEmail = 0;
+
+                break;
+        }
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * Set use CAE ID
+     *
+     * @return $this
+     */
+    public function setCae(): Documents
+    {
+        if (defined('DOCUMENT_SET_CAE_ID')) {
+            $this->caeId = (int)DOCUMENT_SET_CAE_ID;
+        } else {
+            $this->caeId = 0;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set use shipping information
+     *
+     * @return $this
+     */
+    public function setShippingInformation(): Documents
+    {
+        if (defined('SHIPPING_INFO')) {
+            $this->useShipping = (int)SHIPPING_INFO;
+        } else {
+            $this->useShipping = 0;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set document reference
+     *
+     * @return $this
+     */
+    public function setYourReference(): Documents
+    {
+        $this->your_reference = '#' . $this->order->get_order_number();
+
+        return $this;
+    }
+
+    /**
+     * Set dates
+     *
+     * @return $this
+     */
+    public function setDates(): Documents
+    {
+        $this->date = date('Y-m-d');
+        $this->expiration_date = date('Y-m-d');
+
+        return $this;
+    }
+
+    /**
+     * Set costumer
+     *
+     * @return $this
+     *
      * @throws Error
      */
-    public function getDocumentId()
+    public function setCustomer(): Documents
     {
-        if ($this->documentId > 0) {
-            return $this->documentId;
-        }
+        $this->customer_id = (new OrderCustomer($this->order))->create();
 
-        throw new Error(__('Document not found'));
+        return $this;
     }
 
     /**
-     * @return Documents
+     * Set document set id
+     *
+     * @return $this
+     *
+     * @throws Error
      */
-    public function createDocument()
+    public function setDocumentSetId(): Documents
     {
-        try {
-            apply_filters('moloni_before_start_document', $this);
-
-            if ($this->stopProcess) {
-                return $this;
-            }
-
-            $this->company = Curl::simple('companies/getOne', []);
-
-            $this->customer_id = (new OrderCustomer($this->order))->create();
-            $this->document_set_id = $this->getDocumentSetId();
-
-            $this->date = date('Y-m-d');
-            $this->expiration_date = date('Y-m-d');
-
-            $this->your_reference = '#' . $this->order->get_order_number();
-
-            $this->checkForWarnings();
-
-            $this
-                ->setFiscalZone()
-                ->setProducts()
-                ->setShipping()
-                ->setFees()
-                ->setExchangeRate()
-                ->setShippingInfo()
-                ->setPaymentMethod()
-                ->setNotes();
-
-            apply_filters('moloni_before_insert_document', $this);
-
-            if ($this->stopProcess) {
-                return $this;
-            }
-
-            $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
-
-            if (!isset($insertedDocument['document_id'])) {
-                throw new Error(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
-            }
-
-            $this->document_id = $insertedDocument['document_id'];
-
-            add_post_meta($this->orderId, '_moloni_sent', $this->document_id, true);
-
-            $addedDocument = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
-
-            apply_filters('moloni_after_insert_document', $this);
-
-            // If the documents is going to be inserted as closed
-            if (defined('DOCUMENT_STATUS') && DOCUMENT_STATUS) {
-
-                // Validate if the document totals match can be closed
-                $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded());
-                $documentTotal = (float)$addedDocument['exchange_total_value'] > 0 ? (float)$addedDocument['exchange_total_value'] : (float)$addedDocument['net_value'];
-
-                if ($orderTotal !== $documentTotal) {
-                    $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
-                    throw new Error(
-                        __('O documento foi inserido mas os totais não correspondem. ') .
-                        '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
-                    );
-                }
-
-                $closeDocument = [];
-                $closeDocument['document_id'] = $this->document_id;
-                $closeDocument['status'] = 1;
-
-                // Send email to the client
-                if (defined('EMAIL_SEND') && EMAIL_SEND) {
-                    $this->order->add_order_note(__('Documento enviado por email para o cliente'));
-
-                    $closeDocument['send_email'] = [];
-                    $closeDocument['send_email'][] = [
-                        'email' => $this->order->get_billing_email(),
-                        'name' => $addedDocument['entity_name'],
-                        'msg' => ''
-                    ];
-                }
-
-                Curl::simple($this->documentType . '/update', $closeDocument);
-
-                apply_filters('moloni_after_close_document', $this);
-
-                $this->order->add_order_note(__('Documento inserido no Moloni'));
-            } else {
-                $this->order->add_order_note(__('Documento inserido como rascunho no Moloni'));
-            }
-        } catch (Error $error) {
-            $this->document_id = 0;
-            $this->error = $error;
+        if (!defined('DOCUMENT_SET_ID') || (int)DOCUMENT_SET_ID === 0) {
+            throw new Error(__('Série de documentos em falta. <br>Por favor seleccione uma série nas opções do plugin', false));
         }
+
+        $this->document_set_id = DOCUMENT_SET_ID;
 
         return $this;
     }
@@ -246,7 +652,7 @@ class Documents
      *
      * @return $this
      */
-    private function setFiscalZone()
+    public function setFiscalZone(): Documents
     {
         $fiscalZone = null;
 
@@ -275,10 +681,13 @@ class Documents
     }
 
     /**
+     * Set products
+     *
      * @return $this
+     *
      * @throws Error
      */
-    private function setProducts()
+    public function setProducts(): Documents
     {
         foreach ($this->order->get_items() as $orderProduct) {
             // Skip "child" products created by "YITH WooCommerce Product Bundles" plugin
@@ -301,10 +710,13 @@ class Documents
     }
 
     /**
+     * Set shipping information
+     *
      * @return $this
+     *
      * @throws Error
      */
-    private function setShipping()
+    public function setShipping(): Documents
     {
         if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
             $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalZone);
@@ -315,10 +727,13 @@ class Documents
     }
 
     /**
+     * Set fees
+     *
      * @return $this
+     *
      * @throws Error
      */
-    private function setFees()
+    public function setFees(): Documents
     {
         foreach ($this->order->get_fees() as $key => $item) {
             /** @var $item WC_Order_Item_Fee */
@@ -327,7 +742,6 @@ class Documents
             if ($feePrice > 0) {
                 $newOrderFee = new OrderFees($item, count($this->products), $this->fiscalZone);
                 $this->products[] = $newOrderFee->create()->mapPropsToValues();
-
             }
         }
 
@@ -335,16 +749,17 @@ class Documents
     }
 
     /**
+     * Set exchage rate
+     *
      * @return $this
+     *
      * @throws Error
      */
-    private function setExchangeRate()
+    public function setExchangeRate(): Documents
     {
-
-        $company = Curl::simple('companies/getOne', []);
-        if ($company['currency']['iso4217'] !== $this->order->get_currency()) {
+        if ($this->company['currency']['iso4217'] !== $this->order->get_currency()) {
             $this->exchange_currency_id = Tools::getCurrencyIdFromCode($this->order->get_currency());
-            $this->exchange_rate = Tools::getCurrencyExchangeRate($company['currency']['currency_id'], $this->exchange_currency_id);
+            $this->exchange_rate = Tools::getCurrencyExchangeRate($this->company['currency']['currency_id'], $this->exchange_currency_id);
 
             if (!empty($this->products) && is_array($this->products)) {
                 foreach ($this->products as &$product) {
@@ -358,15 +773,18 @@ class Documents
 
     /**
      * Set the document Payment Method
+     *
      * @return $this
+     *
      * @throws Error
      */
-    private function setPaymentMethod()
+    public function setPaymentMethod(): Documents
     {
         $paymentMethodName = $this->order->get_payment_method_title();
 
         if (!empty($paymentMethodName)) {
             $paymentMethod = new Payment($paymentMethodName);
+
             if (!$paymentMethod->loadByName()) {
                 $paymentMethod->create();
             }
@@ -392,10 +810,13 @@ class Documents
 
     /**
      * Set the document customer notes
+     *
+     * @return $this
      */
-    private function setNotes()
+    public function setNotes(): Documents
     {
         $notes = $this->order->get_customer_order_notes();
+
         if (!empty($notes)) {
             foreach ($notes as $index => $note) {
                 $this->notes .= $note->comment_content;
@@ -404,281 +825,42 @@ class Documents
                 }
             }
         }
-    }
-
-    /**
-     * @return $this
-     * @throws Error
-     */
-    public function setShippingInfo()
-    {
-        if (defined('SHIPPING_INFO') && SHIPPING_INFO) {
-            $shippingName = $this->order->get_shipping_method();
-
-            if (empty($shippingName)) {
-                return $this;
-            }
-
-            $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
-            if ($this->order->get_shipping_country() === 'PT') {
-                $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
-            }
-
-            $deliveryMethod = new DeliveryMethod($this->order->get_shipping_method());
-            if (!$deliveryMethod->loadByName()) {
-                $deliveryMethod->create();
-            }
-
-            $this->delivery_method_id = $deliveryMethod->delivery_method_id > 0 ?
-                $deliveryMethod->delivery_method_id : $this->company['delivery_method_id'];
-
-            $this->delivery_datetime = date('Y-m-d H:i:s');
-
-            $loadAddress = $this->getLoadAddress();
-
-            $this->delivery_departure_address = $loadAddress['address'];
-            $this->delivery_departure_city = $loadAddress['city'];
-            $this->delivery_departure_zip_code = $loadAddress['zip_code'];
-            $this->delivery_departure_country = $loadAddress['country_id'];
-
-            $this->delivery_destination_address = $this->order->get_shipping_address_1() . ' ' . $this->order->get_shipping_address_2();
-            $this->delivery_destination_city = $this->order->get_shipping_city();
-            $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
-        }
 
         return $this;
     }
 
     /**
-     * @return int
-     * @throws Error
-     */
-    public function getDocumentSetId()
-    {
-        if (defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID > 0) {
-            return DOCUMENT_SET_ID;
-        }
-
-        throw new Error(__('Série de documentos em falta. <br>Por favor seleccione uma série nas opções do plugin', false));
-    }
-
-    /**
-     * Checks if this document is referenced in database
-     * @return bool
-     */
-    public function isReferencedInDatabase()
-    {
-        return $this->order->get_meta('_moloni_sent') ? true : false;
-    }
-
-    /**
-     * Map this object properties to an array to insert/update a moloni document
-     * @return array
-     */
-    private function mapPropsToValues()
-    {
-        $values = [];
-        $values['customer_id'] = $this->customer_id;
-        $values['document_set_id'] = $this->document_set_id;
-        $values['our_reference'] = $this->our_reference;
-        $values['your_reference'] = $this->your_reference;
-        $values['date'] = $this->date;
-        $values['expiration_date'] = $this->expiration_date;
-        $values['financial_discount'] = $this->financial_discount;
-        $values['special_discount'] = $this->special_discount;
-        $values['salesman_id'] = $this->salesman_id;
-        $values['salesman_commission'] = $this->salesman_commission;
-
-        $values['notes'] = $this->notes;
-        $values['status'] = $this->status;
-        $values['eac_id'] = 0;
-
-        if (defined('DOCUMENT_SET_CAE_ID') && (int)DOCUMENT_SET_CAE_ID > 0) {
-            $values['eac_id'] = DOCUMENT_SET_CAE_ID;
-        }
-
-        if ((int)$this->delivery_method_id > 0) {
-            $values['delivery_datetime'] = $this->delivery_datetime;
-            $values['delivery_method_id'] = $this->delivery_method_id;
-
-            $values['delivery_departure_address'] = $this->delivery_departure_address;
-            $values['delivery_departure_city'] = $this->delivery_departure_city;
-            $values['delivery_departure_zip_code'] = $this->delivery_departure_zip_code;
-            $values['delivery_departure_country'] = $this->delivery_departure_country;
-
-            $values['delivery_destination_address'] = $this->delivery_destination_address;
-            $values['delivery_destination_city'] = $this->delivery_destination_city;
-            $values['delivery_destination_zip_code'] = $this->delivery_destination_zip_code;
-            $values['delivery_destination_country'] = $this->delivery_destination_country;
-        }
-
-        $values['payments'] = $this->payments;
-
-        $values['products'] = $this->products;
-
-        if (!empty($this->exchange_currency_id)) {
-            $values['exchange_currency_id'] = $this->exchange_currency_id;
-            $values['exchange_rate'] = $this->exchange_rate;
-        }
-
-        return $values;
-    }
-
-    /**
-     * This method will download a document if it is closed
-     * Or it will redirect to the Moloni edit page
-     * @param $documentId
-     * @return bool
-     * @throws Error
-     */
-    public static function showDocument($documentId)
-    {
-        $values['document_id'] = $documentId;
-        $invoice = Curl::simple('documents/getOne', $values);
-
-        if (!isset($invoice['document_id'])) {
-            return false;
-        }
-
-        if ((int)$invoice['status'] === 1) {
-            $url = Curl::simple('documents/getPDFLink', $values);
-            header('Location: ' . $url['url']);
-        } else {
-            if (defined('COMPANY_SLUG')) {
-                $slug = COMPANY_SLUG;
-            } else {
-                $meInfo = Curl::simple('companies/getOne', []);
-                $slug = $meInfo['slug'];
-            }
-
-
-            header('Location: https://moloni.pt/' . $slug . '/' . self::getDocumentTypeName($invoice) . '/showDetail/' . $invoice['document_id']);
-        }
-        exit;
-    }
-
-    /**
-     * Download a document
+     * Set delivery details
      *
-     * @param int $documentId Moloni document ID
-     *
-     * @return void
+     * @return $this
      *
      * @throws Error
      */
-    public static function downloadDocument($documentId)
+    public function setDelivery(): Documents
     {
-        $result = Curl::simple('documents/getPDFLink', ['document_id' => $documentId]);
+        $shippingName = $this->order->get_shipping_method();
 
-        if (isset($result['url'])) {
-            $downloadUrl = 'https://www.moloni.pt/downloads/index.php?action=getDownload&';
-            $downloadUrl .= substr($result['url'], strpos($result['url'], '?') + 1);
-            $downloadUrl .= '&e=wordpress.auto.download@moloni.pt';
-            $downloadUrl .= '&t=n';
-
-            header('Location: ' . $downloadUrl);
-        } else {
-            echo "<script>";
-            echo "  alert('" . _('Documento não existe') . "');";
-            echo "  window.close();";
-            echo "</script>";
+        if (empty($shippingName)) {
+            return $this;
         }
-    }
 
-    /**
-     * Deprecated
-     *
-     * @param int $documentId
-     *
-     * @throws Error
-     *
-     * @deprecated In favor of API sending methods
-     */
-    private function sendOldEmail($documentId)
-    {
-        $invoice = Curl::simple('documents/getOne', ['document_id' => $documentId]);
+        $this->delivery_destination_zip_code = $this->order->get_shipping_postcode();
 
-        $meInfo = Curl::simple('companies/getOne', []);
-        $email = $this->order->get_billing_email();
-        $subject = 'Envio de documento | ' . self::getDocumentTypeName($invoice) . $invoice['document_set']['name'] . '-' . $invoice['number'] . ' | ' . date('Y-m-d');
-
-        $date = explode('T', $invoice['date']);
-        $date = $date[0];
-
-        $url = 'http://plugins.moloni.com/templates/emails/invoice.txt';
-
-        $response = wp_remote_get($url);
-        $message = wp_remote_retrieve_body($response);
-
-        $pdfURL = Curl::simple('documents/getPDFLink', ['document_id' => $invoice['document_id']]);
-
-        $message = str_replace(
-            [
-                '{{image}}',
-                '{{nome_empresa}}',
-                '{{data_hoje}}',
-                '{{nome_cliente}}',
-                '{{documento_tipo}}',
-                '{{documento_numero}}',
-                '{{documento_emissao}}',
-                '{{documento_vencimento}}',
-                '{{documento_total}}',
-                '{{documento_url}}',
-                '{{empresa_nome}}',
-                '{{empresa_morada}}',
-                '{{empresa_email}}'
-            ], [
-            $meInfo['image'],
-            $meInfo['name'],
-            date('Y-m-d'),
-            $this->order->get_billing_first_name() . ' ' . $this->order->get_billing_last_name(),
-            self::getDocumentTypeName($invoice), $invoice['document_set']['name'] . '-' . $invoice['number'],
-            $date,
-            $date,
-            $invoice['net_value'] . '€',
-            $pdfURL['url'],
-            $meInfo['name'],
-            $meInfo['address'],
-            $meInfo['mails_sender_address']
-        ], $message
-        );
-
-        $headers = [
-            'Reply-To' => $meInfo['mails_sender_name'] . ' <' . $meInfo['mails_sender_address'] . '>'
-        ];
-
-        wp_mail($email, $subject, $message, $headers);
-    }
-
-    /**
-     * Checks for warnings
-     *
-     * @throws Error
-     */
-    private function checkForWarnings()
-    {
-        if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
-            $forceUrl = 'admin.php?page=moloni&action=genInvoice&id=' . $this->orderId . '&force=true';
-
-            if (isset($_GET['document_type'])) {
-                $forceUrl .= '&document_type=' . sanitize_text_field($_GET['document_type']);
-            }
-
-            throw new Error(
-                __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
-                " <a href='$forceUrl'>" . __('Gerar novamente') . '</a>'
-            );
+        if ($this->order->get_shipping_country() === 'PT') {
+            $this->delivery_destination_zip_code = Tools::zipCheck($this->delivery_destination_zip_code);
         }
-    }
 
-    /**
-     * Returns load address to be used in the document
-     *
-     * @return array
-     *
-     * @throws Error
-     */
-    private function getLoadAddress() {
+        $deliveryMethod = new DeliveryMethod($this->order->get_shipping_method());
+
+        if (!$deliveryMethod->loadByName()) {
+            $deliveryMethod->create();
+        }
+
+        $this->delivery_method_id = $deliveryMethod->delivery_method_id > 0 ?
+            $deliveryMethod->delivery_method_id : $this->company['delivery_method_id'];
+
+        $this->delivery_datetime = date('Y-m-d H:i:s');
+
         $loadSetting = defined('LOAD_ADDRESS') ? (int)LOAD_ADDRESS : 0;
 
         if ($loadSetting === 1 &&
@@ -686,58 +868,67 @@ class Documents
             defined('LOAD_ADDRESS_CUSTOM_CITY') &&
             defined('LOAD_ADDRESS_CUSTOM_CODE') &&
             defined('LOAD_ADDRESS_CUSTOM_COUNTRY')) {
-            $address = [
-                'address' => LOAD_ADDRESS_CUSTOM_ADDRESS,
-                'city' => LOAD_ADDRESS_CUSTOM_CITY,
-                'zip_code' => LOAD_ADDRESS_CUSTOM_CODE,
-                'country_id' => (int)LOAD_ADDRESS_CUSTOM_COUNTRY,
-            ];
+            $this->delivery_departure_address = LOAD_ADDRESS_CUSTOM_ADDRESS;
+            $this->delivery_departure_city = LOAD_ADDRESS_CUSTOM_CITY;
+            $this->delivery_departure_zip_code = LOAD_ADDRESS_CUSTOM_CODE;
+            $this->delivery_departure_country = (int)LOAD_ADDRESS_CUSTOM_COUNTRY;
         } else {
-            $address = [
-                'address' => $this->company['address'],
-                'city' => $this->company['city'],
-                'zip_code' => $this->company['zip_code'],
-                'country_id' => $this->company['country_id'],
-            ];
+            $this->delivery_departure_address = $this->company['address'];
+            $this->delivery_departure_city = $this->company['city'];
+            $this->delivery_departure_zip_code = $this->company['zip_code'];
+            $this->delivery_departure_country = $this->company['country_id'];
         }
 
-        return $address;
+        $this->delivery_destination_address = $this->order->get_shipping_address_1() . ' ' . $this->order->get_shipping_address_2();
+        $this->delivery_destination_city = $this->order->get_shipping_city();
+        $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
+
+        return $this;
+    }
+
+    //          VERIFICATIONS          //
+
+    /**
+     * Checks if document should have payments
+     *
+     * @return bool
+     */
+    protected function shouldAddPayment(): bool
+    {
+        return DocumentTypes::hasPayments($this->documentType);
     }
 
     /**
-     * Gets document slug by type
+     * Checks if document should be closed
      *
-     * @param $invoice
-     *
-     * @return string
+     * @return bool
      */
-    private static function getDocumentTypeName($invoice)
+    protected function shouldCloseDocument(): bool
     {
-        switch ($invoice['document_type']['saft_code']) {
-            case 'FT' :
-            default:
-                $typeName = 'Faturas';
-                break;
-            case 'FR' :
-                $typeName = 'FaturasRecibo';
-                break;
-            case 'FS' :
-                $typeName = 'FaturaSimplificada';
-                break;
-            case 'PF' :
-                $typeName = 'FaturasProForma';
-                break;
-            case 'GT' :
-                $typeName = 'GuiasTransporte';
-                break;
-            case 'NEF' :
-                $typeName = 'NotasEncomenda';
-                break;
-            case 'OR':
-                $typeName = 'Orcamentos';
-                break;
+        return $this->documentStatus === DocumentStatus::CLOSED;
+    }
+
+    /**
+     * Checks if document should be sent via email
+     *
+     * @return bool
+     */
+    protected function shouldSendEmail(): bool
+    {
+        return $this->sendEmail === Boolean::YES;
+    }
+
+    /**
+     * Checks if document should have shipping information
+     *
+     * @return bool
+     */
+    protected function shouldAddShippingInformation(): bool
+    {
+        if (DocumentTypes::requiresDelivery($this->documentType)) {
+            return true;
         }
 
-        return $typeName;
+        return $this->useShipping === Boolean::YES;
     }
 }

@@ -1,5 +1,5 @@
 <div class="header">
-    <img src="<?= MOLONI_IMAGES_URL ?>logo.png" width='300px' alt="Moloni">
+    <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width='300px' alt="Moloni">
 </div>
 
 <?php settings_errors(); ?>
@@ -20,8 +20,12 @@
         <?= __('Ferramentas') ?>
     </a>
 </nav>
-
 <?php
+
+if (isset($pluginErrorException) && $pluginErrorException instanceof \Moloni\Error) {
+    $pluginErrorException->showError();
+}
+
 $tab = isset($_GET['tab']) ? $_GET['tab'] : '';
 
 switch ($tab) {

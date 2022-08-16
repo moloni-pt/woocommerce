@@ -1,6 +1,6 @@
 <div id='formLogin'>
     <a href='https://moloni.pt' target='_BLANK'>
-        <img src="<?= MOLONI_IMAGES_URL ?>logo.png" width='300px' alt="Moloni">
+        <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width='300px' alt="Moloni">
     </a>
     <hr>
     <form id='formPerm' method='POST' action='<?= admin_url('admin.php?page=moloni') ?>'>

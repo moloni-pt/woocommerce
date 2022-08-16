@@ -28,13 +28,13 @@ class Error extends Exception
         $message = $this->getDecodedMessage();
 
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $url = $this->request['url'] ?: '';
+        $url = $this->request['url'] ?? '';
 
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $sent = $this->request['sent'] ?: [];
+        $sent = $this->request['sent'] ?? [];
 
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $received = $this->request['received'] ?: [];
+        $received = $this->request['received'] ?? [];
 
         include MOLONI_TEMPLATE_DIR . 'Messages/DocumentError.php';
     }

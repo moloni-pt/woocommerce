@@ -1,5 +1,6 @@
 <?php use Moloni\Curl;?>
 <?php use Moloni\Model;?>
+<?php use Moloni\Enums\DocumentTypes;?>
 
 <?php $company = Curl::simple('companies/getOne', []); ?>
 <?php $warehouses = Curl::simple('warehouses/getAll', []); ?>
@@ -28,44 +29,32 @@
             <!-- Tipo de documento -->
             <tr>
                 <th>
-                    <label for="document_type"><?= __('Tipo de documento') ?></label>
+                    <label for="document_type">
+                        <?= __('Tipo de documento') ?>
+                    </label>
                 </th>
                 <td>
                     <select id="document_type" name='opt[document_type]' class='inputOut'>
-                        <option value='invoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
-                            <?= __('Faturas') ?>
-                        </option>
+                        <?php
+                        $documentType = '';
 
-                        <option value='invoiceReceipts' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
-                            <?= __('Factura/Recibo') ?>
-                        </option>
+                        if (defined('DOCUMENT_TYPE') && !empty(DOCUMENT_TYPE)) {
+                            $documentType = DOCUMENT_TYPE;
+                        }
+                        ?>
 
-                        <option value='simplifiedInvoices'<?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
-                            <?= __('Factura Simplificada') ?>
-                        </option>
-
-                        <option value='proFormaInvoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
-                            <?= __('Fatura Pró-Forma') ?>
-                        </option>
-
-                        <option value='billsOfLading' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
-                            <?= __('Guia de Transporte') ?>
-                        </option>
-
-                        <option value='purchaseOrder' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
-                            <?= __('Nota de Encomenda') ?>
-                        </option>
-
-                        <option value='estimates' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
-                            <?= __('Orçamento') ?>
-                        </option>
+                        <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+                            <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                                <?= __($name) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                     <p class='description'><?= __('Obrigatório') ?></p>
                 </td>
             </tr>
 
             <!-- Estado do documento -->
-            <tr>
+            <tr id="document_status_line">
                 <th>
                     <label for="document_status"><?= __('Estado do documento') ?></label>
                 </th>
@@ -75,6 +64,32 @@
                         <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?= __('Fechado') ?></option>
                     </select>
                     <p class='description'><?= __('Obrigatório') ?></p>
+                </td>
+            </tr>
+
+            <!-- Documento de transporte -->
+            <tr id="create_bill_of_lading_line">
+                <th>
+                    <label for="create_bill_of_lading"><?= __('Documento de transporte') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $createBillOfLading = 0;
+
+                    if (defined('CREATE_BILL_OF_LADING')) {
+                        $createBillOfLading = (int)CREATE_BILL_OF_LADING;
+                    }
+                    ?>
+
+                    <select id="create_bill_of_lading" name='opt[create_bill_of_lading]' class='inputOut'>
+                        <option value='0' <?= ($createBillOfLading === 0 ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($createBillOfLading === 1 ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'><?= __('Criar documento de transporte') ?></p>
                 </td>
             </tr>
 

@@ -41,7 +41,7 @@ class Install
                 client_secret VARCHAR(100), 
                 company_id INT,
                 dated TIMESTAMP default CURRENT_TIMESTAMP
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
+            ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
         );
 
         $wpdb->query(
@@ -51,7 +51,7 @@ class Install
                 description VARCHAR(100), 
                 selected VARCHAR(100), 
                 changed TIMESTAMP default CURRENT_TIMESTAMP
-			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
+			) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
         );
     }
 
@@ -61,6 +61,7 @@ class Install
     private static function insertSettings()
     {
         global $wpdb;
+
         $wpdb->query("INSERT INTO `" . $wpdb->prefix . "moloni_api_config`(config, description) 
                         VALUES('document_set_id', 'Escolha uma Série de Documentos para melhor organização'),
                         VALUES('exemption_reason', 'Escolha uma Isenção de Impostos para os produtos que não têm impostos'),

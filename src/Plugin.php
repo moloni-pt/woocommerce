@@ -2,8 +2,9 @@
 
 namespace Moloni;
 
-use Moloni\Controllers\Documents;
-use Moloni\Scripts\Enqueue;
+use Moloni\Services\Documents\DownloadDocument;
+use Moloni\Services\Documents\OpenDocument;
+use Moloni\Services\Orders\CreateMoloniDocument;
 
 /**
  * Main constructor
@@ -12,13 +13,21 @@ use Moloni\Scripts\Enqueue;
  */
 class Plugin
 {
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->actions();
         $this->crons();
     }
 
-    private function actions()
+    /**
+     * Start actions
+     *
+     * @return void
+     */
+    private function actions(): void
     {
         new Menus\Admin($this);
         new Hooks\ProductUpdate($this);
@@ -33,7 +42,7 @@ class Plugin
     /**
      * Setting up the crons if needed
      */
-    private function crons()
+    private function crons(): void
     {
         add_filter('cron_schedules', '\Moloni\Crons::addCronInterval');
         add_action('moloniProductsSync', '\Moloni\Crons::productsSync');
@@ -47,7 +56,7 @@ class Plugin
      * Main function
      * This will run when accessing the page "moloni" and the routing shoud be done here with and $_GET['action']
      */
-    public function run()
+    public function run(): void
     {
         try {
             /** If the user is not logged in show the login form */
@@ -56,86 +65,107 @@ class Plugin
 
                 switch ($action) {
                     case 'remInvoice':
-                        $this->removeOrder((int)$_GET['id']);
+                        $this->removeOrder();
                         break;
                     case 'remInvoiceAll':
                         $this->removeOrdersAll();
                         break;
                     case 'genInvoice':
-                        $orderId = (int)$_REQUEST['id'];
-                        /** @var Documents $document intended */
-                        $document = $this->createDocument($orderId);
+                        $this->createDocument();
                         break;
                     case 'syncStocks':
                         $this->syncStocks();
                         break;
                     case 'remLogs':
-                        Log::removeLogs();
-                        add_settings_error('moloni', 'moloni-rem-logs', __('A limpeza de logs foi concluída.'), 'updated');
+                        $this->removeLogs();
                         break;
                     case 'getInvoice':
-                        $document = false;
-                        $documentId = (int)$_REQUEST['id'];
-
-                        if ($documentId > 0) {
-                            $document = Documents::showDocument($documentId);
-                        }
-
-                        if (!$document) {
-                            add_settings_error('moloni', 'moloni-document-not-found', __('Documento não encontrado'));
-                        }
+                        $this->openDocument();
                         break;
                     case 'downloadDocument':
-                        $documentId = (int)$_REQUEST['id'];
-
-                        if ($documentId > 0) {
-                            Documents::downloadDocument($documentId);
-                            exit;
-                        }
-
+                        $this->downloadDocument();
                         break;
-                }
-
-                if (!wp_doing_ajax()) {
-                    include MOLONI_TEMPLATE_DIR . 'MainContainer.php';
                 }
             }
         } catch (Error $error) {
-            $error->showError();
+            $pluginErrorException = $error;
+        }
+
+        if (!wp_doing_ajax()) {
+            include MOLONI_TEMPLATE_DIR . 'MainContainer.php';
         }
     }
 
     /**
      * Create a single document from order
      *
-     * @param int $orderId Order Id
-     *
-     * @return Documents
-     *
      * @throws Error
      */
-    private function createDocument($orderId)
+    private function createDocument(): void
     {
-        $document = new Documents($orderId);
-        $document->createDocument();
+        $service = new CreateMoloniDocument((int)$_REQUEST['id']);
+        $service->run();
 
-        if ($document->document_id) {
-            $viewUrl = ' <a href="' . admin_url('admin.php?page=moloni&action=getInvoice&id=' . $document->document_id) . '" target="_BLANK">Ver documento</a>';
-            add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $viewUrl, 'updated');
+        $adminUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId());
+
+        $html = ' <a href="' . $adminUrl . '" target="_BLANK">';
+        $html .= '  Ver documento';
+        $html .= '</a>';
+
+        add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $html, 'updated');
+    }
+
+    /**
+     * Open Moloni document
+     *
+     * @return void
+     */
+    private function openDocument(): void
+    {
+        $documentId = (int)$_REQUEST['id'];
+
+        if ($documentId > 0) {
+            new OpenDocument($documentId);
         }
 
-        return $document;
+        add_settings_error('moloni', 'moloni-document-not-found', __('Documento não encontrado'));
+    }
+
+    /**
+     * Download Moloni document
+     *
+     * @return void
+     */
+    private function downloadDocument(): void
+    {
+        $documentId = (int)$_REQUEST['id'];
+
+        if ($documentId > 0) {
+            new DownloadDocument($documentId);
+        }
+    }
+
+    /**
+     * Delete logs
+     *
+     * @return void
+     */
+    private function removeLogs(): void
+    {
+        Log::removeLogs();
+
+        add_settings_error('moloni', 'moloni-rem-logs', __('A limpeza de logs foi concluída.'), 'updated');
     }
 
     /**
      * Discard single order from pending list
      *
-     * @param int $orderId
-     *
      * @return void
      */
-    private function removeOrder($orderId)
+    private function removeOrder(): void
     {
+        $orderId = (int)$_GET['id'];
+
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
             add_post_meta($orderId, '_moloni_sent', '-1', true);
             add_settings_error('moloni', 'moloni-order-remove-success', __('A encomenda ' . $orderId . ' foi marcada como gerada!'), 'updated');
@@ -153,7 +183,7 @@ class Plugin
      *
      * @return void
      */
-    private function removeOrdersAll()
+    private function removeOrdersAll(): void
     {
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
             $allOrders = Controllers\PendingOrders::getAllAvailable();
@@ -177,7 +207,7 @@ class Plugin
      *
      * @return void
      */
-    private function syncStocks()
+    private function syncStocks(): void
     {
         $date = isset($_GET['since']) ? sanitize_text_field($_GET['since']) : gmdate('Y-m-d', strtotime('-1 week'));
 

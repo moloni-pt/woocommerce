@@ -1,14 +1,10 @@
-<?php use \Moloni\Controllers\Documents; ?>
-<?php use \Moloni\Controllers\PendingOrders; ?>
+<?php use Moloni\Controllers\Documents; ?>
+<?php use Moloni\Controllers\PendingOrders; ?>
+<?php use Moloni\Enums\DocumentTypes;?>
 
 <?php $orders = PendingOrders::getAllAvailable(); ?>
 
 <div class="wrap">
-
-    <?php if (isset($document) && $document instanceof Documents && $document->getError()) : ?>
-        <?php $document->getError()->showError(); ?>
-    <?php endif; ?>
-
     <h3><?= __('Aqui pode consultar todas as encomendas que tem por gerar') ?></h3>
 
     <div class="tablenav top">
@@ -91,7 +87,7 @@
                             <input type="hidden" name="page" value="moloni">
                             <input type="hidden" name="action" value="genInvoice">
                             <input type="hidden" name="id" value="<?= $order['id'] ?>">
-                            
+
                             <?php
                             if (defined('DOCUMENT_TYPE')) {
                                 $documentType = DOCUMENT_TYPE;
@@ -101,41 +97,17 @@
                             ?>
 
                             <select name="document_type" style="margin-right: 5px">
-                                <option value='invoices' <?= ($documentType === 'invoices' ? 'selected' : '') ?>>
-                                    <?= __('Faturas') ?>
-                                </option>
-
-                                <option value='invoiceReceipts' <?= ($documentType === 'invoiceReceipts' ? 'selected' : '') ?>>
-                                    <?= __('Factura/Recibo') ?>
-                                </option>
-
-                                <option value='simplifiedInvoices'<?= ($documentType === 'simplifiedInvoices' ? 'selected' : '') ?>>
-                                    <?= __('Factura Simplificada') ?>
-                                </option>
-
-                                <option value='proFormaInvoices' <?= ($documentType === 'proFormaInvoices' ? 'selected' : '') ?>>
-                                    <?= __('Fatura Pró-Forma') ?>
-                                </option>
-
-                                <option value='billsOfLading' <?= ($documentType === 'billsOfLading' ? 'selected' : '') ?>>
-                                    <?= __('Guia de Transporte') ?>
-                                </option>
-
-                                <option value='purchaseOrder' <?= ($documentType === 'purchaseOrder' ? 'selected' : '') ?>>
-                                    <?= __('Nota de Encomenda') ?>
-                                </option>
-
-                                <option value='estimates' <?= ($documentType === 'estimates' ? 'selected' : '') ?>>
-                                    <?= __('Orçamento') ?>
-                                </option>
+                                <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+                                    <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                                        <?= __($name) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
 
                             <input type="submit"
                                    class="wp-core-ui button-primary"
                                    style="width: 80px; text-align: center; margin-right: 5px"
-                                   value="<?= __('Gerar') ?>"
-                            >
-
+                                   value="<?= __('Gerar') ?>">
 
                             <a class="wp-core-ui button-secondary" style="width: 80px; text-align: center"
                                href="<?= admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order['id']) ?>">

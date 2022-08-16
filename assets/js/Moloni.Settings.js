@@ -14,6 +14,7 @@ Moloni.Settings = (function($) {
     function startObservers() {
         documentSetChange();
         documentAutoChange();
+        documentStatusChange();
 
         shippingInfoChange();
         loadAddressChange();
@@ -54,6 +55,10 @@ Moloni.Settings = (function($) {
 
     function documentAutoChange() {
         toggleLineObserver('invoice_auto' , 'invoice_auto_status_line');
+    }
+
+    function documentStatusChange() {
+        toggleLineObserver('document_status' , 'create_bill_of_lading_line');
     }
 
     function shippingInfoChange() {
