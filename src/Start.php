@@ -53,6 +53,7 @@ class Start
 
         $tokensRow = Model::getTokensRow();
         if (!empty($tokensRow['main_token']) && !empty($tokensRow['refresh_token'])) {
+            Model::defineConfigs();
             Model::refreshTokens();
             Model::defineValues();
 
@@ -62,7 +63,6 @@ class Start
             }
 
             if (Storage::$MOLONI_COMPANY_ID) {
-                Model::defineConfigs();
                 return true;
             }
 
@@ -76,7 +76,6 @@ class Start
                 );
 
                 Model::defineValues();
-                Model::defineConfigs();
                 return true;
             }
 
@@ -123,7 +122,8 @@ class Start
      *
      * @return void
      */
-    private static function saveSettings() {
+    private static function saveSettings(): void
+    {
         add_settings_error('general', 'settings_updated', __('Alterações guardadas.'), 'updated');
         $options = $_POST['opt'];
 
@@ -133,7 +133,5 @@ class Start
 
             Model::setOption($option, $value);
         }
-
-        Model::defineConfigs();
     }
 }

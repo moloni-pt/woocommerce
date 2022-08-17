@@ -2,6 +2,8 @@
 
 namespace Moloni;
 
+use Moloni\Services\Mails\AuthenticationExpired;
+
 class Model
 {
     /**
@@ -101,10 +103,16 @@ class Model
                     empty($recheckTokens['refresh_token']) ||
                     $recheckTokens['main_token'] === $tokensRow['main_token'] ||
                     $recheckTokens['refresh_token'] === $tokensRow['refresh_token']) {
+
                     if ($retryNumber <= 3) {
                         $retryNumber++;
 
                         return self::refreshTokens($retryNumber);
+                    }
+
+                    // Send e-mail notification if email is set
+                    if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+                        new AuthenticationExpired(ALERT_EMAIL);
                     }
 
                     Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
@@ -122,7 +130,7 @@ class Model
     /**
      * Define constants from database
      */
-    public static function defineValues()
+    public static function defineValues(): void
     {
         $tokensRow = self::getTokensRow();
 
@@ -137,10 +145,14 @@ class Model
     /**
      * Define company selected settings
      */
-    public static function defineConfigs()
+    public static function defineConfigs(): void
     {
         global $wpdb;
         $results = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "moloni_api_config ORDER BY id DESC", ARRAY_A);
+
+        if (empty($results)) {
+            return;
+        }
 
         foreach ($results as $result) {
             $setting = strtoupper($result['config']);

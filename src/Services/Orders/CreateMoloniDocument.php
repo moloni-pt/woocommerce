@@ -2,6 +2,7 @@
 
 namespace Moloni\Services\Orders;
 
+use Moloni\Warning;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Enums\Boolean;
@@ -42,6 +43,7 @@ class CreateMoloniDocument
     /**
      * Run service
      *
+     * @throws Warning
      * @throws Error
      */
     public function run(): void

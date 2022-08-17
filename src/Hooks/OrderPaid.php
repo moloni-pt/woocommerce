@@ -3,13 +3,15 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Error;
 use Moloni\Log;
+use Moloni\Error;
+use Moloni\Start;
 use Moloni\Notice;
 use Moloni\Plugin;
+use Moloni\Warning;
+use Moloni\Services\Mails\DocumentFailed;
+use Moloni\Services\Mails\DocumentWarning;
 use Moloni\Services\Orders\CreateMoloniDocument;
-use Moloni\Start;
-use Moloni\Controllers\Documents;
 
 class OrderPaid
 {
@@ -43,7 +45,18 @@ class OrderPaid
                             $service->run();
 
                             $this->throwMessages($service);
+                        } catch (Warning $e) {
+                            if (isset($service)) {
+                                $this->sendWarningEmail($service->getOrderNumber());
+                            }
+
+                            Notice::addmessagecustom(htmlentities($e->getError()));
+                            Log::write('Houve um alerta ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
                         } catch (Error $e) {
+                            if (isset($service)) {
+                                $this->sendErrorEmail($service->getOrderNumber());
+                            }
+
                             Notice::addmessagecustom(htmlentities($e->getError()));
                             Log::write('Houve um erro ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
                         }
@@ -74,7 +87,18 @@ class OrderPaid
                     $service->run();
 
                     $this->throwMessages($service);
+                } catch (Warning $e) {
+                    if (isset($service)) {
+                        $this->sendWarningEmail($service->getOrderNumber());
+                    }
+
+                    Notice::addmessagecustom(htmlentities($e->getError()));
+                    Log::write('Houve um alerta ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
                 } catch (Error $e) {
+                    if (isset($service)) {
+                        $this->sendErrorEmail($service->getOrderNumber());
+                    }
+
                     Notice::addmessagecustom(htmlentities($e->getError()));
                     Log::write('Houve um erro ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
                 }
@@ -83,6 +107,20 @@ class OrderPaid
             }
         } catch (Exception $ex) {
             Log::write('Fatal error: ' . $ex->getMessage());
+        }
+    }
+
+    private function sendWarningEmail($orderName): void
+    {
+        if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+            new DocumentWarning(ALERT_EMAIL, $orderName);
+        }
+    }
+
+    private function sendErrorEmail($orderName): void
+    {
+        if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+            new DocumentFailed(ALERT_EMAIL, $orderName);
         }
     }
 

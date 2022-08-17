@@ -460,6 +460,21 @@
 
                 <tr>
                     <th>
+                        <label for="alert_email"><?= __('Alerta de erros via e-mail') ?></label>
+                    </th>
+                    <td>
+                        <input  value="<?= (defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
+                                id="alert_email"
+                                name='opt[alert_email]'
+                                type="text"
+                                style="width: 330px;"
+                                placeholder="mail@example.com">
+                        <p class='description'><?= __('E-mail usado para envio de notificações em caso de erro') ?></p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>
                         <label for="moloni_stock_sync"><?= __('Sincronizar stocks automaticamente') ?></label>
                     </th>
                     <td>

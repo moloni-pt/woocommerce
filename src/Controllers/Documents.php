@@ -8,6 +8,7 @@ use WC_Order_Item_Product;
 use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
+use Moloni\Warning;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
@@ -307,8 +308,8 @@ class Documents
 
             $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
 
-            throw new Error(
-                __('O documento foi inserido mas os totais não correspondem. ') .
+            throw new Warning(
+                __('O documento foi inserido mas os totais não correspondem.') .
                 '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
             );
         }
