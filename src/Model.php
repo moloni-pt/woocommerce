@@ -76,7 +76,7 @@ class Model
 
         $expire = false;
 
-        if (!isset($tokensRow['expiretime'])) {
+        if (!array_key_exists("expiretime", $tokensRow)) {
             $wpdb->query("ALTER TABLE " . $wpdb->prefix . "moloni_api ADD expiretime varchar(250)");
         } else {
             $expire = $tokensRow['expiretime'];
