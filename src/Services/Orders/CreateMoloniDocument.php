@@ -61,18 +61,19 @@ class CreateMoloniDocument
 
         if (isset($billOfLading)) {
             $builder = clone $billOfLading;
-
             $builder
                 ->setDocumentType($this->documentType)
                 ->setDocumentStatus()
                 ->setSendEmail()
                 ->addAssociatedDocument($billOfLading->getDocumentId(), $billOfLading->getDocumentTotal());
+
+            unset($billOfLading);
         } else {
             $builder = new Documents($this->order, $company);
+            $builder->setDocumentType($this->documentType);
         }
 
         $builder
-            ->setDocumentType($this->documentType)
             ->createDocument();
 
         $this->documentId = $builder->getDocumentId();

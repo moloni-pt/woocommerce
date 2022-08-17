@@ -220,6 +220,7 @@ class Documents
      */
     public function __clone()
     {
+        $this->document = [];
         $this->document_id = 0;
 
         $this->documentTotal = 0;
@@ -312,9 +313,15 @@ class Documents
             );
         }
 
-        $closeDocument = [];
-        $closeDocument['document_id'] = $this->document_id;
-        $closeDocument['status'] = DocumentStatus::CLOSED;
+        $closeDocument = [
+            'document_id' => $this->document_id,
+            'status' => DocumentStatus::CLOSED
+        ];
+
+        // Associations need to be sent when closing a document
+        if (!empty($this->associatedWith)) {
+            $closeDocument['associated_documents'] = $this->associatedWith;
+        }
 
         // Send email to the client
         if ($this->shouldSendEmail()) {
