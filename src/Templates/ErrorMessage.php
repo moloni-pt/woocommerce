@@ -1,3 +1,9 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <div style="margin-top: 50px">
     <div id="message" class="updated error is-dismissible">
         <p><?= $message ?></p>

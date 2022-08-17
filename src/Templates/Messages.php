@@ -1,3 +1,9 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <?php if (!empty($message)) : ?>
     <?php if (is_array($message)) : ?>
         <?php foreach ($message as $item) : ?>

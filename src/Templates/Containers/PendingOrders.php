@@ -1,4 +1,9 @@
-<?php use Moloni\Controllers\Documents; ?>
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <?php use Moloni\Controllers\PendingOrders; ?>
 <?php use Moloni\Enums\DocumentTypes;?>
 

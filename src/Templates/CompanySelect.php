@@ -1,3 +1,9 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <div class='outBoxEmpresa'>
     <h2><?= __("Bem vindo! Aqui pode seleccionar qual a empresa que pretende ligar com o WooCoommerce") ?></h2>
     <?php if (isset($companies) && is_array($companies)) : ?>

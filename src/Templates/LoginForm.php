@@ -1,3 +1,9 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <div id='formLogin'>
     <a href='https://moloni.pt' target='_BLANK'>
         <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width='300px' alt="Moloni">

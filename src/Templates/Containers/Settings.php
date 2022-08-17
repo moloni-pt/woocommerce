@@ -1,3 +1,9 @@
+<?php
+if (!defined('ABSPATH')) {
+    exit;
+}
+?>
+
 <?php use Moloni\Curl;?>
 <?php use Moloni\Model;?>
 <?php use Moloni\Enums\DocumentTypes;?>
