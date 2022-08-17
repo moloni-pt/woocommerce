@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 ?>
 
 <?php use Moloni\Controllers\PendingOrders; ?>
-<?php use Moloni\Enums\DocumentTypes;?>
+<?php use Moloni\Enums\DocumentTypes; ?>
 
 <?php $orders = PendingOrders::getAllAvailable(); ?>
 
@@ -59,21 +59,21 @@ if (!defined('ABSPATH')) {
                     </td>
                     <td>
                         <?php
-                            if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
-                                echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
-                            } else {
-                                echo __('Desconhecido');
-                            }
+                        if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
+                            echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
+                        } else {
+                            echo __('Desconhecido');
+                        }
                         ?>
                     <td>
                         <?php
-                            if (defined('VAT_FIELD') &&
-                                isset($order['info'][VAT_FIELD]) &&
-                                !empty($order['info'][VAT_FIELD])) {
-                                echo $order['info'][VAT_FIELD];
-                            } else {
-                                echo '999999990';
-                            }
+                        if (defined('VAT_FIELD') &&
+                            isset($order['info'][VAT_FIELD]) &&
+                            !empty($order['info'][VAT_FIELD])) {
+                            echo $order['info'][VAT_FIELD];
+                        } else {
+                            echo '999999990';
+                        }
                         ?>
                     </td>
                     <td><?= $order['info']['_order_total'] . $order['info']['_order_currency'] ?></td>

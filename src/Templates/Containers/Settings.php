@@ -4,9 +4,9 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Curl;?>
-<?php use Moloni\Model;?>
-<?php use Moloni\Enums\DocumentTypes;?>
+<?php use Moloni\Curl; ?>
+<?php use Moloni\Model; ?>
+<?php use Moloni\Enums\DocumentTypes; ?>
 
 <?php $company = Curl::simple('companies/getOne', []); ?>
 <?php $warehouses = Curl::simple('warehouses/getAll', []); ?>
@@ -319,7 +319,8 @@ if (!defined('ABSPATH')) {
                     <label for="exemption_reason_extra_community"><?= __('Razão de isenção de vendas extra-comunitárias') ?></label>
                 </th>
                 <td>
-                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]' class='inputOut'>
+                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]'
+                            class='inputOut'>
                         <option value='' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
                         <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
                         <?php if (is_array($exemptionReasons)): ?>
@@ -330,7 +331,8 @@ if (!defined('ABSPATH')) {
                     </select>
                     <p class='description'>
                         <?= __('Razão de isenção "especial" usada nos artigos que não tiverem uma taxa de IVA e, na encomenda, o país de faturação do cliente <b>não</b> pertença à União Europeia') ?>
-                        <a style="cursor: help;" title="<?=__('Países da União Europeia') . ': ' . implode(", ", \Moloni\Tools::$europeanCountryCodes)?>">(?)</a>
+                        <a style="cursor: help;"
+                           title="<?= __('Países da União Europeia') . ': ' . implode(", ", \Moloni\Tools::$europeanCountryCodes) ?>">(?)</a>
                     </p>
                 </td>
             </tr>
@@ -438,119 +440,119 @@ if (!defined('ABSPATH')) {
         <h2 class="title"><?= __('Automatização') ?></h2>
         <table class="form-table">
             <tbody>
-                <tr>
-                    <th>
-                        <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
-                    </th>
-                    <td>
-                        <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
-                            <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                            <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
-                        </select>
-                        <p class='description'><?= __('Criar documentos automaticamente') ?></p>
-                    </td>
-                </tr>
+            <tr>
+                <th>
+                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
+                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
+                </td>
+            </tr>
 
-                <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
-                    <th>
-                        <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
-                    </th>
-                    <td>
-                        <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
-                            <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
-                            <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
-                        </select>
-                        <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
-                    </td>
-                </tr>
+            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
+                <th>
+                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
+                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
+                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
+                    </select>
+                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th>
-                        <label for="alert_email"><?= __('Alerta de erros via e-mail') ?></label>
-                    </th>
-                    <td>
-                        <input  value="<?= (defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
-                                id="alert_email"
-                                name='opt[alert_email]'
-                                type="text"
-                                style="width: 330px;"
-                                placeholder="mail@example.com">
-                        <p class='description'><?= __('E-mail usado para envio de notificações em caso de erro') ?></p>
-                    </td>
-                </tr>
+            <tr>
+                <th>
+                    <label for="alert_email"><?= __('Alerta de erros via e-mail') ?></label>
+                </th>
+                <td>
+                    <input value="<?= (defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
+                           id="alert_email"
+                           name='opt[alert_email]'
+                           type="text"
+                           style="width: 330px;"
+                           placeholder="mail@example.com">
+                    <p class='description'><?= __('E-mail usado para envio de notificações em caso de erro') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th>
-                        <label for="moloni_stock_sync"><?= __('Sincronizar stocks automaticamente') ?></label>
-                    </th>
-                    <td>
-                        <select id="moloni_stock_sync" name='opt[moloni_stock_sync]' class='inputOut'>
-                            <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                            <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim, de todos os armazéns') ?></option>
+            <tr>
+                <th>
+                    <label for="moloni_stock_sync"><?= __('Sincronizar stocks automaticamente') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_stock_sync" name='opt[moloni_stock_sync]' class='inputOut'>
+                        <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim, de todos os armazéns') ?></option>
 
-                            <?php if (is_array($warehouses)): ?>
-                                <optgroup label="<?= __('Sim, apenas do armazém:') ?>">
+                        <?php if (is_array($warehouses)): ?>
+                            <optgroup label="<?= __('Sim, apenas do armazém:') ?>">
 
-                                    <?php foreach ($warehouses as $warehouse) : ?>
-                                        <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
-                                            <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
-                                        </option>
-                                    <?php endforeach; ?>
+                                <?php foreach ($warehouses as $warehouse) : ?>
+                                    <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                        <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
 
-                                </optgroup>
-                            <?php endif; ?>
+                            </optgroup>
+                        <?php endif; ?>
 
-                        </select>
-                        <p class='description'><?= __('Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)') ?></p>
-                    </td>
-                </tr>
+                    </select>
+                    <p class='description'><?= __('Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th>
-                        <label for="moloni_stock_status"><?= __('Estado do Stock') ?></label>
-                    </th>
-                    <td>
-                        <select id="moloni_stock_status" name='opt[moloni_stock_status]' class='inputOut'>
-                            <option value='outofstock' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'outofstock' ? 'selected' : '') ?>><?= __('Sem stock') ?></option>
-                            <option value='onbackorder' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'onbackorder' ? 'selected' : '') ?>><?= __('Por encomenda') ?></option>
-                        </select>
-                        <p class='description'><?= __('O estado do produto quando o seu stock após sincronização é 0') ?></p>
-                    </td>
-                </tr>
+            <tr>
+                <th>
+                    <label for="moloni_stock_status"><?= __('Estado do Stock') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_stock_status" name='opt[moloni_stock_status]' class='inputOut'>
+                        <option value='outofstock' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'outofstock' ? 'selected' : '') ?>><?= __('Sem stock') ?></option>
+                        <option value='onbackorder' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'onbackorder' ? 'selected' : '') ?>><?= __('Por encomenda') ?></option>
+                    </select>
+                    <p class='description'><?= __('O estado do produto quando o seu stock após sincronização é 0') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th>
-                        <label for="moloni_product_sync"><?= __('Criar artigos') ?></label>
-                    </th>
-                    <td>
-                        <select id="moloni_product_sync" name='opt[moloni_product_sync]' class='inputOut'>
-                            <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                            <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
-                        </select>
-                        <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
-                    </td>
-                </tr>
+            <tr>
+                <th>
+                    <label for="moloni_product_sync"><?= __('Criar artigos') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_product_sync" name='opt[moloni_product_sync]' class='inputOut'>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th>
-                        <label for="moloni_product_sync_update"><?= __('Actualizar artigos') ?></label>
-                    </th>
-                    <td>
-                        <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
-                            <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                            <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
-                        </select>
-                        <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
-                    </td>
-                </tr>
+            <tr>
+                <th>
+                    <label for="moloni_product_sync_update"><?= __('Actualizar artigos') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
+                </td>
+            </tr>
 
-                <tr>
-                    <th></th>
-                    <td>
-                        <input type="submit" name="submit" id="submit" class="button button-primary"
-                               value="<?= __('Guardar alterações') ?>">
-                    </td>
-                </tr>
+            <tr>
+                <th></th>
+                <td>
+                    <input type="submit" name="submit" id="submit" class="button button-primary"
+                           value="<?= __('Guardar alterações') ?>">
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
