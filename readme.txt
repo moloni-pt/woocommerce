@@ -2,8 +2,8 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.74
-Tested up to: 6.0.0
+Stable tag: 3.0.75
+Tested up to: 6.0.1
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -67,6 +67,12 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.75 =
+* FEATURE: Nova opção para criar documento de transporte
+* UPDATE: Atualizado logotipo e banner
+* MINOR: Testado até à versão 6.0.1 do Wordpress
+* MINOR: Testado até à versão 6.8.0 do WooCommerce
+
 = 3.0.69 =
 * FIX: Correção de alerta
 

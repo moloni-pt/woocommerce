@@ -11,8 +11,8 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.0  
-**Stable tag:**        3.0.74  
+**Tested up to:**      6.0.1  
+**Stable tag:**        3.0.75  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -65,6 +65,12 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.75
+* FEATURE: Nova opção para criar documento de transporte
+* UPDATE: Atualizado logotipo e banner
+* MINOR: Testado até à versão 6.0.1 do Wordpress
+* MINOR: Testado até à versão 6.8.0 do WooCommerce
 
 ### 3.0.74
 * UPDATE: Tentativas depois de falha ao inserir/atualizar documentos
