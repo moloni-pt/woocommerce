@@ -280,7 +280,7 @@ class Documents
             $this->closeDocument();
         } else {
             $note = __('Documento inserido como rascunho no Moloni');
-            $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+            $note .= " (" . $this->documentTypeName . ")";
 
             $this->order->add_order_note($note);
         }
@@ -300,7 +300,7 @@ class Documents
 
         if ($orderTotal !== $this->getDocumentExchageTotal()) {
             $note = __('Documento inserido como rascunho no Moloni');
-            $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+            $note .= " (" . $this->documentTypeName . ")";
 
             $this->order->add_order_note($note);
 
@@ -333,7 +333,7 @@ class Documents
         apply_filters('moloni_after_close_document', $this);
 
         $note = __('Documento inserido no Moloni');
-        $note .= " (" . DocumentTypes::getDocumentTypeName($this->documentType) . ")";
+        $note .= " (" . $this->documentTypeName . ")";
 
         $this->order->add_order_note($note);
     }
