@@ -59,8 +59,10 @@ class Plugin
     public function run(): void
     {
         try {
+            $authenticated = Start::login();
+
             /** If the user is not logged in show the login form */
-            if (Start::login()) {
+            if ($authenticated) {
                 $action = isset($_REQUEST['action']) ? sanitize_text_field($_REQUEST['action']) : '';
 
                 switch ($action) {
@@ -91,7 +93,7 @@ class Plugin
             $pluginErrorException = $error;
         }
 
-        if (!wp_doing_ajax()) {
+        if (isset($authenticated) && $authenticated && !wp_doing_ajax()) {
             include MOLONI_TEMPLATE_DIR . 'MainContainer.php';
         }
     }
