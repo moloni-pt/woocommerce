@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.75
+Stable tag: 3.0.76
 Tested up to: 6.0.1
 
 Requires PHP: 7.2
@@ -67,6 +67,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 3.0.76 =
+* FEATURE: Nova opção para envio de e-mail em caso de erro no plugin
+
 = 3.0.75 =
 * FEATURE: Nova opção para criar documento de transporte
 * UPDATE: Atualizado logotipo e banner

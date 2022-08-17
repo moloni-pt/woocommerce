@@ -12,7 +12,7 @@
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
 **Tested up to:**      6.0.1  
-**Stable tag:**        3.0.75  
+**Stable tag:**        3.0.76  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -65,6 +65,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.76
+* FEATURE: Nova opção para envio de e-mail em caso de erro no plugin
 
 ### 3.0.75
 * FEATURE: Nova opção para criar documento de transporte
