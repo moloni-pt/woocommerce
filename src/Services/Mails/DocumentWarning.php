@@ -13,7 +13,7 @@ class DocumentWarning extends MailAbstract
         $this->template = 'Emails/DocumentWarning.php';
 
         if (!empty($orderName)) {
-            $this->extra = __('Encomenda') . ': ' . $orderName;
+            $this->extra = __('Encomenda') . ': #' . $orderName;
         }
 
         $this->run();

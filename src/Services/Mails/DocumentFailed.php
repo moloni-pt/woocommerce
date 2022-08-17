@@ -13,7 +13,7 @@ class DocumentFailed extends MailAbstract
         $this->template = 'Emails/DocumentFailed.php';
 
         if (!empty($orderName)) {
-            $this->extra = __('Encomenda') . ': ' . $orderName;
+            $this->extra = __('Encomenda') . ': #' . $orderName;
         }
 
         $this->run();
