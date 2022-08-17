@@ -17,7 +17,7 @@ class Log
             }
 
             $fileName = (Storage::$MOLONI_COMPANY_ID ?: '000')
-                . (self::$fileName ? self::$fileName . '.log' : date('Ymd'))
+                . (self::$fileName ?: date('Ymd'))
                 . '.log';
 
             $logFile = fopen(MOLONI_DIR . '/logs/' . $fileName, 'ab');
