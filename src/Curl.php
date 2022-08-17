@@ -59,7 +59,7 @@ class Curl
             $values['company_id'] = Storage::$MOLONI_COMPANY_ID;
         }
 
-        $url = 'https://api.moloni.pt/v1/' . $action . '/?human_errors=true&access_token=' . Storage::$MOLONI_ACCESS_TOKEN;
+        $url = 'https://api.moloni.pt/v2/' . $action . '/?human_errors=true&access_token=' . Storage::$MOLONI_ACCESS_TOKEN;
 
         $response = wp_remote_post($url, [
             'body' => http_build_query($values),
@@ -125,7 +125,7 @@ class Curl
      */
     public static function login($user, $pass)
     {
-        $url = 'https://api.moloni.pt/v1/grant/?grant_type=password';
+        $url = 'https://api.moloni.pt/v2/grant/?grant_type=password';
         $url .= '&client_id=' . self::$moloniClient;
         $url .= '&client_secret=' . self::$moloniSecret;
         $url .= '&username=' . urlencode($user);
@@ -156,7 +156,7 @@ class Curl
      */
     public static function refresh($refresh)
     {
-        $url = 'https://api.moloni.pt/v1/grant/?grant_type=refresh_token';
+        $url = 'https://api.moloni.pt/v2/grant/?grant_type=refresh_token';
         $url .= '&client_id=' . self::$moloniClient;
         $url .= '&client_secret=' . self::$moloniSecret;
         $url .= '&refresh_token=' . $refresh;
