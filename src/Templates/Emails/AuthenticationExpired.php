@@ -72,7 +72,7 @@ if (!defined('ABSPATH')) {
     <tr>
         <td style="text-align:center;">
             <p style="font-size:14px; color:#fff; line-height:18px; margin:0 0 0;">
-                &copy; <strong><?= $year ?? '' ?> Moloni</strong>
+                &copy; <strong><?= $year ?? '' ?> Moloni - Software de faturação online</strong>
             </p>
         </td>
     </tr>
