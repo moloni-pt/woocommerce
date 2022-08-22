@@ -42,7 +42,7 @@ class MailAbstract
 
     protected function getImage(): string
     {
-        return MOLONI_IMAGES_URL . 'logo-white.svg';
+        return MOLONI_IMAGES_URL . 'logo-white.png';
     }
 
     protected function getYear(): string
