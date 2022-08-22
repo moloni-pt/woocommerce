@@ -3,6 +3,7 @@
 namespace Moloni\Services\Documents;
 
 use Moloni\Curl;
+use Moloni\Enums\DocumentTypes;
 
 class OpenDocument
 {
@@ -48,28 +49,28 @@ class OpenDocument
         switch ($saftcode) {
             case 'FT' :
             default:
-                $typeName = 'Faturas';
+                $typeName = DocumentTypes::INVOICES;
                 break;
             case 'FR' :
-                $typeName = 'FaturasRecibo';
+                $typeName = DocumentTypes::INVOICE_RECEIPTS;
                 break;
             case 'FS' :
-                $typeName = 'FaturaSimplificada';
+                $typeName = DocumentTypes::SIMPLIFIED_INVOICES;
                 break;
             case 'PF' :
-                $typeName = 'FaturasProForma';
+                $typeName = DocumentTypes::PRO_FORMA_INVOICES;
                 break;
             case 'GT' :
-                $typeName = 'GuiasTransporte';
+                $typeName = DocumentTypes::BILLS_OF_LADING;
                 break;
             case 'NEF' :
-                $typeName = 'NotasEncomenda';
+                $typeName = DocumentTypes::PURCHASE_ORDER;
                 break;
             case 'OR':
-                $typeName = 'Orcamentos';
+                $typeName = DocumentTypes::ESTIMATES;
                 break;
         }
 
-        return $typeName;
+        return DocumentTypes::getDocumentTypeSlug($typeName);
     }
 }
