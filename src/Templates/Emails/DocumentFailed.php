@@ -57,7 +57,7 @@ if (!defined('ABSPATH')) {
                                     </p>
                                     <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                         Por favor, corriga os erros e tente gerar o documento novamente.
-                                        Para mais informações consulte os registos no plugin Moloni para Shopify.
+                                        Para mais informações consulte os registos no plugin Moloni para Wordpress.
                                     </p>
                                     <br>
                                     <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
