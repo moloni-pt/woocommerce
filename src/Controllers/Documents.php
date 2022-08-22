@@ -321,14 +321,9 @@ class Documents
             'status' => DocumentStatus::CLOSED
         ];
 
-        // Associations need to be sent again when closing a document
+        // Associations need to be sent again when closing a document (but can skip product association)
         if (!empty($this->associatedDocuments)) {
-            foreach ($this->associatedDocuments as $associatedDocument) {
-                $closeDocument['associated_documents'][] = [
-                    'associated_id' => $associatedDocument['document_id'],
-                    'value' => $associatedDocument['value']
-                ];
-            }
+            $this->associateDocuments($closeDocument, true);
         }
 
         // Send email to the client
@@ -445,40 +440,84 @@ class Documents
         }
 
         if (!empty($this->associatedDocuments)) {
-            // If multiple documents are associated, the need a global product counter
-            // Starts in -1 because the first thing we do is to increment its value
-            $currentProductIndex = -1;
+            $this->associateDocuments($values);
+        }
 
-            foreach ($this->associatedDocuments as $associatedDocument) {
-                $newAssociation = [
-                    'associated_id' => $associatedDocument['document_id'],
-                    'value' => $associatedDocument['value']
-                ];
+        return $values;
+    }
 
-                $values['associated_documents'][] = $newAssociation;
+    //          AUXILIARY          //
 
-                if (!empty($associatedDocument['products'])) {
-                    // Associate products from both documents
-                    // We assume that the order of the documents is the same (beware if tring to do custom stuff)
-                    foreach ($associatedDocument['products'] as $associatedProduct) {
-                        $currentProductIndex++;
+    /**
+     * Auxiliary method to associate current document to associated list
+     *
+     * @param array $props API props
+     * @param bool|null $skipProducts Skip products association
+     *
+     * @return void
+     */
+    private function associateDocuments(array &$props, $skipProducts = false): void
+    {
+        // If multiple documents are associated, the need a global product counter
+        // Starts in -1 because the first thing we do is to increment its value
+        $currentProductIndex = -1;
 
-                        if (!isset($values['products'][$currentProductIndex])) {
-                            continue;
+        foreach ($this->associatedDocuments as $associatedDocument) {
+            $newAssociation = [
+                'associated_id' => $associatedDocument['document_id'],
+                'value' => $associatedDocument['value']
+            ];
+
+            $props['associated_documents'][] = $newAssociation;
+
+            // Skip document product association
+            if ($skipProducts) {
+                continue;
+            }
+
+            if (!empty($associatedDocument['products'])) {
+                // Associate products from both documents
+                // We assume that the order of the documents is the same (beware if tring to do custom stuff)
+                foreach ($associatedDocument['products'] as $associatedProduct) {
+                    $currentProductIndex++;
+
+                    // To avoid errors, check lenght
+                    if (!isset($props['products'][$currentProductIndex])) {
+                        continue;
+                    }
+
+                    // Ids have to match
+                    if ((int)$props['products'][$currentProductIndex]['product_id'] !== (int)$associatedProduct['product_id']) {
+                        continue;
+                    }
+
+                    // Both have to be simple or bundle product
+                    if (empty($associatedProduct['child_products']) !== empty($props['products'][$currentProductIndex]['child_products'])) {
+                        continue;
+                    }
+
+                    if (empty($associatedProduct['child_products'])) {
+                        $props['products'][$currentProductIndex]['origin_id'] = (int)$associatedDocument['document_id'];
+                        $props['products'][$currentProductIndex]['related_id'] = (int)$associatedProduct['document_product_id'];
+                    } else {
+                        foreach ($associatedProduct['child_products'] as $childIndex => $childProduct) {
+                            // To avoid errors, check lenght
+                            if (!isset($props['products'][$currentProductIndex]['child_products'][$childIndex])) {
+                                continue;
+                            }
+
+                            // Ids have to match
+                            if ((int)$props['products'][$currentProductIndex]['child_products'][$childIndex]['product_id'] !== (int)$childProduct['product_id']) {
+                                continue;
+                            }
+
+                            $props['products'][$currentProductIndex]['child_products'][$childIndex]['origin_id'] = (int)$associatedDocument['document_id'];
+                            $props['products'][$currentProductIndex]['child_products'][$childIndex]['related_id'] = (int)$childProduct['document_product_id'];
                         }
-
-                        if ((int)$values['products'][$currentProductIndex]['product_id'] !== (int)$associatedProduct['product_id']) {
-                            continue;
-                        }
-
-                        $values['products'][$currentProductIndex]['origin_id'] = (int)$associatedDocument['document_id'];
-                        $values['products'][$currentProductIndex]['related_id'] = (int)$associatedProduct['document_product_id'];
                     }
                 }
             }
         }
-
-        return $values;
     }
 
     //          GETS          //
