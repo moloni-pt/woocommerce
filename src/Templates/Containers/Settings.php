@@ -509,19 +509,6 @@ if (!defined('ABSPATH')) {
 
             <tr>
                 <th>
-                    <label for="moloni_stock_status"><?= __('Estado do Stock') ?></label>
-                </th>
-                <td>
-                    <select id="moloni_stock_status" name='opt[moloni_stock_status]' class='inputOut'>
-                        <option value='outofstock' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'outofstock' ? 'selected' : '') ?>><?= __('Sem stock') ?></option>
-                        <option value='onbackorder' <?= (defined('MOLONI_STOCK_STATUS') && MOLONI_STOCK_STATUS === 'onbackorder' ? 'selected' : '') ?>><?= __('Por encomenda') ?></option>
-                    </select>
-                    <p class='description'><?= __('O estado do produto quando o seu stock após sincronização é 0') ?></p>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
                     <label for="moloni_product_sync"><?= __('Criar artigos') ?></label>
                 </th>
                 <td>

@@ -10,7 +10,6 @@ use Moloni\Storage;
 
 class SyncProducts
 {
-
     private $since;
     private $offset = 0;
     private $limit = 5000;
@@ -18,9 +17,6 @@ class SyncProducts
     private $updated = [];
     private $equal = [];
     private $notFound = [];
-
-    /** @var string Switch this between outofstock or onbackorder */
-    private $outOfStockStatus = 'outofstock'; //default is out of stock
 
     public function __construct($since)
     {
@@ -31,9 +27,6 @@ class SyncProducts
             if (!$sinceTime) {
                 $sinceTime = strtotime('-1 week');
             }
-        }
-        if (defined('MOLONI_STOCK_STATUS')) { //sets the default no stock behaviour from settings
-            $this->outOfStockStatus = MOLONI_STOCK_STATUS;
         }
 
         $this->since = gmdate('Y-m-d H:i:s', $sinceTime);
@@ -61,7 +54,6 @@ class SyncProducts
 
                         /** if the product does not have the set warehouse, stock is 0 (so we do it here) */
                         $newStock = 0;
-
 
                         if ((int)MOLONI_STOCK_SYNC > 1) {
                             /** If we have a warehouse selected */
