@@ -67,7 +67,11 @@ class CreateMoloniDocument
                 ->setDocumentType($this->documentType)
                 ->setDocumentStatus()
                 ->setSendEmail()
-                ->addAssociatedDocument($billOfLading->getDocumentId(), $billOfLading->getDocumentTotal());
+                ->addAssociatedDocument(
+                    $billOfLading->getDocumentId(),
+                    $billOfLading->getDocumentTotal(),
+                    $billOfLading->getDocumentProducts()
+                );
 
             unset($billOfLading);
         } else {

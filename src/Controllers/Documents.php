@@ -39,7 +39,7 @@ class Documents
      *
      * @var array
      */
-    private $associatedWith = [];
+    private $associatedDocuments = [];
 
     /**
      * WooCommerce order object
@@ -227,7 +227,7 @@ class Documents
         $this->documentTotal = 0;
         $this->documentExchageTotal = 0;
 
-        $this->associatedWith = [];
+        $this->associatedDocuments = [];
     }
 
     /**
@@ -235,14 +235,16 @@ class Documents
      *
      * @param int $documentId Document id to associate
      * @param float $value Total value to associate
+     * @param array $products Document products
      *
      * @return $this
      */
-    public function addAssociatedDocument(int $documentId, float $value): Documents
+    public function addAssociatedDocument(int $documentId, float $value, array $products = []): Documents
     {
-        $this->associatedWith[] = [
-            'associated_id' => $documentId,
+        $this->associatedDocuments[] = [
+            'document_id' => $documentId,
             'value' => $value,
+            'products' => $products
         ];
 
         return $this;
@@ -319,9 +321,14 @@ class Documents
             'status' => DocumentStatus::CLOSED
         ];
 
-        // Associations need to be sent when closing a document
-        if (!empty($this->associatedWith)) {
-            $closeDocument['associated_documents'] = $this->associatedWith;
+        // Associations need to be sent again when closing a document
+        if (!empty($this->associatedDocuments)) {
+            foreach ($this->associatedDocuments as $associatedDocument) {
+                $closeDocument['associated_documents'][] = [
+                    'associated_id' => $associatedDocument['document_id'],
+                    'value' => $associatedDocument['value']
+                ];
+            }
         }
 
         // Send email to the client
@@ -437,8 +444,38 @@ class Documents
             $values['exchange_rate'] = $this->exchange_rate;
         }
 
-        if (!empty($this->associatedWith)) {
-            $values['associated_documents'] = $this->associatedWith;
+        if (!empty($this->associatedDocuments)) {
+            // If multiple documents are associated, the need a global product counter
+            // Starts in -1 because the first thing we do is to increment its value
+            $currentProductIndex = -1;
+
+            foreach ($this->associatedDocuments as $associatedDocument) {
+                $newAssociation = [
+                    'associated_id' => $associatedDocument['document_id'],
+                    'value' => $associatedDocument['value']
+                ];
+
+                $values['associated_documents'][] = $newAssociation;
+
+                if (!empty($associatedDocument['products'])) {
+                    // Associate products from both documents
+                    // We assume that the order of the documents is the same (beware if tring to do custom stuff)
+                    foreach ($associatedDocument['products'] as $associatedProduct) {
+                        $currentProductIndex++;
+
+                        if (!isset($values['products'][$currentProductIndex])) {
+                            continue;
+                        }
+
+                        if ((int)$values['products'][$currentProductIndex]['product_id'] !== (int)$associatedProduct['product_id']) {
+                            continue;
+                        }
+
+                        $values['products'][$currentProductIndex]['origin_id'] = (int)$associatedDocument['document_id'];
+                        $values['products'][$currentProductIndex]['related_id'] = (int)$associatedProduct['document_product_id'];
+                    }
+                }
+            }
         }
 
         return $values;
@@ -464,6 +501,16 @@ class Documents
     public function getDocumentTotal()
     {
         return $this->documentTotal;
+    }
+
+    /**
+     * Get created document products
+     *
+     * @return array
+     */
+    public function getDocumentProducts(): array
+    {
+        return $this->document['products'] ?? [];
     }
 
     /**
