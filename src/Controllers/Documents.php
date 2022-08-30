@@ -462,6 +462,8 @@ class Documents
         // Starts in -1 because the first thing we do is to increment its value
         $currentProductIndex = -1;
 
+        $props['associated_documents'] = [];
+
         foreach ($this->associatedDocuments as $associatedDocument) {
             $newAssociation = [
                 'associated_id' => $associatedDocument['document_id'],
