@@ -103,7 +103,15 @@ class OrderView
     public function showMoloniView($post)
     {
         if (in_array($post->post_status, $this->allowedStatus)) : ?>
-            <?php $documentId = get_post_meta($post->ID, '_moloni_sent', true); ?>
+            <?php
+            $documentId = 0;
+            $documents = get_post_meta($post->ID, '_moloni_sent');
+
+            if (is_array($documents) && !empty($documents)) {
+                /** Last item in the array is the latest document */
+                $documentId = (int)end($documents);
+            }
+            ?>
 
             <?php
             $order = new \WC_Order($post->ID);

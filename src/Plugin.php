@@ -169,7 +169,8 @@ class Plugin
         $orderId = (int)$_GET['id'];
 
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
-            add_post_meta($orderId, '_moloni_sent', '-1', true);
+            add_post_meta($orderId, '_moloni_sent', '-1');
+
             add_settings_error('moloni', 'moloni-order-remove-success', __('A encomenda ' . $orderId . ' foi marcada como gerada!'), 'updated');
         } else {
             add_settings_error(
@@ -191,8 +192,9 @@ class Plugin
             $allOrders = Controllers\PendingOrders::getAllAvailable();
             if (!empty($allOrders) && is_array($allOrders)) {
                 foreach ($allOrders as $order) {
-                    add_post_meta($order['id'], '_moloni_sent', '-1', true);
+                    add_post_meta($order['id'], '_moloni_sent', '-1');
                 }
+
                 add_settings_error('moloni', 'moloni-order-all-remove-success', __('Todas as encomendas foram marcadas como geradas!'), 'updated');
             } else {
                 add_settings_error('moloni', 'moloni-order-all-remove-not-found', __('Não foram encontradas encomendas por gerar'));

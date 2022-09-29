@@ -88,7 +88,14 @@ class OrderList
         global $the_order;
 
         if ($currentColumnName === 'moloni_document') {
-            $documentId = get_post_meta($the_order->ID, '_moloni_sent', true);
+            $documentId = 0;
+
+            $documents = get_post_meta($the_order->ID, '_moloni_sent');
+
+            if (is_array($documents) && !empty($documents)) {
+                /** Last item in the array is the latest document */
+                $documentId = (int)end($documents);
+            }
 
             if ($documentId > 0) {
                 $redirectUrl = admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId);

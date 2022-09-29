@@ -388,7 +388,7 @@ class Documents
      */
     private function saveRecord(): void
     {
-        add_post_meta($this->orderId, '_moloni_sent', $this->document_id, true);
+        add_post_meta($this->orderId, '_moloni_sent', $this->document_id);
     }
 
     /**
