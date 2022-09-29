@@ -29,6 +29,7 @@ hr {
 }
 
 /* ============= Login ==============*/
+
 #formLogin {
     width: 574px;
     background-color: #fff;
@@ -103,6 +104,7 @@ hr {
 }
 
 /* ============ Select Company ============*/
+
 .outBoxEmpresa {
     margin-left: auto;
     margin-right: auto;
@@ -126,7 +128,38 @@ hr {
     min-height: 150px;
 }
 
+.no-companies__wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 10rem;
+}
+
+.no-companies__title {
+    font-size: 1.3em;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.no-companies__message {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+.no-companies__help {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
 /** =========== Error Message ========== */
+
 #MoloniConsoleLogError {
     display: block;
     background-color: white;
@@ -136,6 +169,7 @@ hr {
 }
 
 /** =========== Menu Logo ========== */
+
 li#toplevel_page_moloni img {
     margin-top: -4px;
 }

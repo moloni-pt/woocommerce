@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
                 <td><input id="password" type='password' name='pass'></td>
             </tr>
 
-            <?php if ($error): ?>
+            <?php if (isset($error) && $error): ?>
                 <tr>
                     <td></td>
                     <td style='text-align: center;'><?= $error ?></td>
