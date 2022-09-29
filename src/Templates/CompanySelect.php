@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 $hasValidCompany = false;
 ?>
 
-<?php if (isset($companies) && !is_array($companies)) : ?>
+<?php if (isset($companies) && is_array($companies)) : ?>
     <div class='outBoxEmpresa'>
             <?php foreach ($companies as $key => $company) : ?>
                 <?php
