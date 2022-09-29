@@ -17,9 +17,10 @@ class Start
 
     /**
      * Handles session, login and settings
+     *
      * @param bool $ajax
+     *
      * @return bool
-     * @throws Error
      */
     public static function login($ajax = false)
     {
@@ -34,10 +35,21 @@ class Start
         }
 
         if (!empty($username) && !empty($password)) {
-            $login = Curl::login($username, $password);
-            if ($login && isset($login['access_token'])) {
-                Model::setTokens($login['access_token'], $login['refresh_token']);
-            } else {
+            $loginValid = false;
+
+            try {
+                $login = Curl::login($username, $password);
+
+                if ($login && isset($login['access_token'])) {
+                    $loginValid = true;
+
+                    Model::setTokens($login['access_token'], $login['refresh_token']);
+                }
+            } catch (Error $e) {
+                /** No need to catch error here */
+            }
+
+            if (!$loginValid) {
                 self::loginForm(__('Combinação de utilizador/password errados'));
                 return false;
             }
@@ -110,9 +122,7 @@ class Start
             $companies = [];
         }
 
-        if (empty($companies)) {
-            self::loginForm('Não tem empresas disponíveis na sua conta');
-        } else if (!self::$ajax) {
+        if (!self::$ajax) {
             include(MOLONI_TEMPLATE_DIR . 'CompanySelect.php');
         }
     }
