@@ -11,8 +11,8 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.0.1  
-**Stable tag:**        3.0.76  
+**Tested up to:**      6.0.2  
+**Stable tag:**        3.0.77  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -65,6 +65,12 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.77
+* FIX: Correção de erro na descarga de documentos
+* UPDATE: Adicionada nova página para utilizadores sem empresas válidas
+* MINOR: Testado até à versão 6.0.2 do Wordpress
+* MINOR: Testado até à versão 6.9.4 do WooCommerce
 
 ### 3.0.76
 * FEATURE: Nova opção para envio de e-mail em caso de erro no plugin
