@@ -11,8 +11,8 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.0.2  
-**Stable tag:**        3.0.77  
+**Tested up to:**      6.0.3
+**Stable tag:**        3.0.78  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -65,6 +65,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.78
+* FEATURE: Adicionado filtro moloni_before_pending_orders_fetch.
+* MINOR: Testado até à versão 6.0.3 do Wordpress
+* MINOR: Testado até à versão 7.0.0 do WooCommerce
 
 ### 3.0.77
 * FIX: Correção de erro na descarga de documentos
