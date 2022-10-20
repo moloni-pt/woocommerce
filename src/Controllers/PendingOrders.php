@@ -41,6 +41,7 @@ class PendingOrders
             ],
         ];
 
+        $args = apply_filters('moloni_before_pending_orders_fetch', $args);
 
         $query = new WP_Query($args);
         self::$totalPages = $query->max_num_pages;
