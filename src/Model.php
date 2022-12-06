@@ -109,18 +109,18 @@ class Model
 
                         return self::refreshTokens($retryNumber);
                     }
+
+                    // Send e-mail notification if email is set
+                    if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+                        new AuthenticationExpired(ALERT_EMAIL);
+                    }
+
+                    Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
+
+                    self::resetTokens();
+
+                    return false;
                 }
-
-                // Send e-mail notification if email is set
-                if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
-                    new AuthenticationExpired(ALERT_EMAIL);
-                }
-
-                Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
-
-                self::resetTokens();
-
-                return false;
             }
         }
 
