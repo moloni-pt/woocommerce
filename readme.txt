@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.79
+Stable tag: 3.0.78
 Tested up to: 6.0.3
 
 Requires PHP: 7.2
@@ -67,9 +67,6 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
-= 3.0.79 =
-* FIX: Correção de erro na atualização de tokens
-
 = 3.0.78 =
 * FEATURE: Adicionado filtro moloni_before_pending_orders_fetch.
 * MINOR: Testado até à versão 6.0.3 do Wordpress
