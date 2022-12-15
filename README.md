@@ -1,7 +1,7 @@
 # Moloni
 
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-v6.0%20tested-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-v6.1.1%20tested-orange)
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
 
@@ -11,8 +11,8 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.0.3
-**Stable tag:**        3.0.78  
+**Tested up to:**      6.1.1  
+**Stable tag:**        3.0.79  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -65,6 +65,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.79
+* FIX: Corrigido alerta PHP.
+* MINOR: Testado até à versão 6.1.1 do Wordpress
+* MINOR: Testado até à versão 7.2.0 do WooCommerce
 
 ### 3.0.78
 * FEATURE: Adicionado filtro moloni_before_pending_orders_fetch.
