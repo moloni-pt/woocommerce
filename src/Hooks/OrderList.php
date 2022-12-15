@@ -90,7 +90,7 @@ class OrderList
         if ($currentColumnName === 'moloni_document') {
             $documentId = 0;
 
-            $documents = get_post_meta($the_order->ID, '_moloni_sent');
+            $documents = get_post_meta($the_order->get_id(), '_moloni_sent');
 
             if (is_array($documents) && !empty($documents)) {
                 /** Last item in the array is the latest document */
