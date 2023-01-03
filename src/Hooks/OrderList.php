@@ -2,9 +2,11 @@
 
 namespace Moloni\Hooks;
 
-use Moloni\Error;
-use Moloni\Plugin;
+use WC_Order;
 use Moloni\Start;
+use Moloni\Plugin;
+use Moloni\Storage;
+use Moloni\Helpers\MoloniOrder;
 
 /**
  * Class OrderList
@@ -38,8 +40,22 @@ class OrderList
     {
         $this->parent = $parent;
 
-        add_filter('manage_edit-shop_order_columns', [$this, 'ordersListAddColumn']);
-        add_action('manage_shop_order_posts_custom_column', [$this, 'ordersListManageColumn']);
+        if (Storage::$USES_NEW_ORDERS_SYSTEM) {
+            /**
+             * HPOS usage is enabled.
+             *
+             * @see https://github.com/woocommerce/woocommerce/issues/35049
+             * @see https://developer.woocommerce.com/2022/10/11/hpos-upgrade-faqs/
+             */
+            add_filter('manage_woocommerce_page_wc-orders_columns', [$this, 'ordersListAddColumn'], 10, 1);
+            add_action('manage_woocommerce_page_wc-orders_custom_column', [$this, 'ordersListManageColumn'], 10, 2);
+        } else {
+            /**
+             * Traditional CPT-based orders are in use.
+             */
+            add_filter('manage_edit-shop_order_columns', [$this, 'ordersListAddColumn'], 10, 1);
+            add_action('manage_shop_order_posts_custom_column', [$this, 'ordersListManageColumn'], 10, 2);
+        }
     }
 
     /**
@@ -48,10 +64,8 @@ class OrderList
      * @param array $oldColumns Columns list
      *
      * @return array
-     *
-     * @throws Error
      */
-    public function ordersListAddColumn($oldColumns)
+    public function ordersListAddColumn(array $oldColumns): array
     {
         if (!$this->canShowColumn()) {
              return $oldColumns;
@@ -74,28 +88,20 @@ class OrderList
      * Draws Moloni column content
      *
      * @param string $currentColumnName Current column name
+     * @param $orderOrPostId
      *
      * @return void
-     *
-     * @throws Error
      */
-    public function ordersListManageColumn($currentColumnName)
+    public function ordersListManageColumn(string $currentColumnName, $orderOrPostId)
     {
         if (!$this->canShowColumn()) {
             return;
         }
 
-        global $the_order;
-
         if ($currentColumnName === 'moloni_document') {
-            $documentId = 0;
+            $order = new WC_Order($orderOrPostId);
 
-            $documents = get_post_meta($the_order->get_id(), '_moloni_sent');
-
-            if (is_array($documents) && !empty($documents)) {
-                /** Last item in the array is the latest document */
-                $documentId = (int)end($documents);
-            }
+            $documentId = MoloniOrder::getLastCreatedDocument($order);
 
             if ($documentId > 0) {
                 $redirectUrl = admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId);
@@ -111,10 +117,8 @@ class OrderList
      * Verifies if user wants to show column
      *
      * @return bool
-     *
-     * @throws Error
      */
-    private function canShowColumn()
+    private function canShowColumn(): ?bool
     {
         if (self::$columnVisible === null) {
             self::$columnVisible = Start::login(true) && defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1;

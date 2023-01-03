@@ -2,6 +2,7 @@
 
 namespace Moloni\Controllers;
 
+use Moloni\Storage;
 use WC_Order;
 use WP_Query;
 
@@ -12,14 +13,42 @@ class PendingOrders
     private static $totalPages = 1;
     private static $currentPage = 1;
 
-    /**
-     * @return array
-     */
-    public static function getAllAvailable()
+    public static function getAllAvailable(): array
     {
         self::$currentPage = (isset($_GET['paged']) && (int)($_GET['paged']) > 0) ? $_GET['paged'] : 1;
 
+        if (Storage::$USES_NEW_ORDERS_SYSTEM) {
+            $ordersList = self::getAllNewSystem();
+        } else {
+            $ordersList = self::getAllOldSystem();
+        }
+
+        return $ordersList;
+    }
+
+    public static function getPagination()
+    {
+        $args = [
+            'base' => add_query_arg('paged', '%#%'),
+            'format' => '',
+            'current' => isset($_GET['paged']) ? (int)$_GET['paged'] : 1,
+            'total' => self::$totalPages,
+        ];
+
+        return paginate_links($args);
+    }
+
+    //           Privates           //
+
+    /**
+     * Fetch orders "old school" way
+     *
+     * @return array
+     */
+    private static function getAllOldSystem(): array
+    {
         $ordersList = [];
+
         $args = [
             'post_type' => 'shop_order',
             'post_status' => self::$ordersStatuses,
@@ -47,53 +76,49 @@ class PendingOrders
         self::$totalPages = $query->max_num_pages;
 
         foreach ($query->posts as $order) {
-            $orderDetails = new WC_Order($order->ID);
-            $meta = self::getPostMeta($order->ID);
-            $status = get_post_status_object(get_post_status($order->ID));
-
-            if (!isset($meta['_moloni_sent']) || (int)$meta['_moloni_sent'] === 0) {
-                $ordersList[] = [
-                    'info' => $meta,
-                    'status' => $status ? $status->label : '',
-                    'number' => $orderDetails->get_order_number(),
-                    'id' => $order->ID
-                ];
-            }
+            $ordersList[] = new WC_Order($order->ID);
         }
 
         return $ordersList;
     }
 
     /**
-     * @param $postId
+     * Fetch orders from the new HPOS system
+     *
+     * @see https://github.com/woocommerce/woocommerce/wiki/HPOS:-new-order-querying-APIs
+     * @see https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters
+     *
      * @return array
      */
-    public static function getPostMeta($postId)
-    {
-        $metas = [];
-        $metaKeys = get_post_meta($postId);
-
-        if (!empty($metaKeys) && is_array($metaKeys)) {
-            foreach ($metaKeys as $key => $meta) {
-                $metas[$key] = $meta[0];
-            }
-        }
-
-        return $metas;
-    }
-
-    /**
-     * @return array|string|void
-     */
-    public static function getPagination()
+    private static function getAllNewSystem(): array
     {
         $args = [
-            'base' => add_query_arg('paged', '%#%'),
-            'format' => '',
-            'current' => isset($_GET['paged']) ? (int)$_GET['paged'] : 1,
-            'total' => self::$totalPages,
+            'post_status' => self::$ordersStatuses,
+            'posts_per_page' => self::$limit,
+            'paged' => self::$currentPage,
+            'orderby' => 'date',
+            'paginate' => true,
+            'order' => 'DESC',
+            'meta_query' => [
+                'relation' => 'OR',
+                [
+                    'key' => '_moloni_sent',
+                    'compare' => 'NOT EXISTS'
+                ],
+                [
+                    'key' => '_moloni_sent',
+                    'value' => '0',
+                    'compare' => '='
+                ]
+            ],
         ];
 
-        return paginate_links($args);
+        $args = apply_filters('moloni_before_pending_orders_fetch', $args);
+
+        $results = wc_get_orders($args);
+
+        self::$totalPages = $results->max_num_pages;
+
+        return $results->orders;
     }
 }

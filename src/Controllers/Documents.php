@@ -388,7 +388,8 @@ class Documents
      */
     private function saveRecord(): void
     {
-        add_post_meta($this->orderId, '_moloni_sent', $this->document_id);
+        $this->order->add_meta_data('_moloni_sent', $this->document_id);
+        $this->order->save();
     }
 
     /**
@@ -735,7 +736,7 @@ class Documents
     public function setDocumentSetId(): Documents
     {
         if (!defined('DOCUMENT_SET_ID') || (int)DOCUMENT_SET_ID === 0) {
-            throw new Error(__('Série de documentos em falta. <br>Por favor seleccione uma série nas opções do plugin', false));
+            throw new Error(__('Série de documentos em falta. <br>Por favor selecione uma série nas opções do plugin', false));
         }
 
         $this->document_set_id = DOCUMENT_SET_ID;

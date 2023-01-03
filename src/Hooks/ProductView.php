@@ -3,11 +3,11 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Controllers\Product;
-use Moloni\Error;
-use Moloni\Plugin;
-use Moloni\Start;
 use WC_Product;
+use Moloni\Error;
+use Moloni\Start;
+use Moloni\Plugin;
+use Moloni\Controllers\Product;
 
 /**
  * Class OrderView

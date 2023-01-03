@@ -3,9 +3,10 @@
 namespace Moloni\Controllers;
 
 use Exception;
+use WC_Product;
+use Moloni\Log;
 use Moloni\Curl;
 use Moloni\Error;
-use Moloni\Log;
 use Moloni\Storage;
 
 class SyncProducts
@@ -34,9 +35,8 @@ class SyncProducts
 
     /**
      * Run the sync operation
-     * @return SyncProducts
      */
-    public function run()
+    public function run(): SyncProducts
     {
         Log::write('A sincronizar artigos desde ' . $this->since);
 
@@ -49,8 +49,9 @@ class SyncProducts
             foreach ($updatedProducts as $product) {
                 try {
                     $wcProductId = wc_get_product_id_by_sku($product['reference']);
+
                     if ($product['has_stock'] && $wcProductId > 0) {
-                        $currentStock = get_post_meta($wcProductId, '_stock', true);
+                        $currentStock = (new WC_Product($wcProductId))->get_stock_quantity();
 
                         /** if the product does not have the set warehouse, stock is 0 (so we do it here) */
                         $newStock = 0;
@@ -60,7 +61,7 @@ class SyncProducts
                             foreach ($product['warehouses'] as $productWarehouse) {
                                 if ((int)$productWarehouse['warehouse_id'] === (int)MOLONI_STOCK_SYNC) {
                                     $newStock = $productWarehouse['stock']; // Get the stock of the particular warehouse
-                                    continue;
+                                    break;
                                 }
                             }
                         } else {

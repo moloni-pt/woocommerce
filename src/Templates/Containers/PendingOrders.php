@@ -7,7 +7,10 @@ if (!defined('ABSPATH')) {
 <?php use Moloni\Controllers\PendingOrders; ?>
 <?php use Moloni\Enums\DocumentTypes; ?>
 
-<?php $orders = PendingOrders::getAllAvailable(); ?>
+<?php
+/** @var WC_Order[] $orders */
+$orders = PendingOrders::getAllAvailable();
+?>
 
 <div class="wrap">
     <h3><?= __('Aqui pode consultar todas as encomendas que tem por gerar') ?></h3>
@@ -46,42 +49,55 @@ if (!defined('ABSPATH')) {
 
         <?php if (!empty($orders) && is_array($orders)) : ?>
 
-            <!-- Lets draw a list of all the available orders -->
+            <!-- Let's draw a list of all the available orders -->
             <?php foreach ($orders as $order) : ?>
-                <tr id="moloni-pending-order-row-<?= $order['id'] ?>">
+                <tr id="moloni-pending-order-row-<?= $order->get_id() ?>">
                     <td class="">
-                        <label for="moloni-pending-order-<?= $order['id'] ?>" class="screen-reader-text"></label>
-                        <input id="moloni-pending-order-<?= $order['id'] ?>" type="checkbox"
-                               value="<?= $order['id'] ?>">
+                        <label for="moloni-pending-order-<?= $order->get_id() ?>" class="screen-reader-text"></label>
+                        <input id="moloni-pending-order-<?= $order->get_id() ?>" type="checkbox"
+                               value="<?= $order->get_id() ?>">
                     </td>
                     <td>
-                        <a href=<?= admin_url('post.php?post=' . $order['id'] . '&action=edit') ?>>#<?= $order['number'] ?></a>
+                        <a target="_blank" href=<?= $order->get_edit_order_url() ?>>#<?= $order->get_order_number() ?></a>
                     </td>
                     <td>
                         <?php
-                        if (isset($order['info']['_billing_first_name']) && !empty($order['info']['_billing_first_name'])) {
-                            echo $order['info']['_billing_first_name'] . ' ' . $order['info']['_billing_last_name'];
+                        if (!empty($order->get_billing_first_name())) {
+                            echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
                         } else {
                             echo __('Desconhecido');
                         }
                         ?>
                     <td>
                         <?php
-                        if (defined('VAT_FIELD') &&
-                            isset($order['info'][VAT_FIELD]) &&
-                            !empty($order['info'][VAT_FIELD])) {
-                            echo $order['info'][VAT_FIELD];
+                        $vat = '';
+
+                        if (defined('VAT_FIELD')) {
+                            $meta = $order->get_meta(VAT_FIELD);
+
+                            $vat = $meta;
+                        }
+
+                        echo empty($vat) ? '999999990' : $vat;
+                        ?>
+                    </td>
+                    <td><?= $order->get_total() . $order->get_currency() ?></td>
+                    <td>
+                        <?php
+                        $availableStatus = wc_get_order_statuses();
+                        $needle = 'wc-' . $order->get_status();
+
+                        if (isset($availableStatus[$needle])) {
+                            echo $availableStatus[$needle];
                         } else {
-                            echo '999999990';
+                           echo $needle;
                         }
                         ?>
                     </td>
-                    <td><?= $order['info']['_order_total'] . $order['info']['_order_currency'] ?></td>
-                    <td><?= $order['status'] ?></td>
                     <td>
                         <?php
-                        if (isset($order['info']['_completed_date'])) {
-                            echo $order['info']['_completed_date'];
+                        if (!empty($order->get_date_paid())) {
+                            echo date('Y-m-d H:i:s', strtotime($order->get_date_paid()));
                         } else {
                             echo 'n/a';
                         }
@@ -91,7 +107,7 @@ if (!defined('ABSPATH')) {
                         <form action="<?= admin_url('admin.php') ?>">
                             <input type="hidden" name="page" value="moloni">
                             <input type="hidden" name="action" value="genInvoice">
-                            <input type="hidden" name="id" value="<?= $order['id'] ?>">
+                            <input type="hidden" name="id" value="<?= $order->get_id() ?>">
 
                             <?php
                             if (defined('DOCUMENT_TYPE')) {
@@ -115,7 +131,7 @@ if (!defined('ABSPATH')) {
                                    value="<?= __('Gerar') ?>">
 
                             <a class="wp-core-ui button-secondary" style="width: 80px; text-align: center"
-                               href="<?= admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order['id']) ?>">
+                               href="<?= admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id()) ?>">
                                 <?= __('Limpar') ?>
                             </a>
                         </form>
