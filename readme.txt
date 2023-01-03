@@ -2,8 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.79
+Stable tag: 3.0.80
 Tested up to: 6.1.1
+WC tested up to: 7.2.2
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -67,6 +68,11 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 3.0.80 =
+* FEATURE: Adicionado suporte para encomendas HPOS do WooCommerce
+* MINOR: Testado até à versão 7.2.2 do WooCommerce
+
 = 3.0.79 =
 * FIX: Corrigido alerta PHP.
 * MINOR: Testado até à versão 6.1.1 do Wordpress
