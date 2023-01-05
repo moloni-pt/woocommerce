@@ -14,7 +14,7 @@ class Model
     public static function getTokensRow()
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "moloni_api ORDER BY id DESC", ARRAY_A);
+        return $wpdb->get_row("SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api ORDER BY id DESC", ARRAY_A);
     }
 
     /**
@@ -31,8 +31,8 @@ class Model
     {
         global $wpdb;
 
-        $wpdb->query("TRUNCATE " . $wpdb->prefix . "moloni_api");
-        $wpdb->insert($wpdb->prefix . 'moloni_api', ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
+        $wpdb->query("TRUNCATE " . $wpdb->get_blog_prefix() . "moloni_api");
+        $wpdb->insert($wpdb->get_blog_prefix() . 'moloni_api', ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
 
         return true;
     }
@@ -49,13 +49,13 @@ class Model
         global $wpdb;
         $setting = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM " . $wpdb->prefix . "moloni_api_config WHERE config = %s", $option
+                "SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api_config WHERE config = %s", $option
             ), ARRAY_A);
 
         if (!empty($setting)) {
-            $wpdb->update($wpdb->prefix . 'moloni_api_config', ['selected' => $value], ['config' => $option]);
+            $wpdb->update($wpdb->get_blog_prefix() . 'moloni_api_config', ['selected' => $value], ['config' => $option]);
         } else {
-            $wpdb->insert($wpdb->prefix . 'moloni_api_config', ['selected' => $value, 'config' => $option]);
+            $wpdb->insert($wpdb->get_blog_prefix() . 'moloni_api_config', ['selected' => $value, 'config' => $option]);
         }
 
         return $wpdb->insert_id;
@@ -79,7 +79,7 @@ class Model
         $expire = false;
 
         if (!array_key_exists("expiretime", $tokensRow)) {
-            $wpdb->query("ALTER TABLE " . $wpdb->prefix . "moloni_api ADD expiretime varchar(250)");
+            $wpdb->query("ALTER TABLE " . $wpdb->get_blog_prefix() . "moloni_api ADD expiretime varchar(250)");
         } else {
             $expire = $tokensRow['expiretime'];
         }
@@ -88,7 +88,7 @@ class Model
             $results = Curl::refresh($tokensRow['refresh_token']);
 
             if (isset($results['access_token'])) {
-                $wpdb->update($wpdb->prefix . "moloni_api", [
+                $wpdb->update($wpdb->get_blog_prefix() . "moloni_api", [
                     "main_token" => $results['access_token'],
                     "refresh_token" => $results['refresh_token'],
                     "expiretime" => time() + 3000
@@ -148,7 +148,7 @@ class Model
     public static function defineConfigs(): void
     {
         global $wpdb;
-        $results = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "moloni_api_config ORDER BY id DESC", ARRAY_A);
+        $results = $wpdb->get_results("SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api_config ORDER BY id DESC", ARRAY_A);
 
         if (empty($results)) {
             return;
@@ -197,7 +197,7 @@ class Model
     {
         global $wpdb;
 
-        $wpdb->query("TRUNCATE " . $wpdb->prefix . "moloni_api");
+        $wpdb->query("TRUNCATE " . $wpdb->get_blog_prefix() . "moloni_api");
 
         return true;
     }

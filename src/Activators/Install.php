@@ -2,6 +2,8 @@
 
 namespace Moloni\Activators;
 
+use WP_Site;
+
 class Install
 {
     /**
@@ -22,18 +24,42 @@ class Install
             wp_die(esc_html__('Requires WooCommerce 3.0.0 or above.', 'moloni-pt'));
         }
 
-        self::createTables();
-        self::insertSettings();
+        global $wpdb;
+
+        if (is_multisite() && function_exists('get_sites')) {
+            /** @var WP_Site[] $sites */
+            $sites = get_sites();
+
+            foreach ($sites as $site) {
+                $prefix = $wpdb->get_blog_prefix($site->blog_id);
+
+                self::createTables($prefix);
+                self::insertSettings($prefix);
+            }
+        } else {
+            self::createTables($wpdb->prefix);
+            self::insertSettings($wpdb->prefix);
+        }
+    }
+
+    public static function initializeSite(WP_Site $site)
+    {
+        global $wpdb;
+
+        $prefix = $wpdb->get_blog_prefix($site->blog_id);
+
+        self::createTables($prefix);
+        self::insertSettings($prefix);
     }
 
     /**
      * Create API connection table
      */
-    private static function createTables(): void
+    private static function createTables(string $prefix): void
     {
         global $wpdb;
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_api`( 
+            "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_api`( 
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                 main_token VARCHAR(100), 
                 refresh_token VARCHAR(100), 
@@ -45,7 +71,7 @@ class Install
         );
 
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_api_config`( 
+            "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_api_config`( 
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
                 config VARCHAR(100), 
                 description VARCHAR(100), 
@@ -58,11 +84,11 @@ class Install
     /**
      * Create Moloni account settings
      */
-    private static function insertSettings(): void
+    private static function insertSettings(string $prefix): void
     {
         global $wpdb;
 
-        $wpdb->query("INSERT INTO `" . $wpdb->prefix . "moloni_api_config`(config, description) 
+        $wpdb->query("INSERT INTO `" . $prefix . "moloni_api_config`(config, description) 
                         VALUES('document_set_id', 'Escolha uma Série de Documentos para melhor organização'),
                         ('exemption_reason', 'Escolha uma Isenção de Impostos para os produtos que não têm impostos'),
                         ('exemption_reason_shipping', 'Escolha uma Isenção de Impostos para os portes que não têmimpostos'),

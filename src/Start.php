@@ -79,7 +79,7 @@ class Start
             }
 
             if (isset($_GET['company_id'])) {
-                $wpdb->update($wpdb->prefix . 'moloni_api', [
+                $wpdb->update($wpdb->get_blog_prefix() . 'moloni_api', [
                     'company_id' => (int)$_GET['company_id']
                 ],
                     [
