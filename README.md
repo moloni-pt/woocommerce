@@ -1,13 +1,17 @@
 # Moloni
 
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-v6.1.1%20tested-orange)
+![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
+![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.1.1%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.2.0%20tested-orange)
+
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
 
 ![GitHub](https://img.shields.io/github/license/moloni-pt/woocommerce)
 
-**Contributors:**      [molonidevteam](https://github.com/molonidevteam)  
+**Contributors:**      [moloni-pt](https://github.com/moloni-pt)  
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
@@ -19,7 +23,7 @@
 
 Software de faturação inovador que se adapta ao seu negócio! Destinado a profissionais liberais, micro, pequenas e médias empresas. Sem investimento inicial, completo e intuitivo.
 
-## Description
+## Descrição
 O Moloni é um inovador software de faturação e POS online que inclui acesso a inúmeras ferramentas úteis e funcionais que permitem a cada empresa gerir a sua faturação, controlar stocks, automatizar processos e emitir documentos de forma rápida, simples e intuitiva.
 
 Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!

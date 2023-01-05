@@ -215,7 +215,7 @@ class Plugin
             /** @var WC_Order[] $allOrders */
             $allOrders = Controllers\PendingOrders::getAllAvailable();
 
-            if (!empty($allOrders) && is_array($allOrders)) {
+            if (!empty($allOrders)) {
                 foreach ($allOrders as $order) {
                     $order->add_meta_data('_moloni_sent', '-1');
                     $order->add_order_note(__('Encomenda marcada como gerada'));
