@@ -861,6 +861,12 @@ class Documents
             if (!empty($this->products) && is_array($this->products)) {
                 foreach ($this->products as &$product) {
                     $product['price'] /= $this->exchange_rate;
+
+                    if (!empty($product['child_products'])) {
+                        foreach ($product['child_products'] as &$child_product) {
+                            $child_product['price'] /= $this->exchange_rate;
+                        }
+                    }
                 }
             }
         }
