@@ -2,8 +2,10 @@
 
 namespace Moloni;
 
-use Moloni\Services\Documents\DownloadDocument;
+use WC_Order;
+use Moloni\Helpers\Context;
 use Moloni\Services\Documents\OpenDocument;
+use Moloni\Services\Documents\DownloadDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
 
 /**
@@ -18,8 +20,21 @@ class Plugin
      */
     public function __construct()
     {
+        $this->onStart();
         $this->actions();
         $this->crons();
+    }
+
+    //            Privates            //
+
+    /**
+     * Place to run code before starting
+     *
+     * @return void
+     */
+    private function onStart()
+    {
+        Storage::$USES_NEW_ORDERS_SYSTEM = Context::isNewOrdersSystemEnabled();
     }
 
     /**
@@ -30,6 +45,7 @@ class Plugin
     private function actions(): void
     {
         new Menus\Admin($this);
+        new Hooks\WoocommerceInitialize($this);
         new Hooks\ProductUpdate($this);
         new Hooks\ProductView($this);
         new Hooks\OrderView($this);
@@ -51,6 +67,8 @@ class Plugin
             wp_schedule_event(time(), 'everyficeminutes', 'moloniProductsSync');
         }
     }
+
+    //            Publics            //
 
     /**
      * Main function
@@ -97,6 +115,8 @@ class Plugin
             include MOLONI_TEMPLATE_DIR . 'MainContainer.php';
         }
     }
+
+    //            Actions            //
 
     /**
      * Create a single document from order
@@ -169,7 +189,10 @@ class Plugin
         $orderId = (int)$_GET['id'];
 
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
-            add_post_meta($orderId, '_moloni_sent', '-1');
+            $order = wc_get_order($orderId);
+            $order->add_meta_data('_moloni_sent', '-1');
+            $order->add_order_note(__('Encomenda marcada como gerada'));
+            $order->save();
 
             add_settings_error('moloni', 'moloni-order-remove-success', __('A encomenda ' . $orderId . ' foi marcada como gerada!'), 'updated');
         } else {
@@ -189,10 +212,14 @@ class Plugin
     private function removeOrdersAll(): void
     {
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
+            /** @var WC_Order[] $allOrders */
             $allOrders = Controllers\PendingOrders::getAllAvailable();
-            if (!empty($allOrders) && is_array($allOrders)) {
+
+            if (!empty($allOrders)) {
                 foreach ($allOrders as $order) {
-                    add_post_meta($order['id'], '_moloni_sent', '-1');
+                    $order->add_meta_data('_moloni_sent', '-1');
+                    $order->add_order_note(__('Encomenda marcada como gerada'));
+                    $order->save();
                 }
 
                 add_settings_error('moloni', 'moloni-order-all-remove-success', __('Todas as encomendas foram marcadas como geradas!'), 'updated');

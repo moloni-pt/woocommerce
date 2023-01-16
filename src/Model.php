@@ -165,23 +165,31 @@ class Model
 
     /**
      * Get all available custom fields
-     * @return array
      */
-    public static function getCustomFields()
+    public static function getCustomFields(): array
     {
         global $wpdb;
 
-        $results = $wpdb->get_results(
-            "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "postmeta ORDER BY `" . $wpdb->prefix . "postmeta`.`meta_key` ASC",
-            ARRAY_A
-        );
+        if (Storage::$USES_NEW_ORDERS_SYSTEM) {
+            $results = $wpdb->get_results(
+                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "wc_orders_meta ORDER BY `" . $wpdb->prefix . "wc_orders_meta`.`meta_key` ASC",
+                ARRAY_A
+            );
+        } else {
+            $results = $wpdb->get_results(
+                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "postmeta ORDER BY `" . $wpdb->prefix . "postmeta`.`meta_key` ASC",
+                ARRAY_A
+            );
+        }
 
         $customFields = [];
+
         if ($results && is_array($results)) {
             foreach ($results as $result) {
                 $customFields[] = $result;
             }
         }
+
         return $customFields;
     }
 

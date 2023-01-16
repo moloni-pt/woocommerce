@@ -1,24 +1,29 @@
 # Moloni
 
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-v6.1.1%20tested-orange)
+![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
+![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.1.1%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.2.0%20tested-orange)
+
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
 
 ![GitHub](https://img.shields.io/github/license/moloni-pt/woocommerce)
 
-**Contributors:**      [molonidevteam](https://github.com/molonidevteam)  
+**Contributors:**      [moloni-pt](https://github.com/moloni-pt)  
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
 **Tested up to:**      6.1.1  
-**Stable tag:**        3.0.79  
+**WC tested up to**    7.2.2  
+**Stable tag:**        3.0.80  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
 Software de faturação inovador que se adapta ao seu negócio! Destinado a profissionais liberais, micro, pequenas e médias empresas. Sem investimento inicial, completo e intuitivo.
 
-## Description
+## Descrição
 O Moloni é um inovador software de faturação e POS online que inclui acesso a inúmeras ferramentas úteis e funcionais que permitem a cada empresa gerir a sua faturação, controlar stocks, automatizar processos e emitir documentos de forma rápida, simples e intuitiva.
 
 Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
@@ -65,6 +70,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.80
+* FEATURE: Adicionado suporte para encomendas HPOS do WooCommerce
+* MINOR: Testado até à versão 7.2.2 do WooCommerce
 
 ### 3.0.79
 * FIX: Corrigido alerta PHP.

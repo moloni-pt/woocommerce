@@ -2,9 +2,12 @@
 
 namespace Moloni\Hooks;
 
-use Moloni\Error;
+use WP_Post;
+use WC_Order;
 use Moloni\Plugin;
 use Moloni\Start;
+use Moloni\Helpers\MoloniOrder;
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
 /**
  * Class OrderView
@@ -31,39 +34,44 @@ class OrderView
 
     public function moloni_add_meta_box()
     {
-        add_meta_box('moloni_add_meta_box', 'Moloni', [$this, 'showMoloniView'], 'shop_order', 'side', 'core');
+        $screen = wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id('shop-order')
+            : 'shop_order';
+
+        add_meta_box('moloni_add_meta_box', 'Moloni', [$this, 'showMoloniView'], $screen, 'side', 'core');
     }
 
     public function getDocumentTypeSelect()
     {
+        $documentType = defined('DOCUMENT_TYPE') ? DOCUMENT_TYPE : '';
         ?>
 
         <select id="moloni_document_type" style="float:right">
-            <option value='invoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoices' ? 'selected' : '') ?>>
+            <option value='invoices' <?= ($documentType === 'invoices' ? 'selected' : '') ?>>
                 <?= __('Fatura') ?>
             </option>
 
-            <option value='invoiceReceipts' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'invoiceReceipts' ? 'selected' : '') ?>>
+            <option value='invoiceReceipts' <?= ($documentType === 'invoiceReceipts' ? 'selected' : '') ?>>
                 <?= __('Factura/Recibo') ?>
             </option>
 
-            <option value='simplifiedInvoices'<?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'simplifiedInvoices' ? 'selected' : '') ?>>
+            <option value='simplifiedInvoices'<?= ($documentType === 'simplifiedInvoices' ? 'selected' : '') ?>>
                 <?= __('Factura Simplificada') ?>
             </option>
 
-            <option value='proFormaInvoices' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'proFormaInvoices' ? 'selected' : '') ?>>
+            <option value='proFormaInvoices' <?= ($documentType === 'proFormaInvoices' ? 'selected' : '') ?>>
                 <?= __('Fatura Pró-Forma') ?>
             </option>
 
-            <option value='billsOfLading' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'billsOfLading' ? 'selected' : '') ?>>
+            <option value='billsOfLading' <?= ($documentType === 'billsOfLading' ? 'selected' : '') ?>>
                 <?= __('Guia de Transporte') ?>
             </option>
 
-            <option value='purchaseOrder' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'purchaseOrder' ? 'selected' : '') ?>>
+            <option value='purchaseOrder' <?= ($documentType === 'purchaseOrder' ? 'selected' : '') ?>>
                 <?= __('Nota de Encomenda') ?>
             </option>
 
-            <option value='estimates' <?= (defined('DOCUMENT_TYPE') && DOCUMENT_TYPE === 'estimates' ? 'selected' : '') ?>>
+            <option value='estimates' <?= ($documentType === 'estimates' ? 'selected' : '') ?>>
                 <?= __('Orçamento') ?>
             </option>
         </select>
@@ -86,13 +94,49 @@ class OrderView
         <?php
     }
 
-    public function reCreateDocument($post)
+    public function showMoloniView($postOrOrderObject)
+    {
+        /** @var WC_Order $order */
+        $order = ($postOrOrderObject instanceof WP_Post) ? wc_get_order($postOrOrderObject->ID) : $postOrOrderObject;
+
+        if (in_array('wc-' . $order->get_status(), $this->allowedStatus)) {
+            $documentId = MoloniOrder::getLastCreatedDocument($order);
+
+            Start::login(true);
+
+            echo '<div style="display: none"><pre>' . print_r($order->get_taxes(), true) . '</pre></div>';
+
+            if ($documentId > 0) {
+                echo __('O documento já foi gerado no moloni');
+
+                $this->seeDocument($documentId);
+                $this->reCreateDocument($order);
+            } elseif ($documentId === -1) {
+                echo __('O documento foi marcado como gerado.');
+                echo '<br><br>';
+
+                $this->getDocumentTypeSelect();
+                echo '<br><br>';
+
+                $this->getDocumentCreateButton($order, __('Gerar novamente'));
+            } else {
+                $this->getDocumentCreateButton($order, __('Gerar'));
+                $this->getDocumentTypeSelect();
+            }
+
+            echo '<div style="clear:both"></div>';
+        } else {
+            echo __('A encomenda tem que ser dada como paga para poder ser gerada.');
+        }
+    }
+
+    public function reCreateDocument(WC_Order $order)
     {
         ?>
         <a type="button"
            class="button"
            target="_BLANK"
-           href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>"
+           href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>"
            style="margin-top: 10px; float:right;"
         >
             <?= __('Gerar novamente') ?>
@@ -100,54 +144,7 @@ class OrderView
         <?php
     }
 
-    public function showMoloniView($post)
-    {
-        if (in_array($post->post_status, $this->allowedStatus)) : ?>
-            <?php
-            $documentId = 0;
-            $documents = get_post_meta($post->ID, '_moloni_sent');
-
-            if (is_array($documents) && !empty($documents)) {
-                /** Last item in the array is the latest document */
-                $documentId = (int)end($documents);
-            }
-            ?>
-
-            <?php
-            $order = new \WC_Order($post->ID);
-            echo '<div style="display: none"><pre>' . print_r($order->get_taxes(), true) . '</pre></div>';
-            ?>
-
-            <?php if ((int)$documentId > 0) : ?>
-                <?= __('O documento já foi gerado no moloni') ?>
-                <?php $this->seeDocument($documentId) ?>
-                <?php $this->reCreateDocument($post) ?>
-            <?php elseif ($documentId == -1) : ?>
-                <?= __('O documento foi marcado como gerado.') ?>
-                <?php try {
-                    Start::login(true);
-                } catch (Error $e) {
-                } ?>
-                <br><br>
-                <?php $this->getDocumentTypeSelect() ?>
-                <br><br>
-                <?php $this->getDocumentCreateButton($post, __('Gerar novamente')) ?>
-            <?php else: ?>
-                <?php try {
-                    Start::login(true);
-                } catch (Error $e) {
-                } ?>
-
-                <?php $this->getDocumentCreateButton($post, __('Gerar')) ?>
-                <?php $this->getDocumentTypeSelect() ?>
-            <?php endif; ?>
-            <div style="clear:both"></div>
-        <?php else : ?>
-            <?= __('A encomenda tem que ser dada como paga para poder ser gerada.') ?>
-        <?php endif;
-    }
-
-    public function getDocumentCreateButton($post, $text = 'Gerar')
+    public function getDocumentCreateButton(WC_Order $order, string $text = 'Gerar')
     {
         ?>
         <a type="button"
@@ -161,10 +158,12 @@ class OrderView
 
         <script>
             function createMoloniDocument() {
-                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $post->ID) ?>";
+                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>";
+
                 if (document.getElementById('moloni_document_type')) {
                     redirectUrl += '&document_type=' + document.getElementById('moloni_document_type').value;
                 }
+
                 window.open(redirectUrl, '_blank')
             }
         </script>
