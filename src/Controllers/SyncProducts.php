@@ -75,7 +75,7 @@ class SyncProducts
                         } else {
                             Log::write('Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock);
                             $this->updated[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
-                            wc_update_product_stock($wcProductId, $newStock);
+                            wc_update_product_stock($wcProduct, $newStock);
                         }
                     } else {
                         Log::write('Artigo não encontrado ou sem stock ativo: ' . $product['reference']);
