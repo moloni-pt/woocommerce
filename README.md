@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.1.1  
 **WC tested up to**    7.2.2  
-**Stable tag:**        3.0.80  
+**Stable tag:**        3.0.81  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -70,6 +70,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.81
+* FIX: Correção na sincronização de stocks em artigos com variantes
 
 ### 3.0.80
 * FEATURE: Adicionado suporte para encomendas HPOS do WooCommerce
