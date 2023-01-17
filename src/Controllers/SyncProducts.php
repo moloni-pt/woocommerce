@@ -51,7 +51,8 @@ class SyncProducts
                     $wcProductId = wc_get_product_id_by_sku($product['reference']);
 
                     if ($product['has_stock'] && $wcProductId > 0) {
-                        $currentStock = (new WC_Product($wcProductId))->get_stock_quantity();
+                        $wcProduct = wc_get_product($wcProductId);
+                        $currentStock = $wcProduct->get_stock_quantity();
 
                         /** if the product does not have the set warehouse, stock is 0 (so we do it here) */
                         $newStock = 0;
