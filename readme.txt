@@ -2,9 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.81
+Stable tag: 3.0.82
 Tested up to: 6.1.1
-WC tested up to: 7.2.2
+WC tested up to: 7.3.0
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -68,6 +68,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 3.0.82 =
+* FIX: Correção de erro na edição de artigos em versões antigas do WooCommerce.
 
 = 3.0.81 =
 * FIX: Correção na sincronização de stocks em artigos com variantes
