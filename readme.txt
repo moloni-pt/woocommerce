@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.82
+Stable tag: 3.0.84
 Tested up to: 6.1.1
 WC tested up to: 7.3.0
 
