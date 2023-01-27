@@ -51,6 +51,7 @@ class Product
         $this->product = $product;
 
         $parentId = $this->product->get_parent_id();
+
         if ($parentId > 0) {
             $this->productParent = wc_get_product($parentId);
         }
@@ -390,11 +391,14 @@ class Product
             $values['ean'] = $this->ean;
         }
 
+        if (empty($this->product_id)) {
+            $values['at_product_category'] = $this->at_product_category;
+        }
+
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;
         $values['stock'] = $this->stock;
-        $values['at_product_category'] = $this->at_product_category;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
