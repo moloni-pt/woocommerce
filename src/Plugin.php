@@ -128,13 +128,15 @@ class Plugin
         $service = new CreateMoloniDocument((int)$_REQUEST['id']);
         $service->run();
 
-        $adminUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId());
+        if ($service->getDocumentId()) {
+            $adminUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId());
 
-        $html = ' <a href="' . $adminUrl . '" target="_BLANK">';
-        $html .= '  Ver documento';
-        $html .= '</a>';
+            $html = ' <a href="' . $adminUrl . '" target="_BLANK">';
+            $html .= '  Ver documento';
+            $html .= '</a>';
 
-        add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $html, 'updated');
+            add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $html, 'updated');
+        }
     }
 
     /**
