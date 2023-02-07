@@ -211,12 +211,21 @@ class OrderProduct
     }
 
     /**
+     * Set product id
+     *
      * @return $this
+     *
      * @throws Error
      */
     private function setProductId()
     {
-        $this->moloniProduct = new Product($this->product->get_product());
+        $wcProduct = $this->product->get_product();
+
+        if (!$wcProduct) {
+            throw new Error(__('Artigo da encomenda já não existe: ') . $this->name);
+        }
+
+        $this->moloniProduct = new Product($wcProduct);
 
         if (!$this->moloniProduct->loadByReference()) {
             $this->moloniProduct->fiscalZone = $this->fiscalZone;
