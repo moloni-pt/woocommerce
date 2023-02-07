@@ -70,6 +70,7 @@ New plugin version fully re-written
 == changelog ==
 
 = 3.0.85 =
+* FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.
 * FIX: Omitir mesagem de sucesso na criação de documentos se processo for cancelado.
 
 = 3.0.84 =
