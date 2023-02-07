@@ -71,9 +71,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * Released plugin version 3.
 * New plugin version fully re-written
 
-### 3.0.82
-* MINOR: Remover atualização automática do Tipo de Mercadoria AT.
+### 3.0.85
+* FIX: Omitir mesagem de sucesso na criação de documentos se processo for cancelado.
 
+### 3.0.84
+* MINOR: Remover atualização automática do Tipo de Mercadoria AT.
 
 ### 3.0.82
 * FIX: Correção de erro na edição de artigos em versões antigas do WooCommerce.
