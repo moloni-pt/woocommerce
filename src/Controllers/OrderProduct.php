@@ -7,6 +7,7 @@ use Moloni\Error;
 use Moloni\Tools;
 use WC_Order;
 use WC_Order_Item_Product;
+use WC_Product;
 use WC_Tax;
 
 class OrderProduct
@@ -221,7 +222,7 @@ class OrderProduct
     {
         $wcProduct = $this->product->get_product();
 
-        if (!$wcProduct) {
+        if (!($wcProduct instanceof WC_Product)) {
             throw new Error(__('Artigo da encomenda já não existe: ') . $this->name);
         }
 
