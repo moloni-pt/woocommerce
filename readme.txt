@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.84
+Stable tag: 3.0.85
 Tested up to: 6.1.1
 WC tested up to: 7.3.0
 
@@ -68,6 +68,13 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 3.0.85 =
+* FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.
+* FIX: Omitir mesagem de sucesso na criação de documentos se processo for cancelado.
+
+= 3.0.84 =
+* MINOR: Remover atualização automática do Tipo de Mercadoria AT.
 
 = 3.0.82 =
 * FIX: Correção de erro na edição de artigos em versões antigas do WooCommerce.
