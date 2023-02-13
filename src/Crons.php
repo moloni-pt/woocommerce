@@ -10,12 +10,13 @@ use Moloni\Controllers\SyncProducts;
  */
 class Crons
 {
-    public static function addCronInterval()
+    public static function addCronInterval($schedules = [])
     {
         $schedules['everyficeminutes'] = array(
             'interval' => 300,
             'display' => __('A cada cinco minutos')
         );
+
         return $schedules;
     }
 
