@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.1.1  
 **WC tested up to**    7.3.0  
-**Stable tag:**        3.0.84  
+**Stable tag:**        3.0.86  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -70,6 +70,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.86
+* FIX: Correção de erro no agendamento de crons.
 
 ### 3.0.85
 * FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.

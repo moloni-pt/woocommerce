@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.85
+Stable tag: 3.0.86
 Tested up to: 6.1.1
 WC tested up to: 7.3.0
 
@@ -68,6 +68,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 3.0.86 =
+* FIX: Correção de erro no agendamento de crons.
 
 = 3.0.85 =
 * FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.
