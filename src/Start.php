@@ -36,6 +36,8 @@ class Start
 
         if (!empty($username) && !empty($password)) {
             $loginValid = false;
+            $errorMessage = '';
+            $errorBag = [];
 
             try {
                 $login = Curl::login($username, $password);
@@ -46,11 +48,12 @@ class Start
                     Model::setTokens($login['access_token'], $login['refresh_token']);
                 }
             } catch (Error $e) {
-                /** No need to catch error here */
+                $errorMessage = $e->getMessage();
+                $errorBag = $e->getRequest();
             }
 
             if (!$loginValid) {
-                self::loginForm(__('Combinação de utilizador/password errados'));
+                self::loginForm($errorMessage, $errorBag);
                 return false;
             }
         }
@@ -101,9 +104,11 @@ class Start
 
     /**
      * Shows a login form
+     *
      * @param bool|string $error Is used in include
+     * @param bool|array $errorData Is used in include
      */
-    public static function loginForm($error = false)
+    public static function loginForm($error = false, $errorData = false)
     {
         if (!self::$ajax) {
             include(MOLONI_TEMPLATE_DIR . 'LoginForm.php');

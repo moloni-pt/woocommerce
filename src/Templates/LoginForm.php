@@ -4,11 +4,18 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
+<?php if (isset($errorData) && !empty($errorData)): ?>
+    <pre style="display: none;" id="curl_error_data">
+            <?= print_r($errorData, true) ?>
+        </pre>
+<?php endif; ?>
+
 <div id='formLogin'>
     <a href='https://moloni.pt' target='_BLANK'>
         <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width='300px' alt="Moloni">
     </a>
     <hr>
+
     <form id='formPerm' method='POST' action='<?= admin_url('admin.php?page=moloni') ?>'>
         <table>
             <tr>
