@@ -4,7 +4,7 @@
 ![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
 ![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
 ![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.2%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
-![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.3.0%20tested-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.5.1%20tested-orange)
 
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
@@ -16,8 +16,8 @@
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
 **Tested up to:**      6.2  
-**WC tested up to**    7.3.0  
-**Stable tag:**        3.0.87  
+**WC tested up to**    7.5.1  
+**Stable tag:**        3.0.88  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -73,6 +73,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 ### 3.0.88
 * MINOR: Testado até à versão 6.2 do Wordpress
+* MINOR: Testado até à versão 7.5.1 do WooCommerce
 
 ### 3.0.87
 * MINOR: Melhoria no tratamento de erros na autenticação.

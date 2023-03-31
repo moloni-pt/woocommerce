@@ -2,9 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.87
+Stable tag: 3.0.88
 Tested up to: 6.2
-WC tested up to: 7.3.0
+WC tested up to: 7.5.1
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -71,6 +71,7 @@ New plugin version fully re-written
 
 = 3.0.88 =
 * MINOR: Testado até à versão 6.2 do Wordpress
+* MINOR: Testado até à versão 7.5.1 do WooCommerce
 
 = 3.0.87 =
 * MINOR: Melhoria no tratamento de erros na autenticação.
