@@ -70,6 +70,7 @@ New plugin version fully re-written
 == changelog ==
 
 = 3.0.88 =
+* UPDATE: Melhorias na criação/atualização de produtos de forma automática
 * MINOR: Testado até à versão 6.2 do Wordpress
 * MINOR: Testado até à versão 7.5.1 do WooCommerce
 
