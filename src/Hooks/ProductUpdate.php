@@ -3,39 +3,60 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Controllers\Product;
-use Moloni\Error;
+use WC_Product;
 use Moloni\Log;
+use Moloni\Error;
 use Moloni\Notice;
 use Moloni\Plugin;
 use Moloni\Start;
-use WC_Product;
+use Moloni\Helpers\SyncLogs;
+use Moloni\Enums\SyncLogsType;
+use Moloni\Controllers\Product;
 
 class ProductUpdate
 {
-
+    /**
+     * Main class
+     *
+     * @var Plugin
+     */
     public $parent;
 
     /**
-     * @param plugin $parent
+     * Constructor
+     *
+     * @param Plugin $parent
      */
-    public function __construct($parent)
+    public function __construct(Plugin $parent)
     {
         $this->parent = $parent;
         add_action('woocommerce_update_product', [$this, 'productCreateUpdate']);
         add_action('woocommerce_update_product_variation', [$this, 'productCreateUpdate']);
     }
 
+    /**
+     * Public hook
+     *
+     * @param $productId
+     *
+     * @return void
+     */
     public function productCreateUpdate($productId)
     {
+        if (!$this->shouldRunHook($productId)) {
+            return;
+        }
+
         try {
             $product = wc_get_product($productId);
+
             try {
-                if ($product->get_status() !== 'draft' && start::login(true)) {
+                if ($this->shouldProcessProduct($product)) {
                     if ($this->shouldInsertProduct() || $this->shouldUpdateProduct()) {
                         $this->updateOrInsertProduct($product);
 
                         $childProducts = $product->get_children();
+
                         if (!empty($childProducts) && is_array($childProducts)) {
                             foreach ($childProducts as $childProduct) {
                                 $product = wc_get_product($childProduct);
@@ -52,31 +73,86 @@ class ProductUpdate
         }
     }
 
+    //          Privates          //
+
     /**
+     * Update/insert action
+     *
      * @param WC_Product $product
+     *
      * @throws Error
      */
-    private function updateOrInsertProduct($product)
+    private function updateOrInsertProduct(WC_Product $product): void
     {
         $productObj = new product($product);
-        if (!$productObj->loadbyreference()) {
-            $productObj->create();
 
-            if ($productObj->product_id > 0) {
-                Notice::addMessageSuccess(__('O artigo foi criado no moloni'));
+        if (!$productObj->loadbyreference()) {
+            if ($this->shouldInsertProduct()) {
+                $productObj->create();
+
+                if ($productObj->product_id > 0) {
+                    Notice::addMessageSuccess(__('O artigo foi criado no moloni'));
+                }
             }
-        } else if ((defined('MOLONI_PRODUCT_SYNC_UPDATE') && MOLONI_PRODUCT_SYNC_UPDATE)) {
+        } else if ($this->shouldUpdateProduct()) {
             $productObj->update();
             Notice::addMessageCustom(__('O artigo já existe no moloni'));
         }
     }
 
-    private function shouldUpdateProduct() {
-        return (defined('MOLONI_PRODUCT_SYNC_UPDATE') && MOLONI_PRODUCT_SYNC_UPDATE);
+    //          Auxiliary          //
+
+    /**
+     * Check if hook should be run
+     *
+     * @param int $productId
+     *
+     * @return bool
+     */
+    private function shouldRunHook(int $productId): bool
+    {
+        if (SyncLogs::hasTimeout(SyncLogsType::WC_PRODUCT, $productId)) {
+            return false;
+        }
+
+        SyncLogs::addTimeout(SyncLogsType::WC_PRODUCT, $productId);
+
+        return true;
     }
 
-    private function shouldInsertProduct()
+    /**
+     * Check if product should be processed
+     *
+     * @param WC_Product $product
+     *
+     * @return bool
+     */
+    private function shouldProcessProduct(WC_Product $product): bool
+    {
+        if (empty($product) || $product->get_status() === 'draft') {
+            return false;
+        }
+
+        return start::login(true);
+    }
+
+    /**
+     * Check if product should be created
+     *
+     * @return bool
+     */
+    private function shouldInsertProduct(): bool
     {
         return (defined('MOLONI_PRODUCT_SYNC') && MOLONI_PRODUCT_SYNC);
+    }
+
+    /**
+     * Check if product should be updated
+     *
+     * @return bool
+     */
+    private function shouldUpdateProduct(): bool
+    {
+        return (defined('MOLONI_PRODUCT_SYNC_UPDATE') && MOLONI_PRODUCT_SYNC_UPDATE);
     }
 }
