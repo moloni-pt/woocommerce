@@ -170,14 +170,16 @@ class Model
     {
         global $wpdb;
 
+        $prefix = $wpdb->get_blog_prefix();
+
         if (Storage::$USES_NEW_ORDERS_SYSTEM) {
             $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "wc_orders_meta ORDER BY `" . $wpdb->prefix . "wc_orders_meta`.`meta_key` ASC",
+                "SELECT DISTINCT meta_key FROM " . $prefix . "wc_orders_meta ORDER BY `" . $prefix . "wc_orders_meta`.`meta_key` ASC",
                 ARRAY_A
             );
         } else {
             $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "postmeta ORDER BY `" . $wpdb->prefix . "postmeta`.`meta_key` ASC",
+                "SELECT DISTINCT meta_key FROM " . $prefix . "postmeta ORDER BY `" . $prefix . "postmeta`.`meta_key` ASC",
                 ARRAY_A
             );
         }

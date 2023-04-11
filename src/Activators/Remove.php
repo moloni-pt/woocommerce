@@ -18,7 +18,7 @@ class Remove
                 self::dropTables($wpdb->get_blog_prefix($site->blog_id));
             }
         } else {
-            self::dropTables($wpdb->prefix);
+            self::dropTables($wpdb->get_blog_prefix());
         }
 
         wp_clear_scheduled_hook('moloniProductsSync');
@@ -37,5 +37,6 @@ class Remove
 
         $wpdb->query("DROP TABLE " . $prefix . "moloni_api");
         $wpdb->query("DROP TABLE " . $prefix . "moloni_api_config");
+        $wpdb->query("DROP TABLE " . $prefix . "moloni_sync_logs");
     }
 }

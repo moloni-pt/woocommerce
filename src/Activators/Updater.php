@@ -9,7 +9,7 @@ class Updater
     public function __construct()
     {
         $this->updateTableNames();
-        $this->createLogSyncTable();
+        $this->createLogSyncTableIfMissing();
     }
 
     /**
@@ -25,18 +25,11 @@ class Updater
 
         // If we still have the old table names, lets update them
         if ($wpdb->get_var($query) === 'moloni_api') {
-            if (is_multisite()) {
+            if (is_multisite() && function_exists('get_sites')) {
                 /** @var WP_Site[] $sites */
                 $sites = get_sites();
-                $first = true;
 
                 foreach ($sites as $site) {
-                    if (!$first) {
-                        Install::initializeSite($site);
-                        continue;
-                    }
-
-                    $first = false;
                     $prefix = $wpdb->get_blog_prefix($site->id);
 
                     $this
@@ -44,13 +37,46 @@ class Updater
                         ->runModification('moloni_api_config', $prefix . 'moloni_api_config');
                 }
             } else {
+                $prefix = $wpdb->get_blog_prefix();
+
                 $this
-                    ->runModification('moloni_api', $wpdb->prefix . 'moloni_api')
-                    ->runModification('moloni_api_config', $wpdb->prefix . 'moloni_api_config');
+                    ->runModification('moloni_api', $prefix . 'moloni_api')
+                    ->runModification('moloni_api_config', $prefix . 'moloni_api_config');
             }
         }
     }
 
+    /**
+     * Check if we need to create the new table (new from 3.0.88)
+     *
+     * @return void
+     */
+    private function createLogSyncTableIfMissing(): void
+    {
+        global $wpdb;
+
+        if (is_multisite() && function_exists('get_sites')) {
+            /** @var WP_Site[] $sites */
+            $sites = get_sites();
+
+            foreach ($sites as $site) {
+                $this->runCreateLogSync($wpdb->get_blog_prefix($site->id));
+            }
+        } else {
+            $this->runCreateLogSync($wpdb->get_blog_prefix());
+        }
+    }
+
+    //          Auxiliary          //
+
+    /**
+     * Alters old table name
+     *
+     * @param string $oldName Old table name
+     * @param string $newName New table name
+     *
+     * @return Updater
+     */
     private function runModification(string $oldName, string $newName): Updater
     {
         global $wpdb;
@@ -61,28 +87,24 @@ class Updater
     }
 
     /**
-     * Check if we need to create the new table (new from 3.0.88)
+     * Create log sync table, if missing
+     *
+     * @param string $prefix Database prefix
      *
      * @return void
      */
-    private function createLogSyncTable(): void
+    private function runCreateLogSync(string $prefix): void
     {
         global $wpdb;
 
-        $targetTable = $wpdb->prefix . 'moloni_sync_logs';
-
-        $query = $wpdb->prepare('SHOW TABLES LIKE %s', $targetTable);
-
-        if (empty($wpdb->get_var($query))) {
-            $wpdb->query(
-                "CREATE TABLE `" . $wpdb->prefix . "moloni_sync_logs` (
+        $wpdb->query(
+            "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_sync_logs` (
 			    log_id int NOT null AUTO_INCREMENT,
                 type_id int NOT null,
                 entity_id int NOT null,
                 sync_date varchar(250) CHARACTER SET utf8 NOT null,
 			    PRIMARY KEY (`log_id`)
             ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
-            );
-        }
+        );
     }
 }

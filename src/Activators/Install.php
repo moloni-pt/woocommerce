@@ -37,8 +37,10 @@ class Install
                 self::insertSettings($prefix);
             }
         } else {
-            self::createTables($wpdb->prefix);
-            self::insertSettings($wpdb->prefix);
+            $prefix = $wpdb->get_blog_prefix();
+
+            self::createTables($prefix);
+            self::insertSettings($prefix);
         }
     }
 
@@ -58,6 +60,7 @@ class Install
     private static function createTables(string $prefix): void
     {
         global $wpdb;
+
         $wpdb->query(
             "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_api`( 
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
@@ -81,7 +84,7 @@ class Install
         );
 
         $wpdb->query(
-            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_sync_logs` (
+            "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_sync_logs` (
 			    log_id int NOT null AUTO_INCREMENT,
                 type_id int NOT null,
                 entity_id int NOT null,
