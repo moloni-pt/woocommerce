@@ -79,6 +79,16 @@ class Install
                 changed TIMESTAMP default CURRENT_TIMESTAMP
 			) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
         );
+
+        $wpdb->query(
+            "CREATE TABLE IF NOT EXISTS `" . $wpdb->prefix . "moloni_sync_logs` (
+			    log_id int NOT null AUTO_INCREMENT,
+                type_id int NOT null,
+                entity_id int NOT null,
+                sync_date varchar(250) CHARACTER SET utf8 NOT null,
+			    PRIMARY KEY (`log_id`)
+            ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
+        );
     }
 
     /**

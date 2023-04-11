@@ -2,6 +2,8 @@
 
 namespace Moloni;
 
+use WP_Error;
+
 class Curl
 {
 
@@ -132,6 +134,15 @@ class Curl
         $url .= '&password=' . urlencode($pass);
 
         $response = wp_remote_get($url);
+
+        if (is_wp_error($response)) {
+            throw new Error($response->get_error_message(), [
+                'code' => $response->get_error_code(),
+                'data' => $response->get_error_data(),
+                'message' => $response->get_error_message(),
+            ]);
+        }
+
         $raw = wp_remote_retrieve_body($response);
 
         $parsed = json_decode($raw, true);
@@ -146,7 +157,7 @@ class Curl
             'received' => $parsed
         ];
 
-        throw new Error(__('Ups, foi encontrado um erro...'), $log);
+        throw new Error(__('Combinação de utilizador/password errados'), $log);
     }
 
     /**

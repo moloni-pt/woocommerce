@@ -7,6 +7,7 @@ use Moloni\Error;
 use Moloni\Tools;
 use WC_Order;
 use WC_Order_Item_Product;
+use WC_Product;
 use WC_Tax;
 
 class OrderProduct
@@ -211,12 +212,21 @@ class OrderProduct
     }
 
     /**
+     * Set product id
+     *
      * @return $this
+     *
      * @throws Error
      */
     private function setProductId()
     {
-        $this->moloniProduct = new Product($this->product->get_product());
+        $wcProduct = $this->product->get_product();
+
+        if (!($wcProduct instanceof WC_Product)) {
+            throw new Error(__('Artigo da encomenda já não existe: ') . $this->name);
+        }
+
+        $this->moloniProduct = new Product($wcProduct);
 
         if (!$this->moloniProduct->loadByReference()) {
             $this->moloniProduct->fiscalZone = $this->fiscalZone;

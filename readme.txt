@@ -2,9 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.80
-Tested up to: 6.1.1
-WC tested up to: 7.2.2
+Stable tag: 3.0.88
+Tested up to: 6.2
+WC tested up to: 7.5.1
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -68,6 +68,30 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 3.0.88 =
+* UPDATE: Melhorias na criação/atualização de produtos de forma automática
+* MINOR: Testado até à versão 6.2 do Wordpress
+* MINOR: Testado até à versão 7.5.1 do WooCommerce
+
+= 3.0.87 =
+* MINOR: Melhoria no tratamento de erros na autenticação.
+
+= 3.0.86 =
+* FIX: Correção de erro no agendamento de crons.
+
+= 3.0.85 =
+* FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.
+* FIX: Omitir mesagem de sucesso na criação de documentos se processo for cancelado.
+
+= 3.0.84 =
+* MINOR: Remover atualização automática do Tipo de Mercadoria AT.
+
+= 3.0.82 =
+* FIX: Correção de erro na edição de artigos em versões antigas do WooCommerce.
+
+= 3.0.81 =
+* FIX: Correção na sincronização de stocks em artigos com variantes
 
 = 3.0.80 =
 * FEATURE: Adicionado suporte para encomendas HPOS do WooCommerce

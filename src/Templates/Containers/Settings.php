@@ -8,9 +8,16 @@ if (!defined('ABSPATH')) {
 <?php use Moloni\Model; ?>
 <?php use Moloni\Enums\DocumentTypes; ?>
 
-<?php $company = Curl::simple('companies/getOne', []); ?>
-<?php $warehouses = Curl::simple('warehouses/getAll', []); ?>
-<?php $countries = Curl::simple('countries/getAll', []); ?>
+<?php
+try {
+    $company = Curl::simple('companies/getOne', []);
+    $warehouses = Curl::simple('warehouses/getAll', []);
+    $countries = Curl::simple('countries/getAll', []);
+} catch (\Moloni\Error $e) {
+    $e->showError();
+    return;
+}
+?>
 
 <form method='POST' action='<?= admin_url('admin.php?page=moloni&tab=settings') ?>' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>

@@ -21,6 +21,8 @@ class Product
     /** @var WC_Product|false */
     private $productParent = false;
 
+    private $moloniProduct = [];
+
     public $product_id;
     public $category_id;
     private $type;
@@ -51,6 +53,7 @@ class Product
         $this->product = $product;
 
         $parentId = $this->product->get_parent_id();
+
         if ($parentId > 0) {
             $this->productParent = wc_get_product($parentId);
         }
@@ -64,21 +67,22 @@ class Product
     {
         $this->setReference();
 
-        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'with_invisible' => true,'exact' => 1]);
+        $searchProduct = Curl::simple('products/getByReference', ['reference' => $this->reference, 'with_invisible' => true, 'exact' => 1]);
 
         if (!empty($searchProduct) && isset($searchProduct[0]['product_id'])) {
-            $product = $searchProduct[0];
-            $this->product_id = $product['product_id'];
-            $this->name = $product['name'];
-            $this->summary = $product['summary'];
-            $this->category_id = $product['category_id'];
-            $this->has_stock = $product['has_stock'];
-            $this->stock = $product['stock'];
-            $this->price = $product['price'];
-            $this->child_products = $product['child_products'];
-            $this->composition_type = $product['composition_type'];
-            $this->taxes = $product['taxes'];
-            $this->visibility_id = $product['visibility_id'];
+            $this->moloniProduct = $searchProduct[0];
+
+            $this->product_id = $this->moloniProduct['product_id'];
+            $this->name = $this->moloniProduct['name'];
+            $this->summary = $this->moloniProduct['summary'];
+            $this->category_id = $this->moloniProduct['category_id'];
+            $this->has_stock = $this->moloniProduct['has_stock'];
+            $this->stock = $this->moloniProduct['stock'];
+            $this->price = $this->moloniProduct['price'];
+            $this->child_products = $this->moloniProduct['child_products'];
+            $this->composition_type = $this->moloniProduct['composition_type'];
+            $this->taxes = $this->moloniProduct['taxes'];
+            $this->visibility_id = $this->moloniProduct['visibility_id'];
 
             return $this;
         }
@@ -106,22 +110,59 @@ class Product
 
     /**
      * Create a product based on a WooCommerce Product
+     *
      * @return $this
+     *
      * @throws Error
      */
-    public function update()
+    public function update(): Product
     {
         $this->setProduct();
+        $props = $this->mapPropsToValues();
 
-        $update = Curl::simple('products/update', $this->mapPropsToValues());
+        if (!$this->needsToUpdateProduct($props)) {
+            return $this;
+        }
+
+        $update = Curl::simple('products/update', $props);
 
         if (isset($update['product_id'])) {
             $this->product_id = $update['product_id'];
+
             return $this;
         }
 
         throw new Error(__('Erro ao atualizar o artigo ') . $this->name);
     }
+
+    //          Gets          //
+
+    /**
+     * @return bool|int
+     */
+    public function getProductId()
+    {
+        return $this->product_id ?: false;
+    }
+
+    public function getDefaultTax()
+    {
+        $moloniTax = Tools::getTaxFromRate(-1);
+
+        $tax = [];
+        $tax['tax_id'] = $moloniTax['tax_id'];
+        $tax['value'] = $moloniTax['value'];
+        $tax['order'] = 1;
+        $tax['cumulative'] = '0';
+
+        if ((float)$moloniTax['value'] > 0) {
+            return $tax;
+        }
+
+        return [];
+    }
+
+    //          Privates          //
 
     /**
      * @throws Error
@@ -139,13 +180,7 @@ class Product
             ->setTaxes();
     }
 
-    /**
-     * @return bool|int
-     */
-    public function getProductId()
-    {
-        return $this->product_id ?: false;
-    }
+    //          Sets          //
 
     /**
      * @return $this
@@ -353,22 +388,7 @@ class Product
         return $this;
     }
 
-    public function getDefaultTax()
-    {
-        $moloniTax = Tools::getTaxFromRate(-1);
-
-        $tax = [];
-        $tax['tax_id'] = $moloniTax['tax_id'];
-        $tax['value'] = $moloniTax['value'];
-        $tax['order'] = 1;
-        $tax['cumulative'] = '0';
-
-        if ((float)$moloniTax['value'] > 0) {
-            return $tax;
-        }
-
-        return [];
-    }
+    //          Auxiliary          //
 
     /**
      * Map this object properties to an array to insert/update a moloni document
@@ -390,15 +410,66 @@ class Product
             $values['ean'] = $this->ean;
         }
 
+        if (empty($this->product_id)) {
+            $values['at_product_category'] = $this->at_product_category;
+        }
+
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;
         $values['stock'] = $this->stock;
-        $values['at_product_category'] = $this->at_product_category;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
 
         return $values;
+    }
+
+    /**
+     * Check if any attribute is outdated
+     *
+     * @param array $props
+     *
+     * @return true
+     */
+    private function needsToUpdateProduct(array $props): bool
+    {
+        if (empty($this->moloniProduct)) {
+            return true;
+        }
+
+        if (
+            (int)$props['category_id'] !== (int)$this->moloniProduct['category_id'] ||
+            (int)$props['unit_id'] !== (int)$this->moloniProduct['unit_id'] ||
+            (int)$props['visibility_id'] !== (int)$this->moloniProduct['visibility_id'] ||
+            round($props['price'], 5) !== round($this->moloniProduct['price'], 5) ||
+            ($props['name'] ?? '') !== ($this->moloniProduct['name'] ?? '') ||
+            ($props['summary'] ?? '') !== ($this->moloniProduct['summary'] ?? '') ||
+            ($props['ean'] ?? '') !== ($this->moloniProduct['ean'] ?? '') ||
+            ($props['exemption_reason'] ?? '') !== ($this->moloniProduct['exemption_reason'] ?? '')
+        ) {
+            return true;
+        }
+
+        $propsTaxCount = count($props['taxes'] ?? []);
+        $newTaxCount = count($this->taxes ?? []);
+
+        if ($propsTaxCount !== $newTaxCount) {
+            return true;
+        }
+
+        if ($propsTaxCount > 0 && $newTaxCount > 0) {
+            foreach ($props['taxes'] as $propTax) {
+                foreach ($this->taxes as $newTax) {
+                    if ((int)$newTax['tax_id'] === (int)$propTax['tax_id']) {
+                        continue 2;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

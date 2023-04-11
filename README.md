@@ -3,8 +3,8 @@
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
 ![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
 ![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.1.1%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
-![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.2.0%20tested-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.2%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.5.1%20tested-orange)
 
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
@@ -15,9 +15,9 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.1.1  
-**WC tested up to**    7.2.2  
-**Stable tag:**        3.0.80  
+**Tested up to:**      6.2  
+**WC tested up to**    7.5.1  
+**Stable tag:**        3.0.88  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -70,6 +70,30 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0
 * Released plugin version 3.
 * New plugin version fully re-written
+
+### 3.0.88
+* UPDATE: Melhorias na criação/atualização de produtos de forma automática
+* MINOR: Testado até à versão 6.2 do Wordpress
+* MINOR: Testado até à versão 7.5.1 do WooCommerce
+
+### 3.0.87
+* MINOR: Melhoria no tratamento de erros na autenticação.
+
+### 3.0.86
+* FIX: Correção de erro no agendamento de crons.
+
+### 3.0.85
+* FIX: Apresentação de erro verboso quando artigos da encomenda já não existem.
+* FIX: Omitir mesagem de sucesso na criação de documentos se processo for cancelado.
+
+### 3.0.84
+* MINOR: Remover atualização automática do Tipo de Mercadoria AT.
+
+### 3.0.82
+* FIX: Correção de erro na edição de artigos em versões antigas do WooCommerce.
+
+### 3.0.81
+* FIX: Correção na sincronização de stocks em artigos com variantes
 
 ### 3.0.80
 * FEATURE: Adicionado suporte para encomendas HPOS do WooCommerce
@@ -177,7 +201,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 3.0.54
 * MINOR: Manter visibilidade do produto na atualização.
 
-### 3.0.53 =
+### 3.0.53
 * FIX: Prevenção de criação de documentos repetidos (através de hooks)
 * MINOR: Pesquisa de produtos retorna produtos inativos.
 
@@ -185,7 +209,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * FEATURE: Possibilidade de definir uma razão de isenção para vendas fora da Europa
 * MINOR: Comparações rigorosa
 
-### 3.0.51 =
+### 3.0.51
 * FIX: Alterada a forma como é definido o stock de um artigo durante a sincronização
 
 ### 3.0.49
