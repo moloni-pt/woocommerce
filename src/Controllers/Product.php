@@ -4,6 +4,7 @@ namespace Moloni\Controllers;
 
 use Moloni\Curl;
 use Moloni\Error;
+use Moloni\Storage;
 use Moloni\Tools;
 use WC_Product;
 use WC_Tax;
@@ -98,10 +99,21 @@ class Product
     public function create()
     {
         $this->setProduct();
+        $props = $this->mapPropsToValues();
 
-        $insert = Curl::simple('products/insert', $this->mapPropsToValues());
+        $insert = Curl::simple('products/insert', $props);
+
         if (isset($insert['product_id'])) {
             $this->product_id = $insert['product_id'];
+
+            Storage::$LOGGER->info(
+                str_replace('{0}', $this->reference, __('Artigo inserido com sucesso ({0})')),
+                [
+                    'product_id' => $this->product_id,
+                    'props' => $props
+                ]
+            );
+
             return $this;
         }
 
@@ -128,6 +140,14 @@ class Product
 
         if (isset($update['product_id'])) {
             $this->product_id = $update['product_id'];
+
+            Storage::$LOGGER->info(
+                str_replace('{0}', $this->reference, __('Artigo atualizado com sucesso ({0})')),
+                [
+                    'product_id' => $this->product_id,
+                    'props' => $props
+                ]
+            );
 
             return $this;
         }

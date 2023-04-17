@@ -85,11 +85,22 @@ class Install
 
         $wpdb->query(
             "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_sync_logs` (
-			    log_id int NOT null AUTO_INCREMENT,
-                type_id int NOT null,
-                entity_id int NOT null,
-                sync_date varchar(250) CHARACTER SET utf8 NOT null,
+			    log_id INT NOT NULL AUTO_INCREMENT,
+                type_id INT NOT NULL,
+                entity_id INT NOT NULL,
+                sync_date VARCHAR(250) CHARACTER SET utf8 NOT NULL,
 			    PRIMARY KEY (`log_id`)
+            ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
+        );
+
+        $wpdb->query(
+            "CREATE TABLE IF NOT EXISTS `" . $prefix . "moloni_logs` (
+                id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                log_level VARCHAR(100) NULL,
+                company_id INT,
+                message TEXT,
+                context TEXT,
+                created_at TIMESTAMP default CURRENT_TIMESTAMP
             ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
         );
     }

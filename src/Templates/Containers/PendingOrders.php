@@ -141,7 +141,7 @@ $orders = PendingOrders::getAllAvailable();
 
         <?php else : ?>
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <?= __('Não foram encontadas encomendas por gerar!') ?>
                 </td>
             </tr>

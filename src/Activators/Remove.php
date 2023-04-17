@@ -37,6 +37,7 @@ class Remove
 
         $wpdb->query("DROP TABLE " . $prefix . "moloni_api");
         $wpdb->query("DROP TABLE " . $prefix . "moloni_api_config");
+        $wpdb->query("DROP TABLE " . $prefix . "moloni_logs");
         $wpdb->query("DROP TABLE " . $prefix . "moloni_sync_logs");
     }
 }

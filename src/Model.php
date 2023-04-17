@@ -115,7 +115,9 @@ class Model
                         new AuthenticationExpired(ALERT_EMAIL);
                     }
 
-                    Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
+                    Storage::$LOGGER->critical(
+                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.'))
+                    );
 
                     self::resetTokens();
 

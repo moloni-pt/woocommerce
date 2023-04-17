@@ -9,20 +9,26 @@ if (!defined('ABSPATH')) {
     </div>
 
 <?php settings_errors(); ?>
+<?php $tab = $_GET['tab'] ?? '' ?>
 
     <nav class="nav-tab-wrapper woo-nav-tab-wrapper">
         <a href="<?= admin_url('admin.php?page=moloni') ?>"
-           class="nav-tab <?= (isset($_GET['tab'])) ?: 'nav-tab-active' ?>">
+           class="nav-tab <?= $tab === '' ? 'nav-tab-active' : '' ?>">
             <?= __('Encomendas') ?>
         </a>
 
         <a href="<?= admin_url('admin.php?page=moloni&tab=settings') ?>"
-           class="nav-tab <?= (isset($_GET['tab']) && $_GET['tab'] === 'settings') ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= $tab === 'settings' ? 'nav-tab-active' : '' ?>">
             <?= __('Configurações') ?>
         </a>
 
+        <a href="<?= admin_url('admin.php?page=moloni&tab=logs') ?>"
+           class="nav-tab <?= $tab === 'logs' ? 'nav-tab-active' : '' ?>">
+            <?= __('Registos') ?>
+        </a>
+
         <a href="<?= admin_url('admin.php?page=moloni&tab=tools') ?>"
-           class="nav-tab <?= (isset($_GET['tab']) && $_GET['tab'] === 'tools') ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= $tab === 'tools' ? 'nav-tab-active' : '' ?>">
             <?= __('Ferramentas') ?>
         </a>
     </nav>
@@ -32,6 +38,7 @@ if (isset($pluginErrorException) && $pluginErrorException instanceof \Moloni\Err
     $pluginErrorException->showError();
 }
 
+
 $tab = isset($_GET['tab']) ? $_GET['tab'] : '';
 
 switch ($tab) {
@@ -40,6 +47,9 @@ switch ($tab) {
         break;
     case 'settings':
         include MOLONI_TEMPLATE_DIR . 'Containers/Settings.php';
+        break;
+    case 'logs':
+        include MOLONI_TEMPLATE_DIR . 'Containers/Logs.php';
         break;
     default:
         include MOLONI_TEMPLATE_DIR . 'Containers/PendingOrders.php';
