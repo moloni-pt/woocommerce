@@ -62,7 +62,7 @@ class Logs
         );
         $queryResult = $wpdb->get_row($query, ARRAY_A);
 
-        $numLogs = (int)$queryResult['COUNT(*)'];
+        $numLogs = (int)($queryResult['COUNT(*)'] ?? 0);
 
         /** Can safely return if there are no logs */
         if ($numLogs === 0) {
