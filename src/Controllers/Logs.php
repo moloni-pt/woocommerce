@@ -10,19 +10,34 @@ class Logs
     private static $totalPages = 1;
     private static $currentPage = 1;
 
+    private static $filterDate = '';
+    private static $filterMessage = '';
+    private static $filterLevel = '';
+
     public static function getAllAvailable(): array
     {
         self::$currentPage = (isset($_GET['paged']) && (int)($_GET['paged']) > 0) ? $_GET['paged'] : 1;
+
+        self::$filterDate = $_GET['filter_date'] ?? $_POST['filter_date'] ?? '';
+        self::$filterMessage = $_GET['filter_message'] ?? $_POST['filter_message'] ?? '';
+        self::$filterLevel = $_GET['filter_level'] ?? $_POST['filter_level'] ?? '';
 
         return self::getAll();
     }
 
     public static function getPagination()
     {
+        $baseArguments = add_query_arg([
+            'paged' => '%#%',
+            'filter_date' => self::$filterDate,
+            'filter_message' => self::$filterMessage,
+            'filter_level' => self::$filterLevel,
+        ]);
+
         $args = [
-            'base' => add_query_arg('paged', '%#%'),
+            'base' => $baseArguments,
             'format' => '',
-            'current' => isset($_GET['paged']) ? (int)$_GET['paged'] : 1,
+            'current' => self::$currentPage,
             'total' => self::$totalPages,
         ];
 
@@ -54,13 +69,16 @@ class Logs
 
         $limit = self::$limit;
         $offset = self::$currentPage <= 1 ? 0 : (self::$currentPage - 1) * self::$limit;
-        $companyId = Storage::$MOLONI_COMPANY_ID ?? 0;
 
-        $query = $wpdb->prepare(
-            "SELECT COUNT(*) FROM `" . $wpdb->get_blog_prefix() . "moloni_logs` WHERE company_id = %d",
-            $companyId
-        );
-        $queryResult = $wpdb->get_row($query, ARRAY_A);
+        /** Totals */
+
+        $query = "SELECT COUNT(*) FROM `" . $wpdb->get_blog_prefix() . "moloni_logs`";
+        $arguments = [];
+
+        self::applyFilters($query, $arguments);
+
+        $queryClean = $wpdb->prepare($query, ...$arguments);
+        $queryResult = $wpdb->get_row($queryClean, ARRAY_A);
 
         $numLogs = (int)($queryResult['COUNT(*)'] ?? 0);
 
@@ -69,21 +87,44 @@ class Logs
             return [];
         }
 
-        self::$totalPages = floor($numLogs / self::$limit);
+        self::$totalPages = ceil($numLogs / self::$limit);
 
-        $query = $wpdb->prepare(
-            "SELECT * FROM `" . $wpdb->get_blog_prefix() . "moloni_logs` 
-            WHERE
-               company_id = %d 
-            ORDER BY id DESC
-            LIMIT %d
-            OFFSET %d
-            ",
-            $companyId,
-            $limit,
-            $offset
-        );
+        /** Results */
 
-        return $wpdb->get_results($query, ARRAY_A);
+        $query = "SELECT * FROM `" . $wpdb->get_blog_prefix() . "moloni_logs`";
+        $arguments = [];
+
+        self::applyFilters($query, $arguments);
+
+        $query .= ' ORDER BY id DESC LIMIT %d OFFSET %d';
+        $arguments[] = $limit;
+        $arguments[] = $offset;
+
+        $queryClean = $wpdb->prepare($query, ...$arguments);
+
+        return $wpdb->get_results($queryClean, ARRAY_A);
+    }
+
+    //           Auxiliary           //
+
+    private static function applyFilters(&$sql, &$arguments)
+    {
+        $sql .= ' WHERE company_id = %d';
+        $arguments[] = Storage::$MOLONI_COMPANY_ID ?? 0;
+
+        if (!empty(self::$filterMessage)) {
+            $sql .= ' AND message LIKE %s';
+            $arguments[] = '%' . self::$filterMessage . '%';
+        }
+
+        if (!empty(self::$filterLevel)) {
+            $sql .= ' AND log_level = %s';
+            $arguments[] = self::$filterLevel;
+        }
+
+        if (!empty(self::$filterDate)) {
+            $sql .= ' AND created_at LIKE %s';
+            $arguments[] = self::$filterDate . '%';
+        }
     }
 }

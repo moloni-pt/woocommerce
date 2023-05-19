@@ -13,11 +13,45 @@ class LogLevel
     const INFO      = 'info';
     const DEBUG     = 'debug';
 
+    public static function getForRender(): array
+    {
+        return [
+            [
+                'label' => __('Erro'),
+                'value' => self::ERROR
+            ],
+            [
+                'label' => __('Aviso'),
+                'value' => self::WARNING
+            ],
+            [
+                'label' => __('Informativo'),
+                'value' => self::INFO
+            ],
+            [
+                'label' => __('Alerta'),
+                'value' => self::ALERT
+            ],
+            [
+                'label' => __('Crítico'),
+                'value' => self::CRITICAL
+            ],
+            [
+                'label' => __('Emergência'),
+                'value' => self::EMERGENCY
+            ],
+            [
+                'label' => __('Observação'),
+                'value' => self::NOTICE
+            ]
+        ];
+    }
+
     public static function getTranslation(string $type): ?string
     {
         switch ($type) {
             case self::ERROR:
-                return __('Error');
+                return __('Erro');
             case self::WARNING:
                 return __('Aviso');
             case self::INFO:
@@ -32,6 +66,26 @@ class LogLevel
                 return __('Emergência');
             case self::NOTICE:
                 return __('Observação');
+        }
+
+        return $type;
+    }
+
+    public static function getClass(string $type): ?string
+    {
+        switch ($type) {
+            case self::CRITICAL:
+            case self::EMERGENCY:
+            case self::ERROR:
+                return 'chip--red';
+            case self::ALERT:
+            case self::WARNING:
+                return 'chip--yellow';
+            case self::NOTICE:
+            case self::INFO:
+                return 'chip--blue';
+            case self::DEBUG:
+                return 'chip--neutral';
         }
 
         return $type;

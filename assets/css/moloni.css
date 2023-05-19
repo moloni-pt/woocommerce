@@ -262,3 +262,37 @@ li#toplevel_page_moloni img {
     max-height: 70vh;
     max-width: 100%;
 }
+
+.chip {
+    padding: 0.2rem 0.4rem;
+    border-radius: 3rem;
+    display: inline-block;
+
+    color: #ffffff;
+}
+
+.chip--green {
+    background-color: #21CB97;
+}
+
+.chip--red {
+    background-color: #FE6868;
+}
+
+.chip--blue {
+    background-color: #0082F2;
+}
+
+.chip--yellow {
+    background-color: #F2BE49;
+}
+
+.chip--neutral {
+    background-color: #8F9EB9;
+}
+
+/** =========== Auxiliary ========== */
+
+.ml-0 {
+    margin: 0 !important;
+}
