@@ -255,7 +255,7 @@ li#toplevel_page_moloni img {
 /** =========== Registos ========== */
 
 #logs-context-modal-content {
-    background: lightgray;
+    background: #EAEBED;
     border-radius: 10px;
     padding: 5px;
     overflow: auto;
