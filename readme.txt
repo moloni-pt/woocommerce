@@ -2,9 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 3.0.88
-Tested up to: 6.2
-WC tested up to: 7.5.1
+Stable tag: 4.0.0
+Tested up to: 6.2.2
+WC tested up to: 7.7.0
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -63,11 +63,22 @@ Via FTP
 3. Ferramentas de sincronização e consulta
 
 == Upgrade Notice ==
-= 3.0 =
+= 4.0.0 =
+Released plugin version 4.
+New logging system.
+Multisite support.
+
+= 3.0.0 =
 Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 4.0.0 =
+* FEATURE: Novo sistema de logs.
+* FEATURE: Adicionado suporte para multisite.
+* MINOR: Testado até à versão 6.2.2 do Wordpress
+* MINOR: Testado até à versão 7.7.0 do WooCommerce
 
 = 3.0.88 =
 * UPDATE: Melhorias na criação/atualização de produtos de forma automática
