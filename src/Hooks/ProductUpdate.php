@@ -3,6 +3,7 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Storage;
 use WC_Product;
 use Moloni\Log;
 use Moloni\Error;
@@ -69,7 +70,10 @@ class ProductUpdate
                 Notice::addMessageCustom(htmlentities($error->geterror()));
             }
         } catch (exception $ex) {
-            log::write('Fatal error: ' . $ex->getmessage());
+            Storage::$LOGGER->critical(__('Erro fatal'), [
+                'action' => 'automatic:product:save',
+                'exception' => $ex->getMessage()
+            ]);
         }
     }
 

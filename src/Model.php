@@ -14,7 +14,7 @@ class Model
     public static function getTokensRow()
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT * FROM " . $wpdb->prefix . "moloni_api ORDER BY id DESC", ARRAY_A);
+        return $wpdb->get_row("SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api ORDER BY id DESC", ARRAY_A);
     }
 
     /**
@@ -31,8 +31,8 @@ class Model
     {
         global $wpdb;
 
-        $wpdb->query("TRUNCATE " . $wpdb->prefix . "moloni_api");
-        $wpdb->insert($wpdb->prefix . 'moloni_api', ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
+        $wpdb->query("TRUNCATE " . $wpdb->get_blog_prefix() . "moloni_api");
+        $wpdb->insert($wpdb->get_blog_prefix() . 'moloni_api', ['main_token' => $accessToken, 'refresh_token' => $refreshToken]);
 
         return true;
     }
@@ -49,13 +49,13 @@ class Model
         global $wpdb;
         $setting = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM " . $wpdb->prefix . "moloni_api_config WHERE config = %s", $option
+                "SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api_config WHERE config = %s", $option
             ), ARRAY_A);
 
         if (!empty($setting)) {
-            $wpdb->update($wpdb->prefix . 'moloni_api_config', ['selected' => $value], ['config' => $option]);
+            $wpdb->update($wpdb->get_blog_prefix() . 'moloni_api_config', ['selected' => $value], ['config' => $option]);
         } else {
-            $wpdb->insert($wpdb->prefix . 'moloni_api_config', ['selected' => $value, 'config' => $option]);
+            $wpdb->insert($wpdb->get_blog_prefix() . 'moloni_api_config', ['selected' => $value, 'config' => $option]);
         }
 
         return $wpdb->insert_id;
@@ -79,7 +79,7 @@ class Model
         $expire = false;
 
         if (!array_key_exists("expiretime", $tokensRow)) {
-            $wpdb->query("ALTER TABLE " . $wpdb->prefix . "moloni_api ADD expiretime varchar(250)");
+            $wpdb->query("ALTER TABLE " . $wpdb->get_blog_prefix() . "moloni_api ADD expiretime varchar(250)");
         } else {
             $expire = $tokensRow['expiretime'];
         }
@@ -88,7 +88,7 @@ class Model
             $results = Curl::refresh($tokensRow['refresh_token']);
 
             if (isset($results['access_token'])) {
-                $wpdb->update($wpdb->prefix . "moloni_api", [
+                $wpdb->update($wpdb->get_blog_prefix() . "moloni_api", [
                     "main_token" => $results['access_token'],
                     "refresh_token" => $results['refresh_token'],
                     "expiretime" => time() + 3000
@@ -115,7 +115,9 @@ class Model
                         new AuthenticationExpired(ALERT_EMAIL);
                     }
 
-                    Log::write('A resetar as tokens depois de ' . $retryNumber . ' tentativas.');
+                    Storage::$LOGGER->critical(
+                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.'))
+                    );
 
                     self::resetTokens();
 
@@ -148,7 +150,7 @@ class Model
     public static function defineConfigs(): void
     {
         global $wpdb;
-        $results = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "moloni_api_config ORDER BY id DESC", ARRAY_A);
+        $results = $wpdb->get_results("SELECT * FROM " . $wpdb->get_blog_prefix() . "moloni_api_config ORDER BY id DESC", ARRAY_A);
 
         if (empty($results)) {
             return;
@@ -170,14 +172,16 @@ class Model
     {
         global $wpdb;
 
+        $prefix = $wpdb->get_blog_prefix();
+
         if (Storage::$USES_NEW_ORDERS_SYSTEM) {
             $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "wc_orders_meta ORDER BY `" . $wpdb->prefix . "wc_orders_meta`.`meta_key` ASC",
+                "SELECT DISTINCT meta_key FROM " . $prefix . "wc_orders_meta ORDER BY `" . $prefix . "wc_orders_meta`.`meta_key` ASC",
                 ARRAY_A
             );
         } else {
             $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $wpdb->prefix . "postmeta ORDER BY `" . $wpdb->prefix . "postmeta`.`meta_key` ASC",
+                "SELECT DISTINCT meta_key FROM " . $prefix . "postmeta ORDER BY `" . $prefix . "postmeta`.`meta_key` ASC",
                 ARRAY_A
             );
         }
@@ -197,7 +201,7 @@ class Model
     {
         global $wpdb;
 
-        $wpdb->query("TRUNCATE " . $wpdb->prefix . "moloni_api");
+        $wpdb->query("TRUNCATE " . $wpdb->get_blog_prefix() . "moloni_api");
 
         return true;
     }

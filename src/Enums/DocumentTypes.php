@@ -23,7 +23,7 @@ class DocumentTypes
     ];
 
     public const TYPES_NAMES = [
-        self::INVOICES => 'Faturas',
+        self::INVOICES => 'Fatura',
         self::INVOICE_RECEIPTS => 'Factura/Recibo',
         self::PURCHASE_ORDER => 'Nota de Encomenda',
         self::PRO_FORMA_INVOICES => 'Fatura Pró-Forma',
