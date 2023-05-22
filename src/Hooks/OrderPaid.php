@@ -8,6 +8,7 @@ use Moloni\Error;
 use Moloni\Start;
 use Moloni\Notice;
 use Moloni\Plugin;
+use Moloni\Storage;
 use Moloni\Warning;
 use Moloni\Services\Mails\DocumentFailed;
 use Moloni\Services\Mails\DocumentWarning;
@@ -37,27 +38,40 @@ class OrderPaid
             if (Start::login(true) && defined('INVOICE_AUTO') && INVOICE_AUTO) {
                 if (!defined('INVOICE_AUTO_STATUS') || (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed')) {
                     if ($this->addOrderToDocumentsInProgress($orderId)) {
-                        Log::write('A gerar automaticamente o documento da encomenda no estado "Completed" ' . $orderId);
+                        $service = new CreateMoloniDocument($orderId);
+                        $orderName = $service->getOrderNumber();
+
+                        Storage::$LOGGER->info(
+                            str_replace('{0}', $orderName, __("A gerar automaticamente o documento da encomenda no estado 'Completed' ({0})"))
+                        );
 
                         try {
-                            $service = new CreateMoloniDocument($orderId);
                             $service->run();
 
                             $this->throwMessages($service);
                         } catch (Warning $e) {
-                            if (isset($service)) {
-                                $this->sendWarningEmail($service->getOrderNumber());
-                            }
+
+                            $this->sendWarningEmail($orderName);
 
                             Notice::addmessagecustom(htmlentities($e->getError()));
-                            Log::write('Houve um alerta ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
+                            Storage::$LOGGER->alert(
+                                str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
+                                [
+                                    'message' => $e->getMessage(),
+                                    'request' => $e->getRequest()
+                                ]
+                            );
                         } catch (Error $e) {
-                            if (isset($service)) {
-                                $this->sendErrorEmail($service->getOrderNumber());
-                            }
+                            $this->sendErrorEmail($orderName);
 
                             Notice::addmessagecustom(htmlentities($e->getError()));
-                            Log::write('Houve um erro ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
+                            Storage::$LOGGER->critical(
+                                str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
+                                [
+                                    'message' => $e->getMessage(),
+                                    'request' => $e->getRequest()
+                                ]
+                            );
                         }
 
                         $this->removeOrderFromDocumentsInProgress($orderId);
@@ -65,7 +79,10 @@ class OrderPaid
                 }
             }
         } catch (Exception $ex) {
-            Log::write('Fatal error: ' . $ex->getMessage());
+            Storage::$LOGGER->critical(__('Erro fatal'), [
+                'action' => 'automatic:document:create:complete',
+                'exception' => $ex->getMessage()
+            ]);
         }
     }
 
@@ -78,33 +95,48 @@ class OrderPaid
                 && INVOICE_AUTO && defined('INVOICE_AUTO_STATUS')
                 && INVOICE_AUTO_STATUS === 'processing'
                 && $this->addOrderToDocumentsInProgress($orderId)) {
-                Log::write('A gerar automaticamente o documento da encomenda no estado "Processing" ' . $orderId);
+                $service = new CreateMoloniDocument($orderId);
+                $orderName = $service->getOrderNumber();
+
+                Storage::$LOGGER->info(
+                    str_replace('{0}', $orderName, __("A gerar automaticamente o documento da encomenda no estado 'Processing' ({0})"))
+                );
 
                 try {
-                    $service = new CreateMoloniDocument($orderId);
                     $service->run();
 
                     $this->throwMessages($service);
                 } catch (Warning $e) {
-                    if (isset($service)) {
-                        $this->sendWarningEmail($service->getOrderNumber());
-                    }
+                    $this->sendWarningEmail($service->getOrderNumber());
 
                     Notice::addmessagecustom(htmlentities($e->getError()));
-                    Log::write('Houve um alerta ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
+                    Storage::$LOGGER->alert(
+                        str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
+                        [
+                            'message' => $e->getMessage(),
+                            'request' => $e->getRequest()
+                        ]
+                    );
                 } catch (Error $e) {
-                    if (isset($service)) {
-                        $this->sendErrorEmail($service->getOrderNumber());
-                    }
+                    $this->sendErrorEmail($service->getOrderNumber());
 
                     Notice::addmessagecustom(htmlentities($e->getError()));
-                    Log::write('Houve um erro ao gerar o documento: ' . strip_tags($e->getDecodedMessage()));
+                    Storage::$LOGGER->critical(
+                        str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
+                        [
+                            'message' => $e->getMessage(),
+                            'request' => $e->getRequest()
+                        ]
+                    );
                 }
 
                 $this->removeOrderFromDocumentsInProgress($orderId);
             }
         } catch (Exception $ex) {
-            Log::write('Fatal error: ' . $ex->getMessage());
+            Storage::$LOGGER->critical(__('Erro fatal'), [
+                'action' => 'automatic:document:create:processing',
+                'exception' => $ex->getMessage()
+            ]);
         }
     }
 

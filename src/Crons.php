@@ -21,44 +21,58 @@ class Crons
     }
 
     /**
+     * Service handler
+     *
      * @return bool
+     *
      * @global $wpdb
      */
-    public static function productsSync()
+    public static function productsSync(): bool
     {
         global $wpdb;
+
         $runningAt = time();
+
         try {
             self::requires();
 
             if (!Start::login(true)) {
-                Log::write('Não foi possível estabelecer uma ligação a uma empresa Moloni');
+                Storage::$LOGGER->critical(__('Não foi possível estabelecer uma ligação a uma empresa Moloni'));
                 return false;
             }
 
             if (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC !== 0) {
-                Log::write('A iniciar a sincronização de stocks automática...');
                 if (!defined('MOLONI_STOCK_SYNC_TIME')) {
                     define('MOLONI_STOCK_SYNC_TIME', (time() - 600));
-                    $wpdb->insert($wpdb->prefix . 'moloni_api_config', [
+                    $wpdb->insert($wpdb->get_blog_prefix() . 'moloni_api_config', [
                         'config' => 'moloni_stock_sync_time',
                         'selected' => MOLONI_STOCK_SYNC_TIME
                     ]);
                 }
 
-                (new SyncProducts(MOLONI_STOCK_SYNC_TIME))->run();
-            } else {
-                Log::write('Stock sync disabled in plugin settings');
-            }
+                $service = new SyncProducts(MOLONI_STOCK_SYNC_TIME);
+                $service->run();
 
+                if ($service->countFoundRecord() > 0) {
+                    Storage::$LOGGER->info(__('Sincronização de stock automática'), [
+                        'since' => $service->getSince(),
+                        'equal' => $service->getEqual(),
+                        'not_found' => $service->getNotFound(),
+                        'get_updated' => $service->getUpdated(),
+                    ]);
+                }
+            }
         } catch (Exception $ex) {
-            Log::write('Fatal Errror: ' . $ex->getMessage());
+            Storage::$LOGGER->critical(__('Erro fatal'), [
+                'action' => 'stock:sync:cron',
+                'exception' => $ex->getMessage()
+            ]);
         }
 
         Model::setOption('moloni_stock_sync_time', $runningAt);
+
         return true;
     }
-
 
     public static function requires()
     {
@@ -68,5 +82,4 @@ class Crons
             require $composer_autoloader;
         }
     }
-
 }

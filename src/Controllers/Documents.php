@@ -9,6 +9,7 @@ use Moloni\Curl;
 use Moloni\Error;
 use Moloni\Tools;
 use Moloni\Warning;
+use Moloni\Storage;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
@@ -289,6 +290,8 @@ class Documents
             $this->order->add_order_note($note);
         }
 
+        $this->saveLog();
+
         return $this;
     }
 
@@ -379,6 +382,24 @@ class Documents
             ->setDelivery()
             ->setPaymentMethod()
             ->setNotes();
+    }
+
+    /**
+     * Save document log
+     *
+     * @return void
+     */
+    private function saveLog(): void
+    {
+        $message = __('{0} foi gerado com sucesso ({1})');
+        $message = str_replace('{0}', $this->documentTypeName, $message);
+        $message = str_replace('{1}', $this->order->get_order_number(), $message);
+
+        Storage::$LOGGER->info($message, [
+            'order_id' => $this->orderId,
+            'document_id' => $this->document_id,
+            'document_status' => $this->documentStatus,
+        ]);
     }
 
     /**

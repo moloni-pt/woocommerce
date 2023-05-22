@@ -38,13 +38,10 @@ class SyncProducts
      */
     public function run(): SyncProducts
     {
-        Log::write('A sincronizar artigos desde ' . $this->since);
-
         $updatedProducts = $this->getAllMoloniProducts();
 
         if (!empty($updatedProducts) && is_array($updatedProducts)) {
             $this->found = count($updatedProducts);
-            Log::write('Encontrados ' . $this->found . ' artigos');
 
             foreach ($updatedProducts as $product) {
                 try {
@@ -70,23 +67,27 @@ class SyncProducts
                         }
 
                         if ((float)$currentStock === (float)$newStock) {
-                            Log::write('Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto ' . $currentStock . '|' . $newStock);
-                            $this->equal[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto';
+                            $msg = 'Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto ' . $currentStock . '|' . $newStock;
+
+                            $this->equal[$product['reference']] = $msg;
                         } else {
-                            Log::write('Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock);
-                            $this->updated[$product['reference']] = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
+                            $msg = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
+
+                            $this->updated[$product['reference']] = $msg;
                             wc_update_product_stock($wcProduct, $newStock);
                         }
                     } else {
-                        Log::write('Artigo não encontrado ou sem stock ativo: ' . $product['reference']);
-                        $this->notFound[$product['reference']] = 'Artigo não encontrado no WooCommerce ou sem stock activo';
+                        $msg = 'Artigo com a referência ' . $product['reference'] . ' não encontrado ou sem stock ativo';
+
+                        $this->notFound[$product['reference']] = $msg;
                     }
                 } catch (Exception $error) {
-                    Log::write('Erro: ' . $error->getMessage());
+                    Storage::$LOGGER->critical(__('Erro fatal'), [
+                        'action' => 'stock:sync:service',
+                        'exception' => $error->getMessage()
+                    ]);
                 }
             }
-        } else {
-            Log::write(__('Sem artigos para atualizar desde ') . $this->since);
         }
 
         return $this;
@@ -94,63 +95,80 @@ class SyncProducts
 
     /**
      * Get the amount of records found
+     *
      * @return int
      */
-    public function countFoundRecord()
+    public function countFoundRecord(): int
     {
         return $this->found;
     }
 
     /**
-     * Get the amount of records update
+     * Get the amount of records updates
+     *
      * @return int
      */
-    public function countUpdated()
+    public function countUpdated(): int
     {
         return count($this->updated);
     }
 
     /**
      * Get the amount of records that had the same stock count
+     *
      * @return int
      */
-    public function countEqual()
+    public function countEqual(): int
     {
         return count($this->equal);
     }
 
     /**
      * Get the amount of products not found in WooCommerce
+     *
      * @return int
      */
-    public function countNotFound()
+    public function countNotFound(): int
     {
         return count($this->notFound);
     }
 
     /**
+     * Get date used to fetch
+     *
+     * @return false|string
+     */
+    public function getSince()
+    {
+        return $this->since ?? '';
+    }
+
+    /**
      * Return the updated products
+     *
      * @return array
      */
-    public function getUpdated()
+    public function getUpdated(): array
     {
         return $this->updated;
     }
 
     /**
      * Return the list of products that had the same stock as in WooCommerce
+     *
      * @return array
      */
-    public function getEqual()
+    public function getEqual(): array
     {
         return $this->equal;
     }
 
     /**
      * Return the list of products update in Moloni but not found in WooCommerce
+     *
      * @return array
      */
-    public function getNotFound()
+    public function getNotFound(): array
     {
         return $this->notFound;
     }
@@ -158,9 +176,10 @@ class SyncProducts
     /**
      * Each request brings a maximum of 50 products
      * While there are more products we keep asking for more
+     *
      * @return array
      */
-    private function getAllMoloniProducts()
+    private function getAllMoloniProducts(): array
     {
         $productsList = [];
 
@@ -171,18 +190,20 @@ class SyncProducts
                 'offset' => $this->offset
             ];
 
-            Log::write(json_encode($values));
-
             try {
                 $fetched = Curl::simple('products/getModifiedSince', $values);
             } catch (Error $e) {
                 $fetched = [];
-                Log::write('Atenção, erro ao obter todos os artigos via API');
+
+                Storage::$LOGGER->critical(__('Atenção, erro ao obter todos os artigos via API'), [
+                    'action' => 'stock:sync:service',
+                    'message' => $e->getMessage(),
+                    'exception' => $e->getRequest(),
+                ]);
             }
 
-            /** Fail safe - When a request brings no product at all */
+            /** Fail-safe - When a request brings no product at all */
             if (isset($fetched[0]['product_id'])) {
-
                 foreach ($fetched as $item) {
                     $productsList[] = $item;
                 }
@@ -192,7 +213,7 @@ class SyncProducts
                 break;
             }
 
-            /** If the requests does not bring the maximum of 50 products */
+            /** If the requests do not bring the maximum of 50 products */
             if (count($fetched) < 50) {
                 break;
             }

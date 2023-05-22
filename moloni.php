@@ -50,6 +50,8 @@ if (!defined('MOLONI_IMAGES_URL')) {
 register_activation_hook(__FILE__, '\Moloni\Activators\Install::run');
 register_deactivation_hook(__FILE__, '\Moloni\Activators\Remove::run');
 
+add_action('wp_initialize_site', '\Moloni\Activators\Install::initializeSite', 200, 1);
+add_action('wp_uninitialize_site', '\Moloni\Activators\Remove::uninitializeSite', 10, 1);
 add_action('plugins_loaded', Start::class);
 add_action('admin_enqueue_scripts', '\Moloni\Scripts\Enqueue::defines');
 

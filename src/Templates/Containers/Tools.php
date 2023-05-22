@@ -37,31 +37,6 @@ if (!defined('ABSPATH')) {
 
     <tr>
         <th style="padding: 2rem">
-            <strong class="name"><?= __('Consultar logs') ?></strong>
-            <p class='description'><?= __('Consultar logs de sincronização de stocks/artigos') ?></p>
-        </th>
-        <td class="run-tool" style="padding: 2rem; text-align: right">
-            <a class="button button-large" href="<?= Log::getFileUrl() ?>" download>
-                <?= __('Descarregar ficheiro de logs') ?>
-            </a>
-        </td>
-    </tr>
-
-    <tr>
-        <th style="padding: 2rem">
-            <strong class="name"><?= __('Limpar logs') ?></strong>
-            <p class='description'><?= __('Apagar todos os ficheiros de logs de dias anteriores') ?></p>
-        </th>
-        <td class="run-tool" style="padding: 2rem; text-align: right">
-            <a class="button button-large"
-               href='<?= admin_url('admin.php?page=moloni&tab=tools&action=remLogs') ?>'>
-                <?= __('Apagar logs diários') ?>
-            </a>
-        </td>
-    </tr>
-
-    <tr>
-        <th style="padding: 2rem">
             <strong class="name"><?= __('Sair da empresa') ?></strong>
             <p class='description'><?= __('Iremos manter os dados referentes aos documentos já emitidos') ?></p>
         </th>

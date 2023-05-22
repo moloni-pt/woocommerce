@@ -26,7 +26,7 @@ class SyncLogs
         global $wpdb;
 
         $wpdb->insert(
-            $wpdb->prefix . 'moloni_sync_logs',
+            $wpdb->get_blog_prefix() . 'moloni_sync_logs',
             [
                 'type_id' => $typeId,
                 'entity_id' => $entityId,
@@ -75,7 +75,7 @@ class SyncLogs
     {
         global $wpdb;
 
-        $query = "SELECT COUNT(*) FROM `" . $wpdb->prefix . "moloni_sync_logs` 
+        $query = "SELECT COUNT(*) FROM `" . $wpdb->get_blog_prefix() . "moloni_sync_logs` 
             where `type_id` = " . $typeId . " AND `entity_id` =" . $entityId;
 
         $queryResult = $wpdb->get_row($query, ARRAY_A);
@@ -92,6 +92,6 @@ class SyncLogs
     {
         global $wpdb;
 
-        $wpdb->query("DELETE FROM `" . $wpdb->prefix . "moloni_sync_logs` WHERE sync_date < " . time());
+        $wpdb->query("DELETE FROM `" . $wpdb->get_blog_prefix() . "moloni_sync_logs` WHERE sync_date < " . time());
     }
 }

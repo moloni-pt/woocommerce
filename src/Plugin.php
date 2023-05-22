@@ -3,7 +3,9 @@
 namespace Moloni;
 
 use WC_Order;
+use Moloni\Helpers\Logger;
 use Moloni\Helpers\Context;
+use Moloni\Controllers\Logs;
 use Moloni\Services\Documents\OpenDocument;
 use Moloni\Services\Documents\DownloadDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
@@ -35,6 +37,7 @@ class Plugin
     private function onStart()
     {
         Storage::$USES_NEW_ORDERS_SYSTEM = Context::isNewOrdersSystemEnabled();
+        Storage::$LOGGER = new Logger();
     }
 
     /**
@@ -121,12 +124,36 @@ class Plugin
     /**
      * Create a single document from order
      *
-     * @throws Error
+     * @throws Warning|Error
      */
     private function createDocument(): void
     {
         $service = new CreateMoloniDocument((int)$_REQUEST['id']);
-        $service->run();
+        $orderName = $service->getOrderNumber();
+
+        try {
+            $service->run();
+        } catch (Warning $e) {
+            Storage::$LOGGER->alert(
+                str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
+                [
+                    'message' => $e->getMessage(),
+                    'request' => $e->getRequest()
+                ]
+            );
+
+            throw $e;
+        } catch (Error $e) {
+            Storage::$LOGGER->critical(
+                str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
+                [
+                    'message' => $e->getMessage(),
+                    'request' => $e->getRequest()
+                ]
+            );
+
+            throw $e;
+        }
 
         if ($service->getDocumentId()) {
             $adminUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId());
@@ -176,7 +203,7 @@ class Plugin
      */
     private function removeLogs(): void
     {
-        Log::removeLogs();
+        Logs::removeOlderLogs();
 
         add_settings_error('moloni', 'moloni-rem-logs', __('A limpeza de logs foi concluída.'), 'updated');
     }
@@ -196,7 +223,10 @@ class Plugin
             $order->add_order_note(__('Encomenda marcada como gerada'));
             $order->save();
 
-            add_settings_error('moloni', 'moloni-order-remove-success', __('A encomenda ' . $orderId . ' foi marcada como gerada!'), 'updated');
+            $msg = str_replace('{0}', $order->get_order_number(), __('A encomenda foi marcada como gerada ({0})'));
+
+            Storage::$LOGGER->info($msg);
+            add_settings_error('moloni', 'moloni-order-remove-success', $msg, 'updated');
         } else {
             add_settings_error(
                 'moloni',
@@ -224,7 +254,10 @@ class Plugin
                     $order->save();
                 }
 
-                add_settings_error('moloni', 'moloni-order-all-remove-success', __('Todas as encomendas foram marcadas como geradas!'), 'updated');
+                $msg = __('Todas as encomendas foram marcadas como geradas!');
+
+                Storage::$LOGGER->info($msg);
+                add_settings_error('moloni', 'moloni-order-all-remove-success', $msg, 'updated');
             } else {
                 add_settings_error('moloni', 'moloni-order-all-remove-not-found', __('Não foram encontradas encomendas por gerar'));
             }
@@ -244,18 +277,28 @@ class Plugin
     {
         $date = isset($_GET['since']) ? sanitize_text_field($_GET['since']) : gmdate('Y-m-d', strtotime('-1 week'));
 
-        $syncStocksResult = (new Controllers\SyncProducts($date))->run();
+        $service = new Controllers\SyncProducts($date);
+        $service->run();
 
-        if ($syncStocksResult->countUpdated() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Foram actualizados ' . $syncStocksResult->countUpdated() . ' artigos.'), 'updated');
+        if ($service->countUpdated() > 0) {
+            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Foram actualizados ' . $service->countUpdated() . ' artigos.'), 'updated');
         }
 
-        if ($syncStocksResult->countEqual() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Existem ' . $syncStocksResult->countEqual() . ' artigos com stock igual.'), 'updated');
+        if ($service->countEqual() > 0) {
+            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Existem ' . $service->countEqual() . ' artigos com stock igual.'), 'updated');
         }
 
-        if ($syncStocksResult->countNotFound() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-not-found', __('Não foram encontrados no WooCommerce ' . $syncStocksResult->countNotFound() . ' artigos.'));
+        if ($service->countNotFound() > 0) {
+            add_settings_error('moloni', 'moloni-sync-stocks-not-found', __('Não foram encontrados no WooCommerce ' . $service->countNotFound() . ' artigos.'));
+        }
+
+        if ($service->countFoundRecord() > 0) {
+            Storage::$LOGGER->info(__('Sincronização de stock manual'), [
+                'since' => $service->getSince(),
+                'equal' => $service->getEqual(),
+                'not_found' => $service->getNotFound(),
+                'get_updated' => $service->getUpdated(),
+            ]);
         }
     }
 }
