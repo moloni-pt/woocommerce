@@ -1,6 +1,6 @@
 <?php
 
-namespace Moloni\Controllers;
+namespace Moloni\Models;
 
 use Moloni\Storage;
 

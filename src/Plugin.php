@@ -2,13 +2,13 @@
 
 namespace Moloni;
 
-use WC_Order;
-use Moloni\Helpers\Logger;
 use Moloni\Helpers\Context;
-use Moloni\Controllers\Logs;
-use Moloni\Services\Documents\OpenDocument;
+use Moloni\Helpers\Logger;
+use Moloni\Models\Logs;
 use Moloni\Services\Documents\DownloadDocument;
+use Moloni\Services\Documents\OpenDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
+use WC_Order;
 
 /**
  * Main constructor
@@ -245,7 +245,7 @@ class Plugin
     {
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
             /** @var WC_Order[] $allOrders */
-            $allOrders = Controllers\PendingOrders::getAllAvailable();
+            $allOrders = Models\PendingOrders::getAllAvailable();
 
             if (!empty($allOrders)) {
                 foreach ($allOrders as $order) {

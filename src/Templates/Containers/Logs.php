@@ -3,8 +3,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-use Moloni\Controllers\Logs;
 use Moloni\Enums\LogLevel;
+use Moloni\Models\Logs;
 
 $logs = Logs::getAllAvailable();
 ?>
