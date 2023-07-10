@@ -37,7 +37,7 @@ class Crons
             self::requires();
 
             if (!Start::login(true)) {
-                Storage::$LOGGER->critical(__('Não foi possível estabelecer uma ligação a uma empresa Moloni'));
+                Storage::$LOGGER->error(__('Não foi possível estabelecer uma ligação a uma empresa Moloni'));
                 return false;
             }
 

@@ -49,7 +49,7 @@ class Ajax
                 'description' => $e->getError()
             ]);
         } catch (Error $e) {
-            Storage::$LOGGER->critical(
+            Storage::$LOGGER->error(
                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                 [
                     'message' => $e->getMessage(),

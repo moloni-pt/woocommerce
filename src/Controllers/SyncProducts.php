@@ -195,7 +195,7 @@ class SyncProducts
             } catch (Error $e) {
                 $fetched = [];
 
-                Storage::$LOGGER->critical(__('Atenção, erro ao obter todos os artigos via API'), [
+                Storage::$LOGGER->error(__('Atenção, erro ao obter todos os artigos via API'), [
                     'action' => 'stock:sync:service',
                     'message' => $e->getMessage(),
                     'exception' => $e->getRequest(),
