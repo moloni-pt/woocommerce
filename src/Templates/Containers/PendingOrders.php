@@ -22,6 +22,7 @@ $orders = PendingOrders::getAllAvailable();
                     name="action" id="bulk-action-selector-top">
                 <option value="-1"><?= __('Ações por lotes') ?></option>
                 <option value="bulkGenInvoice"><?= __('Gerar documentos') ?></option>
+                <option value="bulkDiscardOrder"><?= __('Descartar encomendas', 'moloni_es') ?></option>
             </select>
             <input type="submit" id="doAction" class="button action" value="<?= __('Correr') ?>">
         </div>
@@ -133,7 +134,7 @@ $orders = PendingOrders::getAllAvailable();
 
                             <a class="wp-core-ui button-secondary" style="width: 80px; text-align: center"
                                href="<?= admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id()) ?>">
-                                <?= __('Limpar') ?>
+                                <?= __('Descartar') ?>
                             </a>
                         </form>
                     </td>
@@ -175,16 +176,5 @@ $orders = PendingOrders::getAllAvailable();
     </div>
 </div>
 
-<div id="bulk-action-progress-modal" class="modal" style="display: none">
-    <div id="bulk-action-progress-content">
-        <h2>
-            <?= __('A gerar ') ?>
-            <span id="bulk-action-progress-current">0</span>
-            <?= __(' de ') ?>
-            <span id="bulk-action-progress-total">0</span>
-            <?= __(' documentos.') ?>
-        </h2>
-        <div id="bulk-action-progress-message">
-        </div>
-    </div>
-</div>
+<?php include MOLONI_TEMPLATE_DIR . 'Modals/PendingOrders/BulkActionModal.php'; ?>
+

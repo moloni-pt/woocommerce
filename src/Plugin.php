@@ -4,10 +4,12 @@ namespace Moloni;
 
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
+use Moloni\Hooks\Ajax;
 use Moloni\Models\Logs;
 use Moloni\Services\Documents\DownloadDocument;
 use Moloni\Services\Documents\OpenDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
+use Moloni\Services\Orders\DiscardOrder;
 use WC_Order;
 
 /**
@@ -47,7 +49,11 @@ class Plugin
      */
     private function actions(): void
     {
+        /** Admin pages */
         new Menus\Admin($this);
+        new Ajax($this);
+
+        /** Hooks */
         new Hooks\WoocommerceInitialize($this);
         new Hooks\ProductUpdate($this);
         new Hooks\ProductView($this);
@@ -55,7 +61,6 @@ class Plugin
         new Hooks\OrderPaid($this);
         new Hooks\OrderList($this);
         new Hooks\UpgradeProcess($this);
-        new Ajax($this);
     }
 
     /**
@@ -219,14 +224,17 @@ class Plugin
 
         if (isset($_GET['confirm']) && sanitize_text_field($_GET['confirm']) === 'true') {
             $order = wc_get_order($orderId);
-            $order->add_meta_data('_moloni_sent', '-1');
-            $order->add_order_note(__('Encomenda marcada como gerada'));
-            $order->save();
 
-            $msg = str_replace('{0}', $order->get_order_number(), __('A encomenda foi marcada como gerada ({0})'));
+            $service = new DiscardOrder($order);
+            $service->run();
+            $service->saveLog();
 
-            Storage::$LOGGER->info($msg);
-            add_settings_error('moloni', 'moloni-order-remove-success', $msg, 'updated');
+            add_settings_error(
+                'moloni',
+                'moloni-order-remove-success',
+                sprintf(__('A encomenda foi descartada (%s)'), $orderId),
+                'updated'
+            );
         } else {
             add_settings_error(
                 'moloni',
