@@ -230,6 +230,15 @@ class CreateCreditNote
                 $refundedPrice = $matchedDocumentProduct['price'];
             }
 
+            if ($refundedPrice > $matchedDocumentProduct['price']) {
+                throw new ServiceException('Refunded value is bigger than the document product price', [
+                    'name' => $refundedItem->get_name(),
+                    'qty' => $refundedQty,
+                    'price' => $refundedPrice,
+                    'matchedDocumentProduct' => $matchedDocumentProduct,
+                ]);
+            }
+
             $newProduct = [
                 'product_id' => $matchedDocumentProduct['product_id'],
                 'name' => $matchedDocumentProduct['name'],
@@ -269,6 +278,13 @@ class CreateCreditNote
 
             if (abs($refundedShippingValue - $matchedDocumentShipping['price']) < 0.02) {
                 $refundedShippingValue = $matchedDocumentShipping['price'];
+            }
+
+            if ($refundedShippingValue > $matchedDocumentShipping['price']) {
+                throw new ServiceException('Refunded value is bigger than the document shipping price', [
+                    'price' => $refundedShippingValue,
+                    'matchedDocumentShipping' => $matchedDocumentShipping,
+                ]);
             }
 
             $creditNoteProps['products'][] = array(
