@@ -106,13 +106,19 @@ class CreateMoloniDocument
 
     private function shouldCreateBillOfLading(): bool
     {
-        $createBillOfLading = Boolean::NO;
-
-        if (defined('CREATE_BILL_OF_LADING')) {
-            $createBillOfLading = CREATE_BILL_OF_LADING;
+        if ($this->documentType === DocumentTypes::BILLS_OF_LADING) {
+            return false;
         }
 
-        return $this->documentType !== DocumentTypes::BILLS_OF_LADING && (bool)$createBillOfLading === true;
+        if (!defined('DOCUMENT_STATUS') || (int)DOCUMENT_STATUS === DocumentStatus::DRAFT) {
+            return false;
+        }
+
+        if (!defined('CREATE_BILL_OF_LADING')) {
+            return false;
+        }
+
+        return (bool)CREATE_BILL_OF_LADING;
     }
 
     private function isReferencedInDatabase(): bool

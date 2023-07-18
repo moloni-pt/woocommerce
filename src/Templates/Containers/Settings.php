@@ -4,15 +4,18 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Curl; ?>
-<?php use Moloni\Model; ?>
-<?php use Moloni\Enums\DocumentTypes; ?>
-
 <?php
+use Moloni\Curl;
+use Moloni\Model;
+use Moloni\Enums\Boolean;
+use Moloni\Enums\DocumentTypes;
+use Moloni\Enums\DocumentStatus;
+
 try {
     $company = Curl::simple('companies/getOne', []);
     $warehouses = Curl::simple('warehouses/getAll', []);
     $countries = Curl::simple('countries/getAll', []);
+    $documentSets = Curl::simple('documentSets/getAll', []);
 } catch (\Moloni\Error $e) {
     $e->showError();
     return;
@@ -22,7 +25,7 @@ try {
 <form method='POST' action='<?= admin_url('admin.php?page=moloni&tab=settings') ?>' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>
     <div>
-        <!-- Documentos -->
+        <!-- Documento -->
         <h2 class="title"><?= __('Documentos') ?></h2>
         <table class="form-table">
             <tbody>
@@ -56,7 +59,7 @@ try {
                         }
                         ?>
 
-                        <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+                        <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
                             <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
                                 <?= __($name) ?>
                             </option>
@@ -66,53 +69,12 @@ try {
                 </td>
             </tr>
 
-            <!-- Estado do documento -->
-            <tr id="document_status_line">
-                <th>
-                    <label for="document_status"><?= __('Estado do documento') ?></label>
-                </th>
-                <td>
-                    <select id="document_status" name='opt[document_status]' class='inputOut'>
-                        <option value='0' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 0 ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
-                        <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?= __('Fechado') ?></option>
-                    </select>
-                    <p class='description'><?= __('Obrigatório') ?></p>
-                </td>
-            </tr>
-
-            <!-- Documento de transporte -->
-            <tr id="create_bill_of_lading_line">
-                <th>
-                    <label for="create_bill_of_lading"><?= __('Documento de transporte') ?></label>
-                </th>
-                <td>
-                    <?php
-                    $createBillOfLading = 0;
-
-                    if (defined('CREATE_BILL_OF_LADING')) {
-                        $createBillOfLading = (int)CREATE_BILL_OF_LADING;
-                    }
-                    ?>
-
-                    <select id="create_bill_of_lading" name='opt[create_bill_of_lading]' class='inputOut'>
-                        <option value='0' <?= ($createBillOfLading === 0 ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
-                        </option>
-                        <option value='1' <?= ($createBillOfLading === 1 ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
-                        </option>
-                    </select>
-                    <p class='description'><?= __('Criar documento de transporte') ?></p>
-                </td>
-            </tr>
-
             <!-- Série de documento -->
             <tr>
                 <th>
-                    <label for="document_set_id"><?= __('Série de documento') ?></label>
+                    <label for="document_set_id"><?= __('Série do documento') ?></label>
                 </th>
                 <td>
-                    <?php $documentSets = Curl::simple('documentSets/getAll', []); ?>
                     <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
                         <?php foreach ($documentSets as $documentSet) : ?>
                             <?php
@@ -150,6 +112,74 @@ try {
                     <p id="document_set_cae_warning" class='description txt--red' style="display: none;">
                         <?= __('Guarde alterações para associar a CAE ao plugin') ?>
                     </p>
+                </td>
+            </tr>
+
+            <!-- Estado do documento -->
+            <tr id="document_status_line">
+                <th>
+                    <label for="document_status"><?= __('Estado do documento') ?></label>
+                </th>
+                <td>
+                    <select id="document_status" name='opt[document_status]' class='inputOut'>
+                        <option value='0' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 0 ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
+                        <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?= __('Fechado') ?></option>
+                    </select>
+                    <p class='description'><?= __('Obrigatório') ?></p>
+                </td>
+            </tr>
+
+            <!-- Criar documento de transporte -->
+            <tr id="create_bill_of_lading_line">
+                <th>
+                    <label for="create_bill_of_lading"><?= __('Documento de transporte') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $createBillOfLading = 0;
+
+                    if (defined('CREATE_BILL_OF_LADING')) {
+                        $createBillOfLading = (int)CREATE_BILL_OF_LADING;
+                    }
+                    ?>
+
+                    <select id="create_bill_of_lading" name='opt[create_bill_of_lading]' class='inputOut'>
+                        <option value='0' <?= ($createBillOfLading === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($createBillOfLading === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'><?= __('Criar documento de transporte') ?></p>
+                </td>
+            </tr>
+
+            <!-- Criação automática de documentos -->
+            <tr>
+                <th>
+                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
+                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
+                </td>
+            </tr>
+
+            <!-- Estado das encomendas -->
+            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
+                <th>
+                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
+                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
+                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
+                    </select>
+                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
                 </td>
             </tr>
 
@@ -226,17 +256,83 @@ try {
                 </td>
             </tr>
 
-            <!-- Listagem de encomendas -->
+            </tbody>
+        </table>
+
+        <!-- Nota de crédito -->
+        <h2 class="title"><?= __('Nota de crédito') ?></h2>
+        <table class="form-table">
+            <tbody>
+
+            <!-- Criar documento de crédito -->
             <tr>
                 <th>
-                    <label for="moloni_show_download_column"><?= __('Listagem de encomendas WooCommerce') ?></label>
+                    <label for="create_credit_note"><?= __('Documento de crédito') ?></label>
                 </th>
                 <td>
-                    <select id="moloni_show_download_column" name='opt[moloni_show_download_column]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    <?php
+                    $createCreditNote = 0;
+
+                    if (defined('create_credit_note')) {
+                        $createCreditNote = (int)CREATE_CREDIT_NOTE;
+                    }
+                    ?>
+
+                    <select id="create_credit_note" name='opt[create_credit_note]' class='inputOut'>
+                        <option value='0' <?= ($createCreditNote === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($createCreditNote === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
                     </select>
-                    <p class='description'><?= __('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF') ?></p>
+                    <p class='description'><?= __('Criar automaticamente nota de crédito quando uma devolução é criada. Apenas será gerada se existir algum documento associado à encomenda.') ?></p>
+                </td>
+            </tr>
+
+            <!-- Série do documento de crédito -->
+            <tr>
+                <th>
+                    <label for="credit_note_document_set_id"><?= __('Série do documento de crédito') ?></label>
+                </th>
+                <td>
+                    <select id="credit_note_document_set_id" name='opt[credit_note_document_set_id]' class='inputOut'>
+                        <?php foreach ($documentSets as $documentSet) : ?>
+                            <?php
+                            $htmlProps = '';
+                            $documentSetId = $documentSet['document_set_id'];
+
+                            if (defined('CREDIT_NOTE_DOCUMENT_SET_ID') && (int)CREDIT_NOTE_DOCUMENT_SET_ID === (int)$documentSet['document_set_id']) {
+                                $htmlProps .= ' selected';
+                            }
+                            ?>
+
+                            <option value='<?= $documentSetId ?>' <?= $htmlProps ?>>
+                                <?= $documentSet['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+
+            <!-- Estado do documento -->
+            <tr>
+                <th>
+                    <label for="credit_note_document_status"><?= __('Estado do documento') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $creditNoteDocumentStatus = 0;
+
+                    if (defined('CREDIT_NOTE_DOCUMENT_STATUS')) {
+                        $creditNoteDocumentStatus .= (int)CREDIT_NOTE_DOCUMENT_STATUS;
+                    }
+                    ?>
+
+                    <select id="credit_note_document_status" name='opt[credit_note_document_status]' class='inputOut'>
+                        <option value='0' <?= ($creditNoteDocumentStatus === DocumentStatus::DRAFT ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
+                        <option value='1' <?= ($creditNoteDocumentStatus === DocumentStatus::CLOSED ? 'selected' : '') ?>><?= __('Fechado') ?></option>
+                    </select>
                 </td>
             </tr>
 
@@ -443,35 +539,32 @@ try {
             </tbody>
         </table>
 
+        <!-- Hooks -->
+        <h2 class="title"><?= __('Hooks') ?></h2>
+        <table class="form-table">
+            <tbody>
+
+            <!-- Listagem de encomendas -->
+            <tr>
+                <th>
+                    <label for="moloni_show_download_column"><?= __('Listagem de encomendas WooCommerce') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_show_download_column" name='opt[moloni_show_download_column]' class='inputOut'>
+                        <option value='0' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF') ?></p>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
         <!-- Automatização -->
         <h2 class="title"><?= __('Automatização') ?></h2>
         <table class="form-table">
             <tbody>
-            <tr>
-                <th>
-                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
-                </th>
-                <td>
-                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
-                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
-                    </select>
-                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
-                </td>
-            </tr>
-
-            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
-                <th>
-                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
-                </th>
-                <td>
-                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
-                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
-                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
-                    </select>
-                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
-                </td>
-            </tr>
 
             <tr>
                 <th>

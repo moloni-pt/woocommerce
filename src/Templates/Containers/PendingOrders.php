@@ -4,11 +4,10 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Enums\DocumentTypes;
-use Moloni\Models\PendingOrders; ?>
-<?php ?>
-
 <?php
+use Moloni\Enums\DocumentTypes;
+use Moloni\Models\PendingOrders;
+
 /** @var WC_Order[] $orders */
 $orders = PendingOrders::getAllAvailable();
 ?>
@@ -120,7 +119,7 @@ $orders = PendingOrders::getAllAvailable();
                             ?>
 
                             <select name="document_type" style="margin-right: 5px">
-                                <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+                                <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
                                     <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
                                         <?= __($name) ?>
                                     </option>
