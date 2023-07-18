@@ -4,7 +4,6 @@ namespace Moloni\Services\Orders;
 
 use WC_Order;
 use WC_Product;
-use WC_Order_Item;
 use WC_Order_Refund;
 use Moloni\Curl;
 use Moloni\Error;
@@ -173,19 +172,21 @@ class CreateCreditNote
             'document_set_id' => (int)CREDIT_NOTE_DOCUMENT_SET_ID,
             'status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
             'net_value' => $refundedTotal,
-            'associated_documents' => [
-                [
-                    'associated_id' => $this->originalDocument['document_id'],
-                    'value' => $refundedTotal
-                ]
-            ],
+            'associated_documents' => [],
             'products' => [],
         ];
 
         if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
+            $refundedTotal /= $this->originalDocument['exchange_rate'];
+
             $creditNoteProps['exchange_rate'] = $this->originalDocument['exchange_rate'];
             $creditNoteProps['exchange_currency_id'] = $this->originalDocument['exchange_currency_id'];
         }
+
+        $creditNoteProps['associated_documents'][] = [
+            'associated_id' => $this->originalDocument['document_id'],
+            'value' => $refundedTotal
+        ];
     }
 
     /**
@@ -224,6 +225,10 @@ class CreateCreditNote
                     'qty' => $refundedQty,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
                 ]);
+            }
+
+            if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
+                $refundedPrice /= $this->originalDocument['exchange_rate'];
             }
 
             if (abs($refundedPrice - $matchedDocumentProduct['price']) < 0.02) {
@@ -274,6 +279,10 @@ class CreateCreditNote
                     'creditNoteProps' => $creditNoteProps,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
                 ]);
+            }
+
+            if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
+                $refundedShippingValue /= $this->originalDocument['exchange_rate'];
             }
 
             if (abs($refundedShippingValue - $matchedDocumentShipping['price']) < 0.02) {
