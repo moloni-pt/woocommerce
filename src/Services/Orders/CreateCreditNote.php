@@ -147,6 +147,13 @@ class CreateCreditNote
         $note .= " (" . $documentTypeName . ")";
 
         $this->order->add_order_note($note);
+
+        /**
+         * Add custom meta tag to order
+         */
+
+        $this->order->add_meta_data('_moloni_credit_note', $this->results['documentId']);
+        $this->order->save();
     }
 
     //          SETS          //

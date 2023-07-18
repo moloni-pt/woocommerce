@@ -2,6 +2,7 @@
 
 namespace Moloni\Hooks;
 
+use Exception;
 use Moloni\Start;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
@@ -23,10 +24,10 @@ class OrderRefunded
     {
         $this->parent = $parent;
 
-        add_action('woocommerce_refund_created', [$this, 'woocommerceRefundCreated']);
+        add_action('woocommerce_refund_created', [$this, 'woocommerceRefundCreated'], 99, 2);
     }
 
-    public function woocommerceRefundCreated(int $refundId, array $args)
+    public function woocommerceRefundCreated($refundId, $args)
     {
         if (!$this->isAuthed() || !$this->shouldRunHook()) {
             return;
@@ -44,10 +45,15 @@ class OrderRefunded
                 __('Houve um erro ao gerar reembolso ({0}).')
             );
 
-            Storage::$LOGGER->critical($message, [
+            Storage::$LOGGER->error($message, [
                 'automatic:refund:create',
                 'exception' => $e->getMessage(),
                 'data' => $e->getData(),
+            ]);
+        } catch (Exception $e) {
+            Storage::$LOGGER->critical(__('Fatal error'), [
+                'automatic:refund:create:fatalerror',
+                'exception' => $e->getMessage(),
             ]);
         }
     }
