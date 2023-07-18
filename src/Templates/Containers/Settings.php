@@ -271,9 +271,9 @@ try {
                 </th>
                 <td>
                     <?php
-                    $createCreditNote = 0;
+                    $createCreditNote = Boolean::NO;
 
-                    if (defined('create_credit_note')) {
+                    if (defined('CREATE_CREDIT_NOTE')) {
                         $createCreditNote = (int)CREATE_CREDIT_NOTE;
                     }
                     ?>
@@ -322,10 +322,10 @@ try {
                 </th>
                 <td>
                     <?php
-                    $creditNoteDocumentStatus = 0;
+                    $creditNoteDocumentStatus = DocumentStatus::DRAFT;
 
                     if (defined('CREDIT_NOTE_DOCUMENT_STATUS')) {
-                        $creditNoteDocumentStatus .= (int)CREDIT_NOTE_DOCUMENT_STATUS;
+                        $creditNoteDocumentStatus = (int)CREDIT_NOTE_DOCUMENT_STATUS;
                     }
                     ?>
 
