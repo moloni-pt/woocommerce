@@ -4,9 +4,12 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Enums\DocumentTypes;
-use Moloni\Models\PendingOrders; ?>
-<?php ?>
+<?php
+
+use Moloni\Enums\DocumentTypes;
+use Moloni\Models\PendingOrders;
+
+?>
 
 <?php
 /** @var WC_Order[] $orders */
@@ -22,7 +25,7 @@ $orders = PendingOrders::getAllAvailable();
                     name="action" id="bulk-action-selector-top">
                 <option value="-1"><?= __('Ações por lotes') ?></option>
                 <option value="bulkGenInvoice"><?= __('Gerar documentos') ?></option>
-                <option value="bulkDiscardOrder"><?= __('Descartar encomendas', 'moloni_es') ?></option>
+                <option value="bulkDiscardOrder"><?= __('Descartar encomendas') ?></option>
             </select>
             <input type="submit" id="doAction" class="button action" value="<?= __('Correr') ?>">
         </div>
