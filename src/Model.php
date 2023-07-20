@@ -116,7 +116,11 @@ class Model
                     }
 
                     Storage::$LOGGER->error(
-                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.'))
+                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.')),
+                        [
+                            'tag' => 'core:refreshTokens:error',
+                            'request' => $recheckTokens,
+                        ]
                     );
 
                     self::resetTokens();
