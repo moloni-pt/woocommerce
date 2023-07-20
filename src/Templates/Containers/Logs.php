@@ -3,8 +3,8 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-use Moloni\Controllers\Logs;
 use Moloni\Enums\LogLevel;
+use Moloni\Models\Logs;
 
 $logs = Logs::getAllAvailable();
 ?>
@@ -132,17 +132,7 @@ $logs = Logs::getAllAvailable();
     </div>
 </div>
 
-<div id="logs-context-modal" class="modal" style="display: none">
-    <h2>
-        <?= __('Contexto do registo') ?>
-    </h2>
-
-    <pre id="logs-context-modal-content"></pre>
-
-    <button type="button" class="button action">
-        <?= __("Descarregar") ?>
-    </button>
-</div>
+<?php include MOLONI_TEMPLATE_DIR . 'Modals/Logs/LogsContextModal.php'; ?>
 
 <script>
     Moloni.Logs.init();

@@ -115,8 +115,12 @@ class Model
                         new AuthenticationExpired(ALERT_EMAIL);
                     }
 
-                    Storage::$LOGGER->critical(
-                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.'))
+                    Storage::$LOGGER->error(
+                        str_replace('{0}', $retryNumber, __('A resetar as tokens depois de {0} tentativas.')),
+                        [
+                            'tag' => 'core:refreshTokens:error',
+                            'request' => $recheckTokens,
+                        ]
                     );
 
                     self::resetTokens();

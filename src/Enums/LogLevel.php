@@ -21,10 +21,6 @@ class LogLevel
                 'value' => self::ERROR
             ],
             [
-                'label' => __('Aviso'),
-                'value' => self::WARNING
-            ],
-            [
                 'label' => __('Informativo'),
                 'value' => self::INFO
             ],
@@ -36,14 +32,6 @@ class LogLevel
                 'label' => __('Crítico'),
                 'value' => self::CRITICAL
             ],
-            [
-                'label' => __('Emergência'),
-                'value' => self::EMERGENCY
-            ],
-            [
-                'label' => __('Observação'),
-                'value' => self::NOTICE
-            ]
         ];
     }
 
