@@ -813,11 +813,6 @@ class Documents
                 continue;
             }
 
-            /** Skip fully refunded products */
-            if (empty($orderProduct->get_quantity())) {
-                continue;
-            }
-
             /**
              * @var $orderProduct WC_Order_Item_Product
              */
