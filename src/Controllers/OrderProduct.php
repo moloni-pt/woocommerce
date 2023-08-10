@@ -174,23 +174,31 @@ class OrderProduct
     }
 
     /**
+     * Set order product price
+     *
      * @return OrderProduct
      */
     public function setPrice()
     {
-        $this->price = (float)$this->product->get_subtotal() / $this->qty;
+        $price = 0;
 
-        $refundedValue = $this->wc_order->get_total_refunded_for_item($this->product->get_id());
+        if ($this->qty > 0) {
+            $price = (float)$this->product->get_subtotal() / $this->qty;
 
-        if ($refundedValue !== 0) {
-            $refundedValue /= $this->qty;
+            $refundedValue = $this->wc_order->get_total_refunded_for_item($this->product->get_id());
 
-            $this->price -= $refundedValue;
+            if ($refundedValue !== 0) {
+                $refundedValue /= $this->qty;
+
+                $price -= $refundedValue;
+            }
+
+            if ($price < 0) {
+                $price = 0;
+            }
         }
 
-        if ($this->price < 0) {
-            $this->price = 0;
-        }
+        $this->price = $price;
 
         return $this;
     }
