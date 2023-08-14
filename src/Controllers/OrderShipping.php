@@ -75,10 +75,9 @@ class OrderShipping
      */
     public function create()
     {
-        $this->qty = 1;
-        $this->price = (float)$this->order->get_shipping_total();
-
         $this
+            ->setQuantity()
+            ->setPrice()
             ->setReference()
             ->setDiscount()
             ->setTaxes()
@@ -89,6 +88,33 @@ class OrderShipping
         return $this;
     }
 
+    //            Sets            //
+
+    private function setQuantity()
+    {
+        $this->qty = 1;
+
+        return $this;
+    }
+
+    private function setPrice()
+    {
+        $price = (float)$this->order->get_shipping_total();
+
+        $refundedValue = (float)$this->order->get_total_shipping_refunded();
+
+        if ($refundedValue > 0) {
+            $price -= $refundedValue;
+        }
+
+        if ($price < 0) {
+            $price = 0;
+        }
+
+        $this->price = $price;
+
+        return $this;
+    }
 
     /**
      * @return $this
@@ -162,7 +188,6 @@ class OrderShipping
 
         return $this;
     }
-
 
     /**
      * Set the discount in percentage
@@ -255,6 +280,13 @@ class OrderShipping
         $this->summary = apply_filters('moloni_after_order_shipping_setSummary', $summary, $this->order);
 
         return $this;
+    }
+
+    //            Gets            //
+
+    public function getPrice()
+    {
+        return $this->price ?? 0.0;
     }
 
     /**
