@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.1.0
+Stable tag: 4.1.1
 Tested up to: 6.2.2
 WC tested up to: 7.7.0
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+
+= 4.1.1 =
+* FIX: Correção na criação de encomendas com artigos devolvidos.
 
 = 4.1.0 =
 * FEATURE: Marcar encomendas como geradas em bulk
