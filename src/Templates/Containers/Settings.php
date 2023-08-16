@@ -4,9 +4,14 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Curl; ?>
-<?php use Moloni\Model; ?>
-<?php use Moloni\Enums\DocumentTypes; ?>
+<?php
+
+use Moloni\Curl;
+use Moloni\Enums\Boolean;
+use Moloni\Model;
+use Moloni\Enums\DocumentTypes;
+
+?>
 
 <?php
 try {
@@ -237,6 +242,28 @@ try {
                         <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
                     </select>
                     <p class='description'><?= __('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF') ?></p>
+                </td>
+            </tr>
+
+            <!-- Detalhes da encomenda -->
+            <tr>
+                <th>
+                    <label for="moloni_show_download_my_account_order_view"><?= __('Detalhes de encomenda WooCommerce') ?></label>
+                </th>
+                <td>
+                    <select id="moloni_show_download_my_account_order_view" name='opt[moloni_show_download_my_account_order_view]' class='inputOut'>
+                        <?php $myAccountOrderViewShowDownload = defined('MOLONI_SHOW_DOWNLOAD_MY_ACCOUNT_ORDER_VIEW') ? (int)MOLONI_SHOW_DOWNLOAD_MY_ACCOUNT_ORDER_VIEW : Boolean::NO; ?>
+
+                        <option value='0' <?= ($myAccountOrderViewShowDownload === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($myAccountOrderViewShowDownload === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'>
+                        <?= __('Adicionar, na página visualização encomenda (do cliente), uma secção com o documento gerado para descarregar em PDF') ?>
+                    </p>
                 </td>
             </tr>
 

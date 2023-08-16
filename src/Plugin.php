@@ -60,6 +60,7 @@ class Plugin
         new Hooks\OrderView($this);
         new Hooks\OrderPaid($this);
         new Hooks\OrderList($this);
+        new Hooks\OrderDetails($this);
         new Hooks\UpgradeProcess($this);
     }
 
