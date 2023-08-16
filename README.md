@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.2.2  
 **WC tested up to**    7.7.0  
-**Stable tag:**        4.1.1
+**Stable tag:**        4.1.2
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.1.2
+* FIX: Correção nos portes de envio.
+
 ### 4.1.1
 * FIX: Correção na criação de encomendas com artigos devolvidos.
 
