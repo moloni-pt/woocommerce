@@ -838,9 +838,10 @@ class Documents
     {
         if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
             $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalZone);
+            $newOrderShipping->create();
 
             if ($newOrderShipping->getPrice() > 0) {
-                $this->products[] = $newOrderShipping->create()->mapPropsToValues();
+                $this->products[] = $newOrderShipping->mapPropsToValues();
             }
         }
 
