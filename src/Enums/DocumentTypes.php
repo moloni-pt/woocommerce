@@ -29,6 +29,11 @@ class DocumentTypes
         self::SIMPLIFIED_INVOICES,
     ];
 
+    public const TYPES_SELF_PAID = [
+        self::SIMPLIFIED_INVOICES,
+        self::INVOICE_RECEIPTS,
+    ];
+
     public const TYPES_NAMES = [
         self::INVOICES => 'Fatura',
         self::INVOICE_RECEIPTS => 'Factura/Recibo',
@@ -111,5 +116,10 @@ class DocumentTypes
     public static function canConvertToCreditNote(?string $documentType = ''): bool
     {
         return in_array($documentType, self::TYPES_CONVERTS_TO_CREDIT_NOTES, true);
+    }
+
+    public static function isSelfPaid(?string $documentType = ''): bool
+    {
+        return in_array($documentType, self::TYPES_SELF_PAID, true);
     }
 }

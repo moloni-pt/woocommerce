@@ -47,9 +47,11 @@ class CreateCreditNote
 
     private $originalDocument = [];
 
-    private $unrelatedProducts = [];
+    private $originalDocumentType = '';
 
     private $originalUnrelatedProducts = [];
+
+    private $unrelatedProducts = [];
 
 
     public function __construct(int $refundId, bool $restockItems = true)
@@ -171,7 +173,6 @@ class CreateCreditNote
             'your_reference' => $this->originalDocument['your_reference'],
             'document_set_id' => (int)CREDIT_NOTE_DOCUMENT_SET_ID,
             'status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
-            'net_value' => $refundedTotal,
             'associated_documents' => [],
             'products' => [],
         ];
@@ -183,9 +184,11 @@ class CreateCreditNote
             $creditNoteProps['exchange_currency_id'] = $this->originalDocument['exchange_currency_id'];
         }
 
+        $creditNoteProps['net_value'] = $refundedTotal;
+
         $creditNoteProps['associated_documents'][] = [
             'associated_id' => $this->originalDocument['document_id'],
-            'value' => $refundedTotal
+            'value' => DocumentTypes::isSelfPaid($this->originalDocumentType) ? 0 : $refundedTotal
         ];
     }
 
@@ -387,9 +390,9 @@ class CreateCreditNote
             throw new ServiceException('Document is not closed');
         }
 
-        $targetDocumentType = DocumentTypes::getDocumentTypeById((int)($this->originalDocument['document_type']['document_type_id'] ?? 0));
+        $this->originalDocumentType = DocumentTypes::getDocumentTypeById((int)($this->originalDocument['document_type']['document_type_id'] ?? 0));
 
-        if (empty($targetDocumentType) || !DocumentTypes::canConvertToCreditNote($targetDocumentType)) {
+        if (empty($this->originalDocumentType) || !DocumentTypes::canConvertToCreditNote($this->originalDocumentType)) {
             throw new ServiceException('Target document cannot be converted do credit note');
         }
     }
