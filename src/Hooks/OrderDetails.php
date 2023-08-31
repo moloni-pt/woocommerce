@@ -19,6 +19,19 @@ class OrderDetails
 
     public $parent;
 
+
+    public $order;
+
+    public $document = [];
+
+    public $documentId = 0;
+
+    public $documentUrl = '';
+
+    public $documentName = '';
+
+    public $htmlToRender = '';
+
     public function __construct(Plugin $parent)
     {
         $this->parent = $parent;
@@ -28,6 +41,8 @@ class OrderDetails
 
     public function orderDetailsAfterCustomerDetails(WC_Order $order)
     {
+        $this->order = $order;
+
         if (!Start::login(true)) {
             return;
         }
@@ -36,74 +51,89 @@ class OrderDetails
             return;
         }
 
-        $documentId = MoloniOrder::getLastCreatedDocument($order);
+        $this->getDocumentId();
 
-        if ($documentId <= 0) {
+        if ($this->documentId <= 0) {
             return;
         }
 
-        $document = $this->getDocumentData($documentId);
+        $this->getDocumentData();
 
-        if (empty($document) || (int)$document['status'] !== DocumentStatus::CLOSED) {
+        if (empty($this->document) || (int)$this->document['status'] !== DocumentStatus::CLOSED) {
             return;
         }
 
-        $href = $this->getDocumentUrl($documentId);
+        $this->getDocumentUrl();
 
-        if (empty($href)) {
+        if (empty($this->documentUrl)) {
             return;
         }
 
-        $documentName = $this->getDocumentTypeName($document['document_type']['saft_code']);
+        $this->getDocumentTypeName();
+        $this->getHtmlToRender();
+
+        apply_filters('moloni_before_order_details_render', $this);
+
+        if (!empty($this->htmlToRender)) {
+            echo $this->htmlToRender;
+        }
+    }
+
+    private function getDocumentId(): void
+    {
+        $this->documentId = MoloniOrder::getLastCreatedDocument($this->order);
+    }
+
+    private function getDocumentUrl(): void
+    {
+        try {
+            $result = Curl::simple('documents/getPDFLink', ['document_id' => $this->documentId]);
+
+            if (isset($result['url'])) {
+                $this->documentUrl = $result['url'];
+            }
+        } catch (Error $e) {
+        }
+    }
+
+    private function getDocumentData(): void
+    {
+        try {
+            $invoice = Curl::simple('documents/getOne', ['document_id' => $this->documentId]);
+
+            if (isset($invoice['document_id'])) {
+                $this->document = $invoice;
+            }
+        } catch (Error $e) {
+        }
+    }
+
+    private function getDocumentTypeName(): void
+    {
+        $typeName = $this->parseTypeNameFromSaftCode($this->document['document_type']['saft_code'] ?? '');
+
+        $this->documentName = DocumentTypes::getDocumentTypeName($typeName);
+    }
+
+    private function getHtmlToRender(): void
+    {
+        ob_start();
 
         ?>
-        <div id="invoice_document">
+        <section id="invoice_document">
             <h2>
                 <?= __('Documento de faturação') ?>
             </h2>
             <ul>
                 <li>
-                    <a href="<?= $href ?>" target="_blank">
-                        <?= __(empty($documentName) ? 'Fatura' : $documentName) ?>
+                    <a href="<?= $this->documentUrl ?>" target="_blank">
+                        <?= __(empty($this->documentName) ? 'Fatura' : $this->documentName) ?>
                     </a>
                 </li>
             </ul>
-        </div>
+        </section>
         <?php
-    }
 
-    private function getDocumentUrl(int $documentId): string
-    {
-        try {
-            $result = Curl::simple('documents/getPDFLink', ['document_id' => $documentId]);
-
-            if (isset($result['url'])) {
-                return $result['url'];
-            }
-        } catch (Error $e) {
-        }
-
-        return '';
-    }
-
-    private function getDocumentData(int $documentId): array
-    {
-        try {
-            $invoice = Curl::simple('documents/getOne', ['document_id' => $documentId]);
-
-            if (isset($invoice['document_id'])) {
-                return $invoice;
-            }
-        } catch (Error $e) {
-        }
-
-        return [];
-    }
-
-    private function getDocumentTypeName(string $saftcode = ''): string
-    {
-        $typeName = $this->parseTypeNameFromSaftCode($saftcode);
-
-        return DocumentTypes::getDocumentTypeName($typeName);
+        $this->htmlToRender = ob_get_clean();
     }
 }
