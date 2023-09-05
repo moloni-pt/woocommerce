@@ -79,6 +79,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 ## Changelog
 ### 4.1.3
+* FIX: Correção na criação de documentos
 * MINOR: Testado até à versão 6.3 do Wordpress
 * MINOR: Testado até à versão 8.0.2 do WooCommerce
 
