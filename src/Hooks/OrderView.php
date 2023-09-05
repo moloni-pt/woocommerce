@@ -8,6 +8,7 @@ use Exception;
 use Moloni\Plugin;
 use Moloni\Start;
 use Moloni\Helpers\MoloniOrder;
+use Moloni\Enums\DocumentTypes;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
 /**
@@ -52,33 +53,11 @@ class OrderView
         ?>
 
         <select id="moloni_document_type" style="float:right">
-            <option value='invoices' <?= ($documentType === 'invoices' ? 'selected' : '') ?>>
-                <?= __('Fatura') ?>
-            </option>
-
-            <option value='invoiceReceipts' <?= ($documentType === 'invoiceReceipts' ? 'selected' : '') ?>>
-                <?= __('Factura/Recibo') ?>
-            </option>
-
-            <option value='simplifiedInvoices'<?= ($documentType === 'simplifiedInvoices' ? 'selected' : '') ?>>
-                <?= __('Factura Simplificada') ?>
-            </option>
-
-            <option value='proFormaInvoices' <?= ($documentType === 'proFormaInvoices' ? 'selected' : '') ?>>
-                <?= __('Fatura Pró-Forma') ?>
-            </option>
-
-            <option value='billsOfLading' <?= ($documentType === 'billsOfLading' ? 'selected' : '') ?>>
-                <?= __('Guia de Transporte') ?>
-            </option>
-
-            <option value='purchaseOrder' <?= ($documentType === 'purchaseOrder' ? 'selected' : '') ?>>
-                <?= __('Nota de Encomenda') ?>
-            </option>
-
-            <option value='estimates' <?= ($documentType === 'estimates' ? 'selected' : '') ?>>
-                <?= __('Orçamento') ?>
-            </option>
+            <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+                <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                    <?= __($name) ?>
+                </option>
+            <?php endforeach; ?>
         </select>
 
         <?php

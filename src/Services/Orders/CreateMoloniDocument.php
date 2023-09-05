@@ -51,6 +51,10 @@ class CreateMoloniDocument
         $this->checkForWarnings();
 
         $company = Curl::simple('companies/getOne', []);
+        
+        if (empty($company)) {
+            throw new Error(__('Erro a obter empresa'));
+        }
 
         if ($this->shouldCreateBillOfLading()) {
             $billOfLading = new Documents($this->order, $company);

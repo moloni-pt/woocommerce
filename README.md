@@ -3,8 +3,8 @@
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
 ![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
 ![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.2.2%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
-![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-7.7.0%20tested-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.3%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-8.0.2%20tested-orange)
 
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
@@ -15,9 +15,9 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.2.2  
-**WC tested up to**    7.7.0  
-**Stable tag:**        4.1.2
+**Tested up to:**      6.3  
+**WC tested up to**    8.0.2  
+**Stable tag:**        4.1.3  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.1.3
+* FIX: Correção na criação de documentos
+* MINOR: Testado até à versão 6.3 do Wordpress
+* MINOR: Testado até à versão 8.0.2 do WooCommerce
+
 ### 4.1.2
 * FIX: Correção nos portes de envio.
 
