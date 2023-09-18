@@ -50,7 +50,7 @@ class OrderRefunded
             $message .= '.';
 
             Storage::$LOGGER->error($message, [
-                'automatic:refund:create',
+                'tag' => 'automatic:refund:create',
                 'exception' => $e->getMessage(),
                 'data' => $e->getData(),
             ]);
@@ -68,7 +68,7 @@ class OrderRefunded
             }
         } catch (Exception $e) {
             Storage::$LOGGER->critical(__('Fatal error'), [
-                'automatic:refund:create:fatalerror',
+                'tag' => 'automatic:refund:create:fatalerror',
                 'exception' => $e->getMessage(),
             ]);
         }
