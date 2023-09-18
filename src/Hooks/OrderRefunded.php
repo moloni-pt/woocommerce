@@ -39,17 +39,33 @@ class OrderRefunded
             $service->run();
             $service->saveLog();
         } catch (ServiceException $e) {
-            $message = str_replace(
-                '{0}',
-                $service->getOrderNumber(),
-                __('Houve um erro ao gerar reembolso ({0}).')
-            );
+            $order = $service->getOrder();
+
+            /**
+             * Save plugin log
+             */
+
+            $message = __('Houve um erro ao gerar reembolso');
+            $message .= empty($order) ? '' : ' (' . $order->get_order_number() . ')';
+            $message .= '.';
 
             Storage::$LOGGER->error($message, [
                 'automatic:refund:create',
                 'exception' => $e->getMessage(),
                 'data' => $e->getData(),
             ]);
+
+            /**
+             * Add custom note to order
+             */
+
+            if (!empty($order)) {
+                $note = __('Erro ao gerar nota de crédito automaticamente.');
+                $note .= ' ';
+                $note .= __('Consulte os registos para mais informações.');
+
+                $order->add_order_note($note);
+            }
         } catch (Exception $e) {
             Storage::$LOGGER->critical(__('Fatal error'), [
                 'automatic:refund:create:fatalerror',

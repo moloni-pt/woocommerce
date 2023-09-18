@@ -317,14 +317,18 @@ class CreateCreditNote
 
     //          GETS          //
 
-    public function getOrderID(): int
+    public function getOrder()
     {
-        return $this->order->get_id();
+        return $this->order ?? null;
     }
 
-    public function getOrderNumber(): string
+    public function getOrderID(): int
     {
-        return $this->order->get_order_number() ?? '';
+        if (empty($this->order)) {
+            return 0;
+        }
+
+        return $this->order->get_id();
     }
 
     //          Privates          //
