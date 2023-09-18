@@ -50,7 +50,7 @@ class OrderRefunded
             $message .= '.';
 
             Storage::$LOGGER->error($message, [
-                'tag' => 'automatic:refund:create',
+                'tag' => 'automatic:refund:create:error',
                 'exception' => $e->getMessage(),
                 'data' => $e->getData(),
             ]);

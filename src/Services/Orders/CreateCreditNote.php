@@ -119,6 +119,7 @@ class CreateCreditNote
         }
 
         $this->results = [
+            'tag' => 'automatic:refund:create',
             'refund_id' => $this->refund->get_id(),
             'order_id' => $this->order->get_id(),
             'documentId' => $mutation['document_id'],
