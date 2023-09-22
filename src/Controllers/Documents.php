@@ -808,7 +808,7 @@ class Documents
     public function setProducts(): Documents
     {
         foreach ($this->order->get_items() as $orderProduct) {
-            // Skip "child" products created by "YITH WooCommerce Product Bundles" plugin
+            /** Skip "child" products created by "YITH WooCommerce Product Bundles" plugin */
             if ($orderProduct->get_meta('_bundled_by')) {
                 continue;
             }

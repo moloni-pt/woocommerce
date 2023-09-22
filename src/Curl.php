@@ -70,6 +70,7 @@ class Curl
 
         if ((int)wp_remote_retrieve_response_code($response) === 429) {
             $retry++;
+
             if ($retry < 5) {
                 sleep(2);
                 return self::simple($action, $values, $debug, $retry);
