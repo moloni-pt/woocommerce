@@ -336,6 +336,33 @@ try {
                 </td>
             </tr>
 
+            <!-- Enviar email -->
+            <tr>
+                <th>
+                    <label for="credit_note_email_send"><?= __('Enviar email') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $creditNoteEmailSend = Boolean::NO;
+
+                    if (defined('CREDIT_NOTE_EMAIL_SEND')) {
+                        $creditNoteEmailSend = (int)CREDIT_NOTE_EMAIL_SEND;
+                    }
+                    ?>
+
+                    <select id="credit_note_email_send" name='opt[credit_note_email_send]' class='inputOut'>
+                        <option value='0' <?= ($creditNoteEmailSend === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($creditNoteEmailSend === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'>
+                        <?= __('A nota de crédito só é enviada para o cliente se for inserida no estado "fechado"') ?>
+                    </p>
+                </td>
+            </tr>
             </tbody>
         </table>
 

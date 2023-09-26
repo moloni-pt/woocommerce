@@ -10,6 +10,7 @@ use Moloni\Error;
 use Moloni\Tools;
 use Moloni\Storage;
 use Moloni\Helpers\MoloniOrder;
+use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
 use Moloni\Exceptions\ServiceException;
@@ -122,9 +123,11 @@ class CreateCreditNote
             'tag' => 'automatic:refund:create',
             'refund_id' => $this->refund->get_id(),
             'order_id' => $this->order->get_id(),
-            'documentId' => $mutation['document_id'],
+            'document_id' => $mutation['document_id'],
             'document_status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
         ];
+
+        $this->saveRecord();
     }
 
     public function saveLog()
@@ -149,13 +152,6 @@ class CreateCreditNote
         $note .= " (" . $documentTypeName . ")";
 
         $this->order->add_order_note($note);
-
-        /**
-         * Add custom meta tag to order
-         */
-
-        $this->order->add_meta_data('_moloni_credit_note', $this->results['documentId']);
-        $this->order->save();
     }
 
     //          SETS          //
@@ -176,7 +172,29 @@ class CreateCreditNote
             'status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
             'associated_documents' => [],
             'products' => [],
+            'send_email' => [],
         ];
+
+        if ($this->shouldSendByEmail()) {
+            $email = $this->order->get_billing_email() ?? '';
+
+            $name = $this->order->get_billing_first_name() ?? '';
+            $name .= ' ';
+            $name .= $this->order->get_billing_last_name() ?? '';
+            $name = trim($name);
+
+            if (empty($name)) {
+                $name = $this->originalDocument['entity_name'] ?? '';
+            }
+
+            if (!empty($email) && !empty($name)) {
+                $creditNoteProps['send_email'][] = [
+                    'email' => $email,
+                    'name' => $name,
+                    'msg' => ''
+                ];
+            }
+        }
 
         if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
             $refundedTotal /= $this->originalDocument['exchange_rate'];
@@ -334,6 +352,12 @@ class CreateCreditNote
 
     //          Privates          //
 
+    private function saveRecord()
+    {
+        $this->order->add_meta_data('_moloni_credit_note', $this->results['document_id']);
+        $this->order->save();
+    }
+
     private function tryToMatchShipping(): array
     {
         foreach ($this->unrelatedProducts as $key => $unrelatedProduct) {
@@ -412,5 +436,16 @@ class CreateCreditNote
         if (empty($this->unrelatedProducts)) {
             throw new ServiceException('Document does not have unrelated products left');
         }
+    }
+
+    //          Auxiliary          //
+
+    private function shouldSendByEmail(): bool
+    {
+        if (!defined('CREDIT_NOTE_DOCUMENT_STATUS') || (int)CREDIT_NOTE_DOCUMENT_STATUS === DocumentStatus::DRAFT) {
+            return false;
+        }
+
+        return defined('CREDIT_NOTE_EMAIL_SEND') && (int)CREDIT_NOTE_EMAIL_SEND === Boolean::YES;
     }
 }
