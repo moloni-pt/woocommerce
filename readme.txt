@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.1.3
+Stable tag: 4.2.1
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,8 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.2.1 =
+* FEATURE: Adicionada criação automática de Notas de crédito
 
 = 4.1.3 =
 * FIX: Correção na criação de documentos

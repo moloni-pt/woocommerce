@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.3  
 **WC tested up to**    8.0.2  
-**Stable tag:**        4.1.3  
+**Stable tag:**        4.2.1  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.2.1
+* FEATURE: Adicionada criação automática de Notas de crédito
+
 ### 4.1.3
 * FIX: Correção na criação de documentos
 * MINOR: Testado até à versão 6.3 do Wordpress

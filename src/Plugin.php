@@ -2,6 +2,7 @@
 
 namespace Moloni;
 
+use WC_Order;
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
 use Moloni\Hooks\Ajax;
@@ -10,7 +11,6 @@ use Moloni\Services\Documents\DownloadDocument;
 use Moloni\Services\Documents\OpenDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
 use Moloni\Services\Orders\DiscardOrder;
-use WC_Order;
 
 /**
  * Main constructor
@@ -60,6 +60,7 @@ class Plugin
         new Hooks\OrderView($this);
         new Hooks\OrderPaid($this);
         new Hooks\OrderList($this);
+        new Hooks\OrderRefunded($this);
         new Hooks\UpgradeProcess($this);
     }
 
