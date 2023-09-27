@@ -19,16 +19,9 @@ class OrderDetails
 
     public $parent;
 
-
     public $order;
 
-    public $document = [];
-
-    public $documentId = 0;
-
-    public $documentUrl = '';
-
-    public $documentName = '';
+    public $documents = [];
 
     public $htmlToRender = '';
 
@@ -51,25 +44,12 @@ class OrderDetails
             return;
         }
 
-        $this->getDocumentId();
+        $this->loadDocuments();
 
-        if ($this->documentId <= 0) {
+        if (empty($this->documents)) {
             return;
         }
 
-        $this->getDocumentData();
-
-        if (empty($this->document) || (int)$this->document['status'] !== DocumentStatus::CLOSED) {
-            return;
-        }
-
-        $this->getDocumentUrl();
-
-        if (empty($this->documentUrl)) {
-            return;
-        }
-
-        $this->getDocumentTypeName();
         $this->getHtmlToRender();
 
         apply_filters('moloni_before_order_details_render', $this);
@@ -79,40 +59,86 @@ class OrderDetails
         }
     }
 
-    private function getDocumentId(): void
+    private function loadDocuments(): void
     {
-        $this->documentId = MoloniOrder::getLastCreatedDocument($this->order);
+        $documentIds = [];
+
+        $lastCreatedDocument = MoloniOrder::getLastCreatedDocument($this->order);
+
+        if (!empty($lastCreatedDocument)) {
+            $documentIds[] = $lastCreatedDocument;
+        }
+
+        $allCreatedCreditNotes = MoloniOrder::getAllCreatedCreditNotes($this->order);
+
+        if (!empty($allCreatedCreditNotes)) {
+            $documentIds = array_merge($documentIds, $allCreatedCreditNotes);
+        }
+
+        if (empty($documentIds)) {
+            return;
+        }
+
+        foreach ($documentIds as $documentId) {
+            $documentData = $this->getDocumentData($documentId);
+
+            if (empty($documentData) || $documentData['status'] !== DocumentStatus::CLOSED) {
+                continue;
+            }
+
+            $documentPdfLink = $this->getDocumentUrl($documentId);
+
+            if (empty($documentPdfLink)) {
+                continue;
+            }
+
+            $documentTypeName = $this->getDocumentTypeName($documentData['document_type']['saft_code'] ?? '');
+
+            if (empty($documentTypeName)) {
+                continue;
+            }
+
+            $this->documents[] = [
+                'label' => __($documentTypeName),
+                'href' => $documentPdfLink,
+                'data' => $documentData
+            ];
+        }
     }
 
-    private function getDocumentUrl(): void
+    private function getDocumentUrl(int $documentId): string
     {
         try {
-            $result = Curl::simple('documents/getPDFLink', ['document_id' => $this->documentId]);
+            $result = Curl::simple('documents/getPDFLink', ['document_id' => $documentId]);
 
             if (isset($result['url'])) {
-                $this->documentUrl = $result['url'];
+                return $result['url'];
             }
         } catch (Error $e) {
         }
+
+        return '';
     }
 
-    private function getDocumentData(): void
+    private function getDocumentData(int $documentId): array
     {
         try {
-            $invoice = Curl::simple('documents/getOne', ['document_id' => $this->documentId]);
+            $invoice = Curl::simple('documents/getOne', ['document_id' => $documentId]);
 
             if (isset($invoice['document_id'])) {
-                $this->document = $invoice;
+                return $invoice;
             }
         } catch (Error $e) {
         }
+
+        return [];
     }
 
-    private function getDocumentTypeName(): void
+    private function getDocumentTypeName(string $saftCode): string
     {
-        $typeName = $this->parseTypeNameFromSaftCode($this->document['document_type']['saft_code'] ?? '');
+        $typeName = $this->parseTypeNameFromSaftCode($saftCode);
 
-        $this->documentName = DocumentTypes::getDocumentTypeName($typeName);
+        return DocumentTypes::getDocumentTypeName($typeName);
     }
 
     private function getHtmlToRender(): void
@@ -125,11 +151,13 @@ class OrderDetails
                 <?= __('Documento de faturação') ?>
             </h2>
             <ul>
-                <li>
-                    <a href="<?= $this->documentUrl ?>" target="_blank">
-                        <?= __(empty($this->documentName) ? 'Fatura' : $this->documentName) ?>
-                    </a>
-                </li>
+                <?php foreach ($this->documents as $document) : ?>
+                    <li>
+                        <a href="<?= $document['href'] ?>" target="_blank">
+                            <?= $document['label'] ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </section>
         <?php

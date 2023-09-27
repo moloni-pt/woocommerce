@@ -75,6 +75,8 @@ New plugin version fully re-written
 == changelog ==
 = 4.3.0 =
 * FEATURE: Adicionado botão para descarregar documentos na página da encomenda na área de cliente
+* FEATURE: Adicionado filtro moloni_before_moloni_product_insert
+* FEATURE: Adicionado filtro moloni_before_moloni_product_update
 
 = 4.2.1 =
 * FEATURE: Adicionada criação automática de Notas de crédito

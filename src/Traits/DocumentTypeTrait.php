@@ -31,6 +31,9 @@ trait DocumentTypeTrait
             case 'OR':
                 $typeName = DocumentTypes::ESTIMATES;
                 break;
+            case 'NC':
+                $typeName = DocumentTypes::CREDIT_NOTES;
+                break;
         }
 
         return $typeName;
