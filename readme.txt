@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.2.1
+Stable tag: 4.3.0
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.3.0 =
+* FEATURE: Adicionado botão para descarregar documentos na página da encomenda na área de cliente
+
 = 4.2.1 =
 * FEATURE: Adicionada criação automática de Notas de crédito
 

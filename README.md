@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.3  
 **WC tested up to**    8.0.2  
-**Stable tag:**        4.2.1  
+**Stable tag:**        4.3.0  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.3.0
+* FEATURE: Adicionado botão para descarregar documentos na página da encomenda na área de cliente
+
 ### 4.2.1
 * FEATURE: Adicionada criação automática de Notas de crédito
 
