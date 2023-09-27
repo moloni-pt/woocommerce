@@ -36,10 +36,10 @@ class DocumentTypes
 
     public const TYPES_NAMES = [
         self::INVOICES => 'Fatura',
-        self::INVOICE_RECEIPTS => 'Factura/Recibo',
+        self::INVOICE_RECEIPTS => 'Fatura-Recibo',
         self::PURCHASE_ORDER => 'Nota de Encomenda',
         self::PRO_FORMA_INVOICES => 'Fatura Pró-Forma',
-        self::SIMPLIFIED_INVOICES => 'Factura Simplificada',
+        self::SIMPLIFIED_INVOICES => 'Fatura Simplificada',
         self::ESTIMATES => 'Orçamento',
         self::BILLS_OF_LADING => 'Guia de Transporte',
         self::CREDIT_NOTES => 'Nota de Crédito',

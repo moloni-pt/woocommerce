@@ -53,7 +53,7 @@ class OrderView
         ?>
 
         <select id="moloni_document_type" style="float:right">
-            <?php foreach (DocumentTypes::TYPES_NAMES as $id => $name) : ?>
+            <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
                 <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
                     <?= __($name) ?>
                 </option>

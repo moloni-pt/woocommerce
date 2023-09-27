@@ -61,6 +61,7 @@ class Plugin
         new Hooks\OrderPaid($this);
         new Hooks\OrderList($this);
         new Hooks\OrderRefunded($this);
+        new Hooks\OrderDetails($this);
         new Hooks\UpgradeProcess($this);
     }
 
