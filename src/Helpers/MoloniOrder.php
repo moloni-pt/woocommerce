@@ -23,7 +23,7 @@ class MoloniOrder
         return $documentId;
     }
 
-    public static function getAllCreatedDocument(WC_Order $wcOrder): array
+    public static function getAllCreatedDocuments(WC_Order $wcOrder): array
     {
         /** @var WC_Meta_Data[] $documents */
         $documents = $wcOrder->get_meta('_moloni_sent', false);
@@ -40,7 +40,7 @@ class MoloniOrder
         return $documentIds;
     }
 
-    public static function getLastCreatedCreditNotes(WC_Order $wcOrder): int
+    public static function getLastCreatedCreditNote(WC_Order $wcOrder): int
     {
         /** @var WC_Meta_Data[] $creditNotes */
         $creditNotes = $wcOrder->get_meta('_moloni_credit_note', false);
