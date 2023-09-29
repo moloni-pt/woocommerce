@@ -4,6 +4,7 @@ namespace Moloni\Services\Orders;
 
 use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
+use WC_Order_Item_Fee;
 use WC_Product;
 use WC_Order_Refund;
 use Moloni\Curl;
@@ -105,6 +106,7 @@ class CreateCreditNote
         $this->setBasics($creditNoteProps);
         $this->setProducts($creditNoteProps);
         $this->setShipping($creditNoteProps);
+        $this->setFees($creditNoteProps);
 
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
@@ -400,6 +402,81 @@ class CreateCreditNote
         }
     }
 
+    /**
+     * Set fees
+     *
+     * @throws DocumentError
+     */
+    private function setFees(array &$creditNoteProps)
+    {
+        /** @var WC_Order_Item_Fee[] $fees */
+        $fees = $this->refund->get_fees();
+
+        if (empty($fees)) {
+            return;
+        }
+
+        foreach ($fees as $fee) {
+            $feeName = $fee->get_name();
+
+            if (empty($feeName)) {
+                /** Default name given when creating document */
+                $feeName = 'Taxa';
+            }
+
+            $refundedPrice = abs($fee->get_total());
+            $refundedQty = 1;
+
+            $matchedDocumentFee = $this->tryToMatchFee($feeName);
+
+            if (empty($matchedDocumentFee)) {
+                throw new DocumentError('Refunded fee not matched in document unrelated products', [
+                    'name' => $feeName,
+                    'qty' => $refundedQty,
+                    'unrelatedProducts' => $this->originalUnrelatedProducts,
+                ]);
+            }
+
+            if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
+                $refundedPrice /= $this->originalDocument['exchange_rate'];
+            }
+
+            if ($matchedDocumentFee['discount'] > 0) {
+                $refundedPrice = $refundedPrice / ($matchedDocumentFee['discount'] / 100);
+            }
+
+            if (abs($refundedPrice - $matchedDocumentFee['price']) < 0.02) {
+                $refundedPrice = $matchedDocumentFee['price'];
+            }
+
+            if ($refundedPrice > $matchedDocumentFee['price']) {
+                throw new DocumentError('Refunded value is bigger than the document fee price', [
+                    'name' => $feeName,
+                    'qty' => $refundedQty,
+                    'price' => $refundedPrice,
+                    'matchedDocumentProduct' => $matchedDocumentFee,
+                ]);
+            }
+
+            $newProduct = [
+                'product_id' => $matchedDocumentFee['product_id'],
+                'name' => $matchedDocumentFee['name'],
+                'summary' => $matchedDocumentFee['summary'],
+                'exemption_reason' => $matchedDocumentFee['exemption_reason'],
+                'taxes' => $matchedDocumentFee['taxes'],
+                'related_id' => $matchedDocumentFee['document_product_id'],
+                'warehouse_id' => $matchedDocumentFee['warehouse_id'],
+                'origin_id' => $this->originalDocument['document_id'],
+                'has_stock' => (int)$this->restockItems,
+                'qty' => $refundedQty,
+                'price' => $refundedPrice,
+                'discount' => $matchedDocumentFee['discount'],
+            ];
+
+            $creditNoteProps['products'][] = $newProduct;
+        }
+    }
+
     //          GETS          //
 
     public function getOrder()
@@ -468,6 +545,19 @@ class CreateCreditNote
             }
 
             return $unrelatedProduct;
+        }
+
+        return [];
+    }
+
+    private function tryToMatchFee($feeName): array
+    {
+        foreach ($this->unrelatedProducts as $key => $unrelatedProduct) {
+            if (strtolower($unrelatedProduct['reference']) === 'fee' && $feeName === $unrelatedProduct['name']) {
+                unset($this->unrelatedProducts[$key]);
+
+                return $unrelatedProduct;
+            }
         }
 
         return [];
