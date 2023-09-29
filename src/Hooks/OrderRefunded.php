@@ -3,11 +3,13 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Exceptions\DocumentWarning;
 use Moloni\Start;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
 use Moloni\Exceptions\DocumentError;
+use Moloni\Exceptions\DocumentWarning;
+use Moloni\Services\Mails\CreditNoteFailed;
+use Moloni\Services\Mails\CreditNoteWarning;
 use Moloni\Services\Orders\CreateCreditNote;
 
 class OrderRefunded
@@ -41,13 +43,14 @@ class OrderRefunded
             $service->saveLog();
         } catch (DocumentError $e) {
             $order = $service->getOrder();
+            $orderName = empty($order) ? $refundId : $order->get_order_number();
 
             /**
              * Save plugin log
              */
 
             $message = __('Houve um erro ao gerar reembolso');
-            $message .= empty($order) ? '' : ' (' . $order->get_order_number() . ')';
+            $message .= ' (' . $orderName . ')';
             $message .= '.';
 
             Storage::$LOGGER->error($message, [
@@ -67,15 +70,24 @@ class OrderRefunded
 
                 $order->add_order_note($note);
             }
+
+            /**
+             * Send alert e-mail
+             */
+
+            if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+                new CreditNoteFailed(ALERT_EMAIL, $orderName);
+            }
         } catch (DocumentWarning $e) {
             $order = $service->getOrder();
+            $orderName = $order->get_order_number();
 
             /**
              * Save plugin log
              */
 
             $message = __('Houve um alerta ao gerar reembolso');
-            $message .= ' (' . $order->get_order_number() . ')';
+            $message .= ' (' . $orderName . ')';
             $message .= '.';
 
             Storage::$LOGGER->warning($message, [
@@ -94,6 +106,14 @@ class OrderRefunded
             $note .= __('Consulte os registos para mais informações.');
 
             $order->add_order_note($note);
+
+            /**
+             * Send alert e-mail
+             */
+
+            if (defined('ALERT_EMAIL') && !empty(ALERT_EMAIL)) {
+                new CreditNoteWarning(ALERT_EMAIL, $orderName);
+            }
         } catch (Exception $e) {
             Storage::$LOGGER->critical(__('Fatal error'), [
                 'tag' => 'automatic:refund:create:fatalerror',
