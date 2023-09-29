@@ -310,14 +310,6 @@ class CreateCreditNote
                 ]);
             }
 
-            if ($matchedDocumentProduct['available_amount'] < $refundedQty) {
-                throw new DocumentError('Original document does not have enough quantity', [
-                    'name' => $refundedItem->get_name(),
-                    'qty' => $refundedQty,
-                    'matchedDocumentProduct' => $matchedDocumentProduct,
-                ]);
-            }
-
             if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
                 $refundedPrice /= $this->originalDocument['exchange_rate'];
             }
