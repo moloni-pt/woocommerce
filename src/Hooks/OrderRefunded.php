@@ -3,10 +3,11 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Exceptions\DocumentWarning;
 use Moloni\Start;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
-use Moloni\Exceptions\ServiceException;
+use Moloni\Exceptions\DocumentError;
 use Moloni\Services\Orders\CreateCreditNote;
 
 class OrderRefunded
@@ -38,7 +39,7 @@ class OrderRefunded
         try {
             $service->run();
             $service->saveLog();
-        } catch (ServiceException $e) {
+        } catch (DocumentError $e) {
             $order = $service->getOrder();
 
             /**
@@ -66,6 +67,33 @@ class OrderRefunded
 
                 $order->add_order_note($note);
             }
+        } catch (DocumentWarning $e) {
+            $order = $service->getOrder();
+
+            /**
+             * Save plugin log
+             */
+
+            $message = __('Houve um alerta ao gerar reembolso');
+            $message .= ' (' . $order->get_order_number() . ')';
+            $message .= '.';
+
+            Storage::$LOGGER->warning($message, [
+                'tag' => 'automatic:refund:create:warning',
+                'exception' => $e->getMessage(),
+                'data' => $e->getData(),
+                'results' => $service->getResults()
+            ]);
+
+            /**
+             * Add custom note to order
+             */
+
+            $note = __('Alerta ao gerar nota de crédito automaticamente.');
+            $note .= ' ';
+            $note .= __('Consulte os registos para mais informações.');
+
+            $order->add_order_note($note);
         } catch (Exception $e) {
             Storage::$LOGGER->critical(__('Fatal error'), [
                 'tag' => 'automatic:refund:create:fatalerror',

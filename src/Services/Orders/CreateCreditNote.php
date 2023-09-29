@@ -2,6 +2,7 @@
 
 namespace Moloni\Services\Orders;
 
+use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
 use WC_Product;
 use WC_Order_Refund;
@@ -13,7 +14,7 @@ use Moloni\Helpers\MoloniOrder;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
-use Moloni\Exceptions\ServiceException;
+use Moloni\Exceptions\DocumentError;
 
 class CreateCreditNote
 {
@@ -68,20 +69,21 @@ class CreateCreditNote
     /**
      * Action runner
      *
-     * @throws ServiceException
+     * @throws DocumentError
+     * @throws DocumentWarning
      */
     public function run()
     {
         $documentId = MoloniOrder::getLastCreatedDocument($this->order);
 
         if (empty($documentId) || $documentId < 0) {
-            throw new ServiceException('Order does not have any document created');
+            throw new DocumentError('Order does not have any document created');
         }
 
         try {
             $this->originalDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
         } catch (Error $e) {
-            throw new ServiceException('Error fetching document', [
+            throw new DocumentError('Error fetching document', [
                 'request' => $e->getRequest()
             ]);
         }
@@ -91,7 +93,7 @@ class CreateCreditNote
         try {
             $this->originalUnrelatedProducts = $this->unrelatedProducts = Curl::simple('documents/getUnrelatedProducts', ['document_id' => $documentId]);
         } catch (Error $e) {
-            throw new ServiceException('Error fetching unrelated products', [
+            throw new DocumentError('Error fetching unrelated products', [
                 'request' => $e->getRequest()
             ]);
         }
@@ -107,13 +109,13 @@ class CreateCreditNote
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
         } catch (Error $e) {
-            throw new ServiceException('Error creating document', [
+            throw new DocumentError('Error creating document', [
                 'request' => $e->getRequest()
             ]);
         }
 
         if (empty($mutation) || !isset($mutation['document_id'])) {
-            throw new ServiceException('Error creating document', [
+            throw new DocumentError('Error creating document', [
                 'props' => $creditNoteProps,
                 'mutation' => $mutation
             ]);
@@ -124,10 +126,91 @@ class CreateCreditNote
             'refund_id' => $this->refund->get_id(),
             'order_id' => $this->order->get_id(),
             'document_id' => $mutation['document_id'],
-            'document_status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
+            'document_status' => DocumentStatus::DRAFT,
         ];
 
         $this->saveRecord();
+
+        if ($this->shouldCloseDocument()) {
+            $this->closeDocument((int)$mutation['document_id'], $creditNoteProps);
+        }
+    }
+
+    /**
+     * Close credit note
+     *
+     * @throws DocumentWarning
+     */
+    public function closeDocument(int $documentId, array $documentProps)
+    {
+        try {
+            $insertedDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
+        } catch (Error $e) {
+            throw new DocumentWarning('Error fetching created credit note', ['request' => $e->getRequest()]);
+        }
+
+        if (empty($insertedDocument) || !isset($insertedDocument['document_id'])) {
+            throw new DocumentWarning('Error fetching created credit note', ['query' => $insertedDocument]);
+        }
+
+        $refundedTotal = abs($this->refund->get_total());
+
+        if ((float)$insertedDocument['exchange_total_value'] > 0) {
+            $documentTotal = (float)$insertedDocument['exchange_total_value'];
+        } else {
+            $documentTotal = (float)$insertedDocument['net_value'];
+        }
+
+        $diff = abs($refundedTotal - $documentTotal);
+
+        if ($diff > 0.01) {
+            throw new DocumentWarning('Document totals do not match', [
+                'refunded_total' => $refundedTotal,
+                'document_total' => $documentTotal,
+                'diff' => $diff,
+            ]);
+        }
+
+        $closeProps = [
+            'document_id' => $documentId,
+            'status' => DocumentStatus::CLOSED,
+            'send_email' => [],
+            'net_value' => $documentProps['net_value'],
+            'associated_documents' => $documentProps['associated_documents'],
+        ];
+
+        if ($this->shouldSendByEmail()) {
+            $email = $this->order->get_billing_email() ?? '';
+
+            $name = $this->order->get_billing_first_name() ?? '';
+            $name .= ' ';
+            $name .= $this->order->get_billing_last_name() ?? '';
+            $name = trim($name);
+
+            if (empty($name)) {
+                $name = $this->originalDocument['entity_name'] ?? '';
+            }
+
+            if (!empty($email) && !empty($name)) {
+                $closeProps['send_email'][] = [
+                    'email' => $email,
+                    'name' => $name,
+                    'msg' => ''
+                ];
+            }
+        }
+
+        try {
+            $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/update', $closeProps);
+        } catch (Error $e) {
+            throw new DocumentWarning('Error closing credit note', ['request' => $e->getRequest()]);
+        }
+
+        if (empty($mutation) || !isset($mutation['document_id'])) {
+            throw new DocumentWarning('Error closing credit note', ['mutation' => $mutation]);
+        }
+
+        $this->results['status'] = DocumentStatus::CLOSED;
     }
 
     public function saveLog()
@@ -169,32 +252,10 @@ class CreateCreditNote
             'our_reference' => $this->originalDocument['our_reference'],
             'your_reference' => $this->originalDocument['your_reference'],
             'document_set_id' => (int)CREDIT_NOTE_DOCUMENT_SET_ID,
-            'status' => (int)CREDIT_NOTE_DOCUMENT_STATUS,
+            'status' => DocumentStatus::DRAFT,
             'associated_documents' => [],
             'products' => [],
-            'send_email' => [],
         ];
-
-        if ($this->shouldSendByEmail()) {
-            $email = $this->order->get_billing_email() ?? '';
-
-            $name = $this->order->get_billing_first_name() ?? '';
-            $name .= ' ';
-            $name .= $this->order->get_billing_last_name() ?? '';
-            $name = trim($name);
-
-            if (empty($name)) {
-                $name = $this->originalDocument['entity_name'] ?? '';
-            }
-
-            if (!empty($email) && !empty($name)) {
-                $creditNoteProps['send_email'][] = [
-                    'email' => $email,
-                    'name' => $name,
-                    'msg' => ''
-                ];
-            }
-        }
 
         if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
             $refundedTotal /= $this->originalDocument['exchange_rate'];
@@ -214,7 +275,7 @@ class CreateCreditNote
     /**
      * Set products
      *
-     * @throws ServiceException
+     * @throws DocumentError
      */
     private function setProducts(array &$creditNoteProps): void
     {
@@ -232,7 +293,7 @@ class CreateCreditNote
             $wcProduct = $refundedItem->get_product();
 
             if (empty($wcProduct)) {
-                throw new ServiceException('Refunded product does not exist in Wordpress', [
+                throw new DocumentError('Refunded product does not exist in Wordpress', [
                     'name' => $refundedItem->get_name(),
                     'qty' => $refundedQty,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
@@ -242,7 +303,7 @@ class CreateCreditNote
             $matchedDocumentProduct = $this->tryToMatchProduct($wcProduct, $refundedQty);
 
             if (empty($matchedDocumentProduct)) {
-                throw new ServiceException('Refunded product not matched in document unrelated products', [
+                throw new DocumentError('Refunded product not matched in document unrelated products', [
                     'name' => $refundedItem->get_name(),
                     'qty' => $refundedQty,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
@@ -262,7 +323,7 @@ class CreateCreditNote
             }
 
             if ($refundedPrice > $matchedDocumentProduct['price']) {
-                throw new ServiceException('Refunded value is bigger than the document product price', [
+                throw new DocumentError('Refunded value is bigger than the document product price', [
                     'name' => $refundedItem->get_name(),
                     'qty' => $refundedQty,
                     'price' => $refundedPrice,
@@ -292,7 +353,7 @@ class CreateCreditNote
     /**
      * Set shipping
      *
-     * @throws ServiceException
+     * @throws DocumentError
      */
     private function setShipping(array &$creditNoteProps): void
     {
@@ -302,7 +363,7 @@ class CreateCreditNote
             $matchedDocumentShipping = $this->tryToMatchShipping();
 
             if (empty($matchedDocumentShipping)) {
-                throw new ServiceException('Shipping product not found in document', [
+                throw new DocumentError('Shipping product not found in document', [
                     'creditNoteProps' => $creditNoteProps,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
                 ]);
@@ -317,7 +378,7 @@ class CreateCreditNote
             }
 
             if ($refundedShippingValue > $matchedDocumentShipping['price']) {
-                throw new ServiceException('Refunded value is bigger than the document shipping price', [
+                throw new DocumentError('Refunded value is bigger than the document shipping price', [
                     'price' => $refundedShippingValue,
                     'matchedDocumentShipping' => $matchedDocumentShipping,
                 ]);
@@ -353,6 +414,11 @@ class CreateCreditNote
         }
 
         return $this->order->get_id();
+    }
+
+    public function getResults(): array
+    {
+        return $this->results;
     }
 
     //          Privates          //
@@ -412,38 +478,43 @@ class CreateCreditNote
     /**
      * Check if document can be used to associate to credit note
      *
-     * @throws ServiceException
+     * @throws DocumentError
      */
     private function validateDocument()
     {
         if (empty($this->originalDocument) || !isset($this->originalDocument['document_id'])) {
-            throw new ServiceException('Document not found in current Moloni company');
+            throw new DocumentError('Document not found in current Moloni company');
         }
 
         if ((int)$this->originalDocument['status'] !== DocumentStatus::CLOSED) {
-            throw new ServiceException('Document is not closed');
+            throw new DocumentError('Document is not closed');
         }
 
         $this->originalDocumentType = DocumentTypes::getDocumentTypeById((int)($this->originalDocument['document_type']['document_type_id'] ?? 0));
 
         if (empty($this->originalDocumentType) || !DocumentTypes::canConvertToCreditNote($this->originalDocumentType)) {
-            throw new ServiceException('Target document cannot be converted do credit note');
+            throw new DocumentError('Target document cannot be converted do credit note');
         }
     }
 
     /**
      * Check if unrelated products are valid
      *
-     * @throws ServiceException
+     * @throws DocumentError
      */
     private function validateUnrelatedProducts()
     {
         if (empty($this->unrelatedProducts)) {
-            throw new ServiceException('Document does not have unrelated products left');
+            throw new DocumentError('Document does not have unrelated products left');
         }
     }
 
     //          Auxiliary          //
+
+    private function shouldCloseDocument(): bool
+    {
+        return defined('CREDIT_NOTE_DOCUMENT_STATUS') && (int)CREDIT_NOTE_DOCUMENT_STATUS === DocumentStatus::CLOSED;
+    }
 
     private function shouldSendByEmail(): bool
     {
