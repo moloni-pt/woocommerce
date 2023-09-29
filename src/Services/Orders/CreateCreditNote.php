@@ -253,6 +253,10 @@ class CreateCreditNote
                 $refundedPrice /= $this->originalDocument['exchange_rate'];
             }
 
+            if ($matchedDocumentProduct['discount'] > 0) {
+                $refundedPrice = $refundedPrice / ($matchedDocumentProduct['discount'] / 100);
+            }
+
             if (abs($refundedPrice - $matchedDocumentProduct['price']) < 0.02) {
                 $refundedPrice = $matchedDocumentProduct['price'];
             }
@@ -278,6 +282,7 @@ class CreateCreditNote
                 'has_stock' => (int)$this->restockItems,
                 'qty' => $refundedQty,
                 'price' => $refundedPrice,
+                'discount' => $matchedDocumentProduct['discount'],
             ];
 
             $creditNoteProps['products'][] = $newProduct;
