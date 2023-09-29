@@ -210,7 +210,7 @@ class CreateCreditNote
             throw new DocumentWarning('Error closing credit note', ['mutation' => $mutation]);
         }
 
-        $this->results['status'] = DocumentStatus::CLOSED;
+        $this->results['document_status'] = DocumentStatus::CLOSED;
     }
 
     public function saveLog()
@@ -307,6 +307,14 @@ class CreateCreditNote
                     'name' => $refundedItem->get_name(),
                     'qty' => $refundedQty,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
+                ]);
+            }
+
+            if ($matchedDocumentProduct['available_amount'] < $refundedQty) {
+                throw new DocumentError('Original document does not have enough quantity', [
+                    'name' => $refundedItem->get_name(),
+                    'qty' => $refundedQty,
+                    'matchedDocumentProduct' => $matchedDocumentProduct,
                 ]);
             }
 
