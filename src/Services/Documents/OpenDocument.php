@@ -4,9 +4,12 @@ namespace Moloni\Services\Documents;
 
 use Moloni\Curl;
 use Moloni\Enums\DocumentTypes;
+use Moloni\Traits\DocumentTypeTrait;
 
 class OpenDocument
 {
+    use DocumentTypeTrait;
+
     private $documentId;
 
     public function __construct($documentId)
@@ -37,39 +40,16 @@ class OpenDocument
             $slug = $company['slug'];
 
             $location = 'Location: https://moloni.pt/';
-            $location .= $slug . '/' . $this->getDocumentTypeName($invoice['document_type']['saft_code']);
+            $location .= $slug . '/' . $this->getDocumentTypeSlug($invoice['document_type']['saft_code']);
             $location .= '/showDetail/' . $invoice['document_id'];
         }
 
         header($location);
     }
 
-    private function getDocumentTypeName($saftcode = ''): string
+    protected function getDocumentTypeSlug(string $saftcode = ''): string
     {
-        switch ($saftcode) {
-            case 'FT' :
-            default:
-                $typeName = DocumentTypes::INVOICES;
-                break;
-            case 'FR' :
-                $typeName = DocumentTypes::INVOICE_RECEIPTS;
-                break;
-            case 'FS' :
-                $typeName = DocumentTypes::SIMPLIFIED_INVOICES;
-                break;
-            case 'PF' :
-                $typeName = DocumentTypes::PRO_FORMA_INVOICES;
-                break;
-            case 'GT' :
-                $typeName = DocumentTypes::BILLS_OF_LADING;
-                break;
-            case 'NEF' :
-                $typeName = DocumentTypes::PURCHASE_ORDER;
-                break;
-            case 'OR':
-                $typeName = DocumentTypes::ESTIMATES;
-                break;
-        }
+        $typeName = $this->parseTypeNameFromSaftCode($saftcode);
 
         return DocumentTypes::getDocumentTypeSlug($typeName);
     }

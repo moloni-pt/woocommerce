@@ -99,7 +99,9 @@ class Product
     public function create()
     {
         $this->setProduct();
+
         $props = $this->mapPropsToValues();
+        $props = apply_filters('moloni_before_moloni_product_insert', $props);
 
         $insert = Curl::simple('products/insert', $props);
 
@@ -130,7 +132,9 @@ class Product
     public function update(): Product
     {
         $this->setProduct();
+
         $props = $this->mapPropsToValues();
+        $props = apply_filters('moloni_before_moloni_product_update', $props);
 
         if (!$this->needsToUpdateProduct($props)) {
             return $this;
