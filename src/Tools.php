@@ -2,6 +2,9 @@
 
 namespace Moloni;
 
+use Moloni\Enums\SaftType;
+use Moloni\Enums\TaxType;
+
 /**
  * Multiple tools for handling recurring tasks
  * Class Tools
@@ -101,16 +104,25 @@ class Tools
 
         if (!empty($taxesList) && is_array($taxesList)) {
             foreach ($taxesList as $tax) {
+                if ($tax['fiscal_zone'] !== $countryCode) {
+                    continue;
+                }
 
-                if ($tax['fiscal_zone'] === $countryCode) {
-                    if ((int)$tax['active_by_default'] === 1) {
-                        $defaultTax = $tax;
-                    }
+                if ((int)$tax['active_by_default'] === 1) {
+                    $defaultTax = $tax;
+                }
 
-                    if ((float)$tax['value'] === (float)$taxRate) {
-                        $moloniTax = $tax;
-                        break;
-                    }
+                if ((int)$tax['saft_type'] !== SaftType::IVA) {
+                    continue;
+                }
+
+                if ((int)$tax['type'] !== TaxType::PERCENTAGE) {
+                    continue;
+                }
+
+                if ((float)$tax['value'] === (float)$taxRate) {
+                    $moloniTax = $tax;
+                    break;
                 }
             }
         }
@@ -122,7 +134,7 @@ class Tools
                 $moloniTax = $newTax;
 
                 //The value here will always be this, we save a request to get the inserted tax
-                $moloniTax['saft_type'] = "1";
+                $moloniTax['saft_type'] = SaftType::IVA;
             }
         }
 
@@ -149,8 +161,8 @@ class Tools
 
         $values['name'] = 'VAT ' . $countryCode;
         $values['value'] = $taxRate;
-        $values['type'] = "1";
-        $values['saft_type'] = "1";
+        $values['type'] = TaxType::PERCENTAGE;
+        $values['saft_type'] = SaftType::IVA;
         $values['vat_type'] = "OUT";
         $values['stamp_tax'] = "0";
         $values['exemption_reason'] = EXEMPTION_REASON;
