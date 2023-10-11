@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.3.0
+Stable tag: 4.4.0
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.4.0 =
+* FEATURE: Adicionada nova razão de isenção para envios para zonas extra comunitárias
+* FIX: Correção de um erro na pesquisa de impostos
+
 = 4.3.0 =
 * FEATURE: Adicionado botão para descarregar documentos na página da encomenda na área de cliente
 * FEATURE: Adicionado filtro moloni_before_moloni_product_insert
