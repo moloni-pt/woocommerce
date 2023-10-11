@@ -11,6 +11,7 @@ class Error extends Exception
 
     /**
      * Throws a new error with a message and a log from the last request made
+     *
      * @param $message
      * @param bool $request
      * @param int $code
@@ -51,7 +52,7 @@ class Error extends Exception
      * Or tries to translate the error from Moloni API
      * @return string
      */
-    public function getDecodedMessage()
+    public function getDecodedMessage(): string
     {
         $errorMessage = '<b>' . $this->getMessage() . '</b>';
 
@@ -70,18 +71,24 @@ class Error extends Exception
 
     /**
      * @param string $message
+     *
      * @return string
      */
-    private function translateMessage($message)
+    private function translateMessage(string $message): string
     {
         switch ($message) {
             case 'Field \'exemption_reason\' is required':
                 $message = __('Um dos artigos não tem uma taxa de IVA associada e como tal, tem que seleccionar uma razão de isenção');
                 break;
-            case "Field 'category_id' must be integer, greater than 0" :
+            case "Field 'category_id' must be integer, greater than 0":
                 $message = __('Verifique por favor se o artigo tem uma categoria associada');
                 break;
+            case "Field 'document_set_wsat_id' must be valid":
+                $message = __('Série de documento não está registada na AT');
+                $message .= ' ';
+                $message .= '(<a href="https://www.moloni.pt/suporte/guia-para-a-comunicacao-de-series" target="_blank">Ver FAQ</a>)';
 
+                break;
         }
 
         return $message;
