@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 use Moloni\Tools;
 use WC_Order_Item_Fee;
 
@@ -71,7 +72,9 @@ class OrderFees
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -101,7 +104,9 @@ class OrderFees
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setProductId()
     {
@@ -111,7 +116,7 @@ class OrderFees
             if ($searchProduct[0]['visibility_id'] === 1) {
                 $this->product_id = $searchProduct[0]['product_id'];
             } else {
-                throw new Error('Produto com referência ' . $this->reference . ' tem de estar ativo.');
+                throw new GenericException('Produto com referência ' . $this->reference . ' tem de estar ativo.');
             }
 
             return $this;
@@ -128,17 +133,21 @@ class OrderFees
             return $this;
         }
 
-        throw new Error(__('Erro ao inserir Taxa da encomenda'));
+        throw new GenericException(__('Erro ao inserir Taxa da encomenda'));
     }
 
     /**
-     * @throws Error
+     * @return OrderFees
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setCategory()
     {
         $categoryName = 'Loja Online';
 
         $categoryObj = new ProductCategory($categoryName);
+
         if (!$categoryObj->loadByName()) {
             $categoryObj->create();
         }
@@ -150,14 +159,15 @@ class OrderFees
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws GenericException
      */
     private function setUnitId()
     {
         if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error(__('Unidade de medida não definida!'));
+            throw new GenericException(__('Unidade de medida não definida!'));
         }
 
         return $this;
@@ -183,7 +193,10 @@ class OrderFees
 
     /**
      * Set the taxes of a product
-     * @throws Error
+     *
+     * @return OrderFees
+     *
+     * @throws APIExeption
      */
     private function setTaxes()
     {
@@ -224,8 +237,10 @@ class OrderFees
 
     /**
      * @param float $taxRate Tax Rate in percentage
+     *
      * @return array
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     private function setTax($taxRate)
     {

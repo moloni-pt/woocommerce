@@ -2,13 +2,15 @@
 
 namespace Moloni\Controllers;
 
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\DocumentError;
+use Moloni\Exceptions\DocumentWarning;
+use Moloni\Exceptions\GenericException;
 use WC_Order;
 use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
 use Moloni\Curl;
-use Moloni\Error;
 use Moloni\Tools;
-use Moloni\Warning;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
@@ -204,7 +206,9 @@ class Documents
      * @param WC_Order $order
      * @param array $company
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws DocumentError
+     * @throws GenericException
      */
     public function __construct(WC_Order $order, array $company)
     {
@@ -254,7 +258,12 @@ class Documents
     /**
      * Create Moloni document
      *
-     * @throws Error
+     *
+     * @return Documents
+     *
+     * @throws APIExeption
+     * @throws DocumentError
+     * @throws DocumentWarning
      */
     public function createDocument(): Documents
     {
@@ -267,7 +276,7 @@ class Documents
         $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
 
         if (!isset($insertedDocument['document_id'])) {
-            throw new Error(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
+            throw new DocumentError(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
         }
 
         $this->document_id = $insertedDocument['document_id'];
@@ -298,7 +307,8 @@ class Documents
     /**
      * Close Moloni document
      *
-     * @throws Error
+     * @throws DocumentWarning
+     * @throws APIExeption
      */
     public function closeDocument(): void
     {
@@ -313,7 +323,7 @@ class Documents
 
             $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
 
-            throw new Warning(
+            throw new DocumentWarning(
                 __('O documento foi inserido mas os totais não correspondem.') .
                 '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
             );
@@ -358,7 +368,9 @@ class Documents
      *
      * @return void
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws DocumentError
+     * @throws GenericException
      */
     private function init(): void
     {
@@ -618,11 +630,11 @@ class Documents
     /**
      * Set document type
      *
-     * @param $documentType
+     * @param null $documentType
      *
      * @return $this
      *
-     * @throws Error
+     * @throws DocumentError
      */
     public function setDocumentType($documentType = null): Documents
     {
@@ -641,7 +653,7 @@ class Documents
         }
 
         if (empty($this->documentType)) {
-            throw new Error(__('Tipo de documento não definido nas opções'));
+            throw new DocumentError(__('Tipo de documento não definido nas opções'));
         }
 
         $this->documentTypeName = DocumentTypes::getDocumentTypeName($this->documentType);
@@ -738,7 +750,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setCustomer(): Documents
     {
@@ -752,12 +765,12 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws DocumentError
      */
     public function setDocumentSetId(): Documents
     {
         if (!defined('DOCUMENT_SET_ID') || (int)DOCUMENT_SET_ID === 0) {
-            throw new Error(__('Série de documentos em falta. <br>Por favor selecione uma série nas opções do plugin', false));
+            throw new DocumentError(__('Série de documentos em falta. <br>Por favor selecione uma série nas opções do plugin', false));
         }
 
         $this->document_set_id = DOCUMENT_SET_ID;
@@ -803,7 +816,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setProducts(): Documents
     {
@@ -832,7 +846,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setShipping(): Documents
     {
@@ -853,7 +868,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setFees(): Documents
     {
@@ -875,7 +891,7 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
      */
     public function setExchangeRate(): Documents
     {
@@ -904,7 +920,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setPaymentMethod(): Documents
     {
@@ -962,7 +979,8 @@ class Documents
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function setDelivery(): Documents
     {

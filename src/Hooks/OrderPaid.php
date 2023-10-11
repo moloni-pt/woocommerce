@@ -3,13 +3,12 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Log;
-use Moloni\Error;
+use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Exceptions\DocumentWarning as DocumentWarningException;
 use Moloni\Start;
 use Moloni\Notice;
 use Moloni\Plugin;
 use Moloni\Storage;
-use Moloni\Warning;
 use Moloni\Services\Mails\DocumentFailed;
 use Moloni\Services\Mails\DocumentWarning;
 use Moloni\Services\Orders\CreateMoloniDocument;
@@ -49,7 +48,7 @@ class OrderPaid
                             $service->run();
 
                             $this->throwMessages($service);
-                        } catch (Warning $e) {
+                        } catch (DocumentWarningException $e) {
 
                             $this->sendWarningEmail($orderName);
 
@@ -58,10 +57,10 @@ class OrderPaid
                                 str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
                                 [
                                     'message' => $e->getMessage(),
-                                    'request' => $e->getRequest()
+                                    'request' => $e->getData()
                                 ]
                             );
-                        } catch (Error $e) {
+                        } catch (MoloniException $e) {
                             $this->sendErrorEmail($orderName);
 
                             Notice::addmessagecustom(htmlentities($e->getError()));
@@ -69,7 +68,7 @@ class OrderPaid
                                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                                 [
                                     'message' => $e->getMessage(),
-                                    'request' => $e->getRequest()
+                                    'request' => $e->getData()
                                 ]
                             );
                         }
@@ -106,7 +105,7 @@ class OrderPaid
                     $service->run();
 
                     $this->throwMessages($service);
-                } catch (Warning $e) {
+                } catch (DocumentWarningException $e) {
                     $this->sendWarningEmail($service->getOrderNumber());
 
                     Notice::addmessagecustom(htmlentities($e->getError()));
@@ -114,10 +113,10 @@ class OrderPaid
                         str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
                         [
                             'message' => $e->getMessage(),
-                            'request' => $e->getRequest()
+                            'request' => $e->getData()
                         ]
                     );
-                } catch (Error $e) {
+                } catch (MoloniException $e) {
                     $this->sendErrorEmail($service->getOrderNumber());
 
                     Notice::addmessagecustom(htmlentities($e->getError()));
@@ -125,7 +124,7 @@ class OrderPaid
                         str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                         [
                             'message' => $e->getMessage(),
-                            'request' => $e->getRequest()
+                            'request' => $e->getData()
                         ]
                     );
                 }

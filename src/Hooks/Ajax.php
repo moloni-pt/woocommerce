@@ -3,13 +3,13 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Error;
+use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Exceptions\DocumentWarning;
 use Moloni\Plugin;
 use Moloni\Services\Orders\CreateMoloniDocument;
 use Moloni\Services\Orders\DiscardOrder;
 use Moloni\Start;
 use Moloni\Storage;
-use Moloni\Warning;
 
 class Ajax
 {
@@ -39,13 +39,13 @@ class Ajax
                 'valid' => 1,
                 'message' => sprintf(__('Documento %s inserido com sucesso'), $service->getOrderNumber())
             ];
-        } catch (Warning $e) {
+        } catch (DocumentWarning $e) {
             Storage::$LOGGER->alert(
                 str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
                 [
                     'tag' => 'ajax:document:create:warning',
                     'message' => $e->getMessage(),
-                    'request' => $e->getRequest()
+                    'request' => $e->getData()
                 ]
             );
 
@@ -54,13 +54,13 @@ class Ajax
                 'message' => $e->getMessage(),
                 'description' => $e->getError()
             ];
-        } catch (Error $e) {
+        } catch (MoloniException $e) {
             Storage::$LOGGER->error(
                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                 [
                     'tag' => 'ajax:document:create:error',
                     'message' => $e->getMessage(),
-                    'request' => $e->getRequest()
+                    'request' => $e->getData()
                 ]
             );
 

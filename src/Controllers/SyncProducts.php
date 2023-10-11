@@ -3,10 +3,8 @@
 namespace Moloni\Controllers;
 
 use Exception;
-use WC_Product;
-use Moloni\Log;
+use Moloni\Exceptions\APIExeption;
 use Moloni\Curl;
-use Moloni\Error;
 use Moloni\Storage;
 
 class SyncProducts
@@ -192,13 +190,13 @@ class SyncProducts
 
             try {
                 $fetched = Curl::simple('products/getModifiedSince', $values);
-            } catch (Error $e) {
+            } catch (APIExeption $e) {
                 $fetched = [];
 
                 Storage::$LOGGER->error(__('Atenção, erro ao obter todos os artigos via API'), [
                     'action' => 'stock:sync:service',
                     'message' => $e->getMessage(),
-                    'exception' => $e->getRequest(),
+                    'exception' => $e->getData(),
                 ]);
             }
 

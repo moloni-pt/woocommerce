@@ -16,7 +16,8 @@ namespace Moloni\Controllers;
 
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 
 class Payment
 {
@@ -35,15 +36,18 @@ class Payment
 
     /**
      * This method SHOULD be replaced by a productCategories/getBySearch
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public function loadByName()
     {
         $paymentMethods = Curl::simple('paymentMethods/getAll', []);
+
         if (!empty($paymentMethods) && is_array($paymentMethods)) {
             foreach ($paymentMethods as $paymentMethod) {
                 if ($paymentMethod['name'] === $this->name) {
                     $this->payment_method_id = $paymentMethod['payment_method_id'];
+
                     return $this;
                 }
             }
@@ -55,7 +59,11 @@ class Payment
 
     /**
      * Create a Payment Methods based on the name
-     * @throws Error
+     *
+     * @return Payment
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -66,7 +74,7 @@ class Payment
             return $this;
         }
 
-        throw new Error(__('Erro ao inserir a método de pagamento') . $this->name);
+        throw new GenericException(__('Erro ao inserir a método de pagamento') . $this->name);
     }
 
 

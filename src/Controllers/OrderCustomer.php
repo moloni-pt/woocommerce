@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 use Moloni\Tools;
 use WC_Order;
 
@@ -46,8 +47,10 @@ class OrderCustomer
     }
 
     /**
-     * @return bool|int
-     * @throws Error
+     * @return mixed
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -73,6 +76,7 @@ class OrderCustomer
         $values['field_notes'] = '';
 
         $customerExists = $this->searchForCustomer();
+
         if (!$customerExists) {
             $values['vat'] = $this->vat;
             $values['number'] = self::getCustomerNextNumber();
@@ -85,7 +89,7 @@ class OrderCustomer
         if (isset($result['customer_id'])) {
             $this->customer_id = $result['customer_id'];
         } else {
-            throw new Error(__('Atenção, houve um erro ao inserir o cliente.'));
+            throw new GenericException(__('Atenção, houve um erro ao inserir o cliente.'));
         }
 
         return $this->customer_id;
@@ -205,12 +209,13 @@ class OrderCustomer
 
     /**
      * Get the customer next available number for incremental inserts
-     * @return int
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public static function getCustomerNextNumber()
     {
         $results = Curl::simple('customers/getNextNumber', []);
+
         if (!empty($results['number'])) {
             return ($results['number']);
         }
@@ -220,8 +225,8 @@ class OrderCustomer
 
     /**
      * Get the country_id based on a ISO value
-     * @return int
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public function getCustomerCountryId()
     {
@@ -242,26 +247,32 @@ class OrderCustomer
 
     /**
      * Search for a customer based on $this->vat or $this->email
+     *
      * @param string|bool $forField
+     *
      * @return bool
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public function searchForCustomer($forField = false)
     {
         $result = false;
         $search = [];
         $search['exact'] = 1;
+
         if ($forField && in_array($forField, ['vat', 'email'])) {
             //@todo not important for this plugin
         } else if ($this->vat !== '999999990') {
             $search['vat'] = $this->vat;
             $searchResult = Curl::simple('customers/getByVat', $search);
+
             if (isset($searchResult[0]['customer_id'])) {
                 $result = $searchResult[0];
             }
         } else if (!empty($this->email)) {
             $search['email'] = $this->email;
             $searchResult = Curl::simple('customers/getByEmail', $search);
+
             if (isset($searchResult[0]['customer_id'])) {
                 $result = $searchResult[0];
             }

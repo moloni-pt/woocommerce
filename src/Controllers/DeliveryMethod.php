@@ -16,7 +16,8 @@ namespace Moloni\Controllers;
 
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 
 class DeliveryMethod
 {
@@ -34,15 +35,17 @@ class DeliveryMethod
     }
 
     /**
-     * @throws Error
+     * @throws APIExeption
      */
     public function loadByName()
     {
         $deliveryMethods = Curl::simple('deliveryMethods/getAll', []);
+
         if (!empty($deliveryMethods) && is_array($deliveryMethods)) {
             foreach ($deliveryMethods as $deliveryMethod) {
                 if ($deliveryMethod['name'] === $this->name) {
                     $this->delivery_method_id = $deliveryMethod['delivery_method_id'];
+
                     return $this;
                 }
             }
@@ -54,26 +57,32 @@ class DeliveryMethod
 
     /**
      * Create a Payment Methods based on the name
-     * @throws Error
+     *
+     * @return DeliveryMethod
+     *
+     * @throws GenericException
+     * @throws APIExeption
      */
-    public function create()
+    public function create(): DeliveryMethod
     {
         $insert = Curl::simple('deliveryMethods/insert', $this->mapPropsToValues());
 
         if (isset($insert['delivery_method_id'])) {
             $this->delivery_method_id = $insert['delivery_method_id'];
+
             return $this;
         }
 
-        throw new Error(__('Erro ao inserir a método de transporte') . $this->name);
+        throw new GenericException(__('Erro ao inserir a método de transporte') . $this->name);
     }
 
 
     /**
      * Map this object properties to an array to insert/update a moloni Payment Value
+     *
      * @return array
      */
-    private function mapPropsToValues()
+    private function mapPropsToValues(): array
     {
         $values = [];
 
