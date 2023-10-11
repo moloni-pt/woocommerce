@@ -5,17 +5,24 @@ if (!defined('ABSPATH')) {
 ?>
 
 <?php
+
 use Moloni\Curl;
 use Moloni\Model;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
+use Moloni\Tools;
 
 try {
     $company = Curl::simple('companies/getOne', []);
     $warehouses = Curl::simple('warehouses/getAll', []);
     $countries = Curl::simple('countries/getAll', []);
     $documentSets = Curl::simple('documentSets/getAll', []);
+    $exemptionReasons = Curl::simple('taxExemptions/getAll', []);
+
+    if (!is_array($exemptionReasons)) {
+        $exemptionReasons = [];
+    }
 } catch (\Moloni\Error $e) {
     $e->showError();
     return;
@@ -26,8 +33,10 @@ try {
     <input type='hidden' value='save' name='action'>
     <div>
         <!-- Documento -->
-        <h2 class="title"><?= __('Documentos') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Documentos') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
 
             <!-- Slug da empresa -->
@@ -155,34 +164,6 @@ try {
                 </td>
             </tr>
 
-            <!-- Criação automática de documentos -->
-            <tr>
-                <th>
-                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
-                </th>
-                <td>
-                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
-                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
-                    </select>
-                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
-                </td>
-            </tr>
-
-            <!-- Estado das encomendas -->
-            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
-                <th>
-                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
-                </th>
-                <td>
-                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
-                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
-                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
-                    </select>
-                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
-                </td>
-            </tr>
-
             <!-- Informação de envio -->
             <tr>
                 <th>
@@ -259,9 +240,182 @@ try {
             </tbody>
         </table>
 
+        <!-- Documentos - Isenções -->
+        <h2 class="title">
+            <?= __('Documentos - Isenções') ?>
+        </h2>
+
+        <div class="subtitle">
+            <?= __('Vendas nacionais e intra comunitárias') ?>
+            <?= __('(dentro da união europeia)') ?>
+            <a style="cursor: help;"
+               title="<?= __('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
+        </div>
+        <table class="form-table mb-4">
+            <tbody>
+            <tr>
+                <th>
+                    <label for="exemption_reason">
+                        <?= __('Artigos') ?>
+                    </label>
+                </th>
+                <td>
+                    <select id="exemption_reason" name='opt[exemption_reason]' class='inputOut'>
+                        <?php
+                        $exemptionReasonProduct = '';
+
+                        if (defined('EXEMPTION_REASON')) {
+                            $exemptionReasonProduct = EXEMPTION_REASON;
+                        }
+                        ?>
+
+                        <option value='' <?= $exemptionReasonProduct === '' ? 'selected' : '' ?>>
+                            <?= __('Nenhuma') ?>
+                        </option>
+
+                        <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <option
+                                    title="<?= $exemptionReason['description'] ?>"
+                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonProduct === $exemptionReason['code'] ? 'selected' : '' ?>
+                            >
+                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Será usada se os artigos não tiverem uma taxa de IVA') ?>
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="exemption_reason_shipping">
+                        <?= __('Portes') ?>
+                    </label>
+                </th>
+                <td>
+                    <select id="exemption_reason_shipping" name='opt[exemption_reason_shipping]' class='inputOut'>
+                        <?php
+                        $exemptionReasonShipping = '';
+
+                        if (defined('EXEMPTION_REASON_SHIPPING')) {
+                            $exemptionReasonShipping = EXEMPTION_REASON_SHIPPING;
+                        }
+                        ?>
+
+                        <option value='' <?= $exemptionReasonShipping === '' ? 'selected' : '' ?>>
+                            <?= __('Nenhuma') ?>
+                        </option>
+
+                        <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <option
+                                    title="<?= $exemptionReason['description'] ?>"
+                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonShipping === $exemptionReason['code'] ? 'selected' : '' ?>
+                            >
+                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Será usada se os portes não tiverem uma taxa de IVA') ?>
+                    </p>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="subtitle">
+            <?= __('Vendas extra comunitárias') ?>
+            <?= __('(fora da união europeia)') ?>
+            <a style="cursor: help;"
+               title="<?= __('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
+        </div>
+        <table class="form-table mb-4">
+            <tbody>
+
+            <tr>
+                <th>
+                    <label for="exemption_reason_extra_community">
+                        <?= __('Artigos') ?>
+                    </label>
+                </th>
+                <td>
+                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]'
+                            class='inputOut'>
+                        <?php
+                        $exemptionReasonExtraCommunity = '';
+
+                        if (defined('EXEMPTION_REASON_EXTRA_COMMUNITY')) {
+                            $exemptionReasonExtraCommunity = EXEMPTION_REASON_EXTRA_COMMUNITY;
+                        }
+                        ?>
+
+                        <option value='' <?= $exemptionReasonExtraCommunity === '' ? 'selected' : '' ?>>
+                            <?= __('Nenhuma') ?>
+                        </option>
+
+                        <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <option
+                                    title="<?= $exemptionReason['description'] ?>"
+                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                            >
+                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Será usada se os artigos não tiverem uma taxa de IVA') ?>
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label for="exemption_reason_shipping_extra_community">
+                        <?= __('Portes') ?>
+                    </label>
+                </th>
+                <td>
+                    <select id="exemption_reason_shipping_extra_community"
+                            name='opt[exemption_reason_shipping_extra_community]'
+                            class='inputOut'>
+                        <?php
+                        $exemptionReasonShippingExtraCommunity = '';
+
+                        if (defined('EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY')) {
+                            $exemptionReasonShippingExtraCommunity = EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY;
+                        }
+                        ?>
+
+                        <option value='' <?= $exemptionReasonShippingExtraCommunity === '' ? 'selected' : '' ?>>
+                            <?= __('Nenhuma') ?>
+                        </option>
+
+                        <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <option
+                                    title="<?= $exemptionReason['description'] ?>"
+                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonShippingExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                            >
+                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class='description'>
+                        <?= __('Será usada se os portes não tiverem uma taxa de IVA') ?>
+                    </p>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
         <!-- Nota de crédito -->
-        <h2 class="title"><?= __('Nota de crédito') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Nota de crédito') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
 
             <!-- Criar documento de crédito -->
@@ -367,8 +521,10 @@ try {
         </table>
 
         <!-- Artigos -->
-        <h2 class="title"><?= __('Artigos') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Artigos') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
 
             <?php if (is_array($warehouses) && !empty($warehouses)): ?>
@@ -411,64 +567,6 @@ try {
 
             <tr>
                 <th>
-                    <label for="exemption_reason"><?= __('Razão de isenção') ?></label>
-                </th>
-                <td>
-                    <select id="exemption_reason" name='opt[exemption_reason]' class='inputOut'>
-                        <option value='' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
-                        <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
-                        <?php if (is_array($exemptionReasons)): ?>
-                            <?php foreach ($exemptionReasons as $exemptionReason) : ?>
-                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON') && EXEMPTION_REASON === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </select>
-                    <p class='description'><?= __('Será usada se os artigos não tiverem uma taxa de IVA') ?></p>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
-                    <label for="exemption_reason_shipping"><?= __('Razão de isenção de portes') ?></label>
-                </th>
-                <td>
-                    <select id="exemption_reason_shipping" name='opt[exemption_reason_shipping]' class='inputOut'>
-                        <option value='' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
-                        <?php if (is_array($exemptionReasons)): ?>
-                            <?php foreach ($exemptionReasons as $exemptionReason) : ?>
-                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_SHIPPING') && EXEMPTION_REASON_SHIPPING === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </select>
-                    <p class='description'><?= __('Será usada se os portes não tiverem uma taxa de IVA') ?></p>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
-                    <label for="exemption_reason_extra_community"><?= __('Razão de isenção de vendas extra-comunitárias') ?></label>
-                </th>
-                <td>
-                    <select id="exemption_reason_extra_community" name='opt[exemption_reason_extra_community]'
-                            class='inputOut'>
-                        <option value='' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === '' ? 'selected' : '' ?>><?= __('Nenhuma') ?></option>
-                        <?php $exemptionReasons = Curl::simple('taxExemptions/getAll', []); ?>
-                        <?php if (is_array($exemptionReasons)): ?>
-                            <?php foreach ($exemptionReasons as $exemptionReason) : ?>
-                                <option value='<?= $exemptionReason['code'] ?>' <?= defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY === $exemptionReason['code'] ? 'selected' : '' ?>><?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </select>
-                    <p class='description'>
-                        <?= __('Razão de isenção "especial" usada nos artigos que não tiverem uma taxa de IVA e, na encomenda, o país de faturação do cliente <b>não</b> pertença à União Europeia') ?>
-                        <a style="cursor: help;"
-                           title="<?= __('Países da União Europeia') . ': ' . implode(", ", \Moloni\Tools::$europeanCountryCodes) ?>">(?)</a>
-                    </p>
-                </td>
-            </tr>
-
-            <tr>
-                <th>
                     <label for="use_moloni_product_details"><?= __('Usar dados do Moloni ') ?></label>
                 </th>
                 <td>
@@ -501,8 +599,10 @@ try {
         </table>
 
         <!-- Clientes -->
-        <h2 class="title"><?= __('Clientes') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Clientes') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
             <tr>
                 <th>
@@ -567,8 +667,10 @@ try {
         </table>
 
         <!-- Hooks -->
-        <h2 class="title"><?= __('Hooks') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Hooks') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
 
             <!-- Listagem de encomendas -->
@@ -610,9 +712,39 @@ try {
         </table>
 
         <!-- Automatização -->
-        <h2 class="title"><?= __('Automatização') ?></h2>
-        <table class="form-table">
+        <h2 class="title">
+            <?= __('Automatização') ?>
+        </h2>
+        <table class="form-table mb-4">
             <tbody>
+
+            <!-- Criação automática de documentos -->
+            <tr>
+                <th>
+                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
+                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
+                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                    </select>
+                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
+                </td>
+            </tr>
+
+            <!-- Estado das encomendas -->
+            <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
+                <th>
+                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
+                </th>
+                <td>
+                    <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
+                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
+                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
+                    </select>
+                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
+                </td>
+            </tr>
 
             <tr>
                 <th>

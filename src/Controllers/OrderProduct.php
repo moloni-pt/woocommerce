@@ -295,15 +295,22 @@ class OrderProduct
         }
 
         if (!$this->hasIVA) {
-            $billingCountryCode = $this->wc_order->get_billing_country();
+            $exemptionReason = '';
 
-            if (defined('EXEMPTION_REASON_EXTRA_COMMUNITY') && EXEMPTION_REASON_EXTRA_COMMUNITY !== '' &&
-                !empty($billingCountryCode) && !isset(Tools::$europeanCountryCodes[$billingCountryCode])) {
-                $this->exemption_reason = EXEMPTION_REASON_EXTRA_COMMUNITY;
-            } elseif (defined('EXEMPTION_REASON') && EXEMPTION_REASON !== '') {
-                $this->exemption_reason = EXEMPTION_REASON;
+            if (isset(Tools::$europeanCountryCodes[$this->fiscalZone])) {
+                $exemptionReason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
             } else {
+                if (defined('EXEMPTION_REASON_EXTRA_COMMUNITY')) {
+                    $exemptionReason = EXEMPTION_REASON_EXTRA_COMMUNITY;
+                } elseif (defined('EXEMPTION_REASON')) {
+                    $exemptionReason = EXEMPTION_REASON;
+                }
+            }
+
+            if (empty($exemptionReason)) {
                 $this->taxes[] = $this->moloniProduct->getDefaultTax();
+            } else {
+                $this->exemption_reason = $exemptionReason;
             }
         }
 

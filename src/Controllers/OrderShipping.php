@@ -228,7 +228,19 @@ class OrderShipping
         }
 
         if (!$this->hasIVA) {
-            $this->exemption_reason = defined('EXEMPTION_REASON_SHIPPING') ? EXEMPTION_REASON_SHIPPING : '';
+            $exemptionReason = '';
+
+            if (isset(Tools::$europeanCountryCodes[$this->fiscalZone])) {
+                $exemptionReason = defined('EXEMPTION_REASON_SHIPPING') ? EXEMPTION_REASON_SHIPPING : '';
+            } else {
+                if (defined('EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY')) {
+                    $exemptionReason = EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY;
+                } elseif (defined('EXEMPTION_REASON_SHIPPING')) {
+                    $exemptionReason = EXEMPTION_REASON_SHIPPING;
+                }
+            }
+
+            $this->exemption_reason = $exemptionReason;
         }
 
         return $this;

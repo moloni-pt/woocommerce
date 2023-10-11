@@ -296,3 +296,7 @@ li#toplevel_page_moloni img {
 .ml-0 {
     margin: 0 !important;
 }
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
