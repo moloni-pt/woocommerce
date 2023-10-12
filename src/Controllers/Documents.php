@@ -314,7 +314,6 @@ class Documents
      * Close Moloni document
      *
      * @throws DocumentWarning
-     * @throws DocumentError
      */
     public function closeDocument(): void
     {
@@ -360,7 +359,7 @@ class Documents
         try {
             Curl::simple($this->documentType . '/update', $closeDocument);
         } catch (APIExeption $e) {
-            throw new DocumentError($e->getMessage(), $e->getData());
+            throw new DocumentWarning($e->getMessage(), $e->getData());
         }
 
         apply_filters('moloni_after_close_document', $this);
