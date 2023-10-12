@@ -4,6 +4,7 @@ namespace Moloni\Hooks;
 
 use Exception;
 use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Plugin;
 use Moloni\Services\Orders\CreateMoloniDocument;
@@ -54,7 +55,7 @@ class Ajax
                 'message' => $e->getMessage(),
                 'description' => $e->getError()
             ];
-        } catch (MoloniException $e) {
+        } catch (DocumentError $e) {
             Storage::$LOGGER->error(
                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                 [

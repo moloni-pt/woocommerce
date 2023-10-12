@@ -136,10 +136,8 @@ class Plugin
     /**
      * Create a single document from order
      *
-     * @throws APIExeption
      * @throws DocumentError
      * @throws DocumentWarning
-     * @throws GenericException
      */
     private function createDocument(): void
     {
@@ -158,7 +156,7 @@ class Plugin
             );
 
             throw $e;
-        } catch (DocumentError|APIExeption|GenericException $e) {
+        } catch (DocumentError $e) {
             Storage::$LOGGER->error(
                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                 [

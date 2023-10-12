@@ -206,9 +206,7 @@ class Documents
      * @param WC_Order $order
      * @param array $company
      *
-     * @throws APIExeption
      * @throws DocumentError
-     * @throws GenericException
      */
     public function __construct(WC_Order $order, array $company)
     {
@@ -261,7 +259,6 @@ class Documents
      *
      * @return Documents
      *
-     * @throws APIExeption
      * @throws DocumentError
      * @throws DocumentWarning
      */
@@ -273,7 +270,11 @@ class Documents
             return $this;
         }
 
-        $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
+        try {
+            $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
+        } catch (APIExeption $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
+        }
 
         if (!isset($insertedDocument['document_id'])) {
             throw new DocumentError(sprintf(__('Atenção, houve um erro ao inserir o documento %s'), $this->order->get_order_number()));
@@ -283,7 +284,12 @@ class Documents
 
         $this->saveRecord();
 
-        $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
+        try {
+            $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
+        } catch (APIExeption $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
+        }
+
         $this->documentTotal = (float)$this->document['net_value'];
         $this->documentExchageTotal = (float)$this->document['exchange_total_value'] > 0 ? (float)$this->document['exchange_total_value'] : $this->documentTotal;
 
@@ -308,7 +314,7 @@ class Documents
      * Close Moloni document
      *
      * @throws DocumentWarning
-     * @throws APIExeption
+     * @throws DocumentError
      */
     public function closeDocument(): void
     {
@@ -351,7 +357,11 @@ class Documents
             ];
         }
 
-        Curl::simple($this->documentType . '/update', $closeDocument);
+        try {
+            Curl::simple($this->documentType . '/update', $closeDocument);
+        } catch (APIExeption $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
+        }
 
         apply_filters('moloni_after_close_document', $this);
 
@@ -368,9 +378,7 @@ class Documents
      *
      * @return void
      *
-     * @throws APIExeption
      * @throws DocumentError
-     * @throws GenericException
      */
     private function init(): void
     {
@@ -750,12 +758,15 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setCustomer(): Documents
     {
-        $this->customer_id = (new OrderCustomer($this->order))->create();
+        try {
+            $this->customer_id = (new OrderCustomer($this->order))->create();
+        } catch (APIExeption|GenericException $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
+        }
 
         return $this;
     }
@@ -816,8 +827,7 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setProducts(): Documents
     {
@@ -831,7 +841,12 @@ class Documents
              * @var $orderProduct WC_Order_Item_Product
              */
             $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalZone);
-            $newOrderProduct->create();
+
+            try {
+                $newOrderProduct->create();
+            } catch (APIExeption|GenericException $e) {
+                throw new DocumentError($e->getMessage(), $e->getData());
+            }
 
             if ($newOrderProduct->qty > 0) {
                 $this->products[] = $newOrderProduct->mapPropsToValues();
@@ -846,14 +861,18 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setShipping(): Documents
     {
         if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
             $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalZone);
-            $newOrderShipping->create();
+
+            try {
+                $newOrderShipping->create();
+            } catch (APIExeption|GenericException $e) {
+                throw new DocumentError($e->getMessage(), $e->getData());
+            }
 
             if ($newOrderShipping->getPrice() > 0) {
                 $this->products[] = $newOrderShipping->mapPropsToValues();
@@ -868,8 +887,7 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setFees(): Documents
     {
@@ -879,7 +897,12 @@ class Documents
 
             if ($feePrice > 0) {
                 $newOrderFee = new OrderFees($item, count($this->products), $this->fiscalZone);
-                $this->products[] = $newOrderFee->create()->mapPropsToValues();
+
+                try {
+                    $this->products[] = $newOrderFee->create()->mapPropsToValues();
+                } catch (APIExeption|GenericException $e) {
+                    throw new DocumentError($e->getMessage(), $e->getData());
+                }
             }
         }
 
@@ -891,13 +914,18 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
+     * @throws DocumentError
      */
     public function setExchangeRate(): Documents
     {
         if ($this->company['currency']['iso4217'] !== $this->order->get_currency()) {
-            $this->exchange_currency_id = Tools::getCurrencyIdFromCode($this->order->get_currency());
-            $this->exchange_rate = Tools::getCurrencyExchangeRate($this->company['currency']['currency_id'], $this->exchange_currency_id);
+
+            try {
+                $this->exchange_currency_id = Tools::getCurrencyIdFromCode($this->order->get_currency());
+                $this->exchange_rate = Tools::getCurrencyExchangeRate($this->company['currency']['currency_id'], $this->exchange_currency_id);
+            } catch (APIExeption $e) {
+                throw new DocumentError($e->getMessage(), $e->getData());
+            }
 
             if (!empty($this->products) && is_array($this->products)) {
                 foreach ($this->products as &$product) {
@@ -920,8 +948,7 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setPaymentMethod(): Documents
     {
@@ -930,8 +957,12 @@ class Documents
         if (!empty($paymentMethodName)) {
             $paymentMethod = new Payment($paymentMethodName);
 
-            if (!$paymentMethod->loadByName()) {
-                $paymentMethod->create();
+            try {
+                if (!$paymentMethod->loadByName()) {
+                    $paymentMethod->create();
+                }
+            } catch (APIExeption|GenericException $e) {
+                throw new DocumentError($e->getMessage(), $e->getData());
             }
 
             if ((int)$paymentMethod->payment_method_id > 0) {
@@ -979,8 +1010,7 @@ class Documents
      *
      * @return $this
      *
-     * @throws APIExeption
-     * @throws GenericException
+     * @throws DocumentError
      */
     public function setDelivery(): Documents
     {
@@ -998,8 +1028,12 @@ class Documents
 
         $deliveryMethod = new DeliveryMethod($this->order->get_shipping_method());
 
-        if (!$deliveryMethod->loadByName()) {
-            $deliveryMethod->create();
+        try {
+            if (!$deliveryMethod->loadByName()) {
+                $deliveryMethod->create();
+            }
+        } catch (APIExeption|GenericException $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
         }
 
         $this->delivery_method_id = $deliveryMethod->delivery_method_id > 0 ?
@@ -1027,7 +1061,12 @@ class Documents
 
         $this->delivery_destination_address = $this->order->get_shipping_address_1() . ' ' . $this->order->get_shipping_address_2();
         $this->delivery_destination_city = $this->order->get_shipping_city();
-        $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
+
+        try {
+            $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
+        } catch (APIExeption $e) {
+            throw new DocumentError($e->getMessage(), $e->getData());
+        }
 
         return $this;
     }

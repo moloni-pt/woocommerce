@@ -3,10 +3,8 @@
 namespace Moloni\Services\Orders;
 
 use Moloni\Exceptions\APIExeption;
-use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
-use Moloni\Exceptions\GenericException;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Enums\Boolean;
@@ -46,10 +44,8 @@ class CreateMoloniDocument
     /**
      * Run service
      *
-     * @throws APIExeption
      * @throws DocumentError
      * @throws DocumentWarning
-     * @throws GenericException
      */
     public function run(): void
     {
