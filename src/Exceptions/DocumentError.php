@@ -43,10 +43,10 @@ class DocumentError extends MoloniException
 
         if (isset($this->data['received']) && is_array($this->data['received'])) {
             foreach ($this->data['received'] as $line) {
-                if (isset($line['description'])) {
-                    $errorMessage .= '<br>' . $this->translateError($line['description']);
-                } elseif (isset($line[0]['description'])) {
-                    $errorMessage .= '<br>' . $this->translateError($line[0]['description']);
+                $message = $line['description'] ?? $line[0]['description'] ?? '';
+
+                if (!empty($message)) {
+                    $errorMessage .= '<br>' . $this->translateError($message);
                 }
             }
         }
