@@ -49,7 +49,7 @@ class OrderCustomer
      * @return bool|int
      * @throws Error
      */
-    public function create()
+    public function create($retry = 0)
     {
         $this->vat = $this->getVatNumber();
         $this->email = $this->order->get_billing_email();
@@ -73,20 +73,26 @@ class OrderCustomer
         $values['field_notes'] = '';
 
         $customerExists = $this->searchForCustomer();
+
         if (!$customerExists) {
             $values['vat'] = $this->vat;
             $values['number'] = self::getCustomerNextNumber();
+
             $result = Curl::simple('customers/insert', $values);
         } else {
             $values['customer_id'] = $customerExists['customer_id'];
             $result = Curl::simple('customers/update', $values);
         }
 
-        if (isset($result['customer_id'])) {
-            $this->customer_id = $result['customer_id'];
-        } else {
+        if (!isset($result['customer_id'])) {
+            if ($retry < 3 && !$customerExists && $this->shouldRetryInsert($result)) {
+                return $this->create($retry + 1);
+            }
+
             throw new Error(__('Atenção, houve um erro ao inserir o cliente.'));
         }
+
+        $this->customer_id = $result['customer_id'];
 
         return $this->customer_id;
     }
@@ -268,5 +274,26 @@ class OrderCustomer
         }
 
         return $result;
+    }
+
+    //                 Auxiliary                 //
+
+    private function shouldRetryInsert($result): bool
+    {
+        if (empty($result) || !is_array($result)) {
+            return false;
+        }
+
+        foreach ($result as $error) {
+            if (!isset($error["code"])) {
+                continue;
+            }
+
+            if ($error["code"] === '4 number') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
