@@ -78,10 +78,13 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.4.1
+* FEATURE: Adição de nova mensagem de erros quando as séries não estão registadas
+* FIX: Correção na inserção de clientes
+
 ### 4.4.0
 * FEATURE: Adicionada nova razão de isenção para envios para zonas extra comunitárias
 * FIX: Correção de um erro na pesquisa de impostos
-
 
 ### 4.3.0
 * FEATURE: Adicionado botão para descarregar documentos na página da encomenda na área de cliente
