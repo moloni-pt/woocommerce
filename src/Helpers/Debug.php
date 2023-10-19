@@ -46,8 +46,6 @@ class Debug
             }
         }
 
-        rmdir($dir);
-
         Logs::removeDebugLogs();
     }
 
