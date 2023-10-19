@@ -56,6 +56,18 @@ class Logs
         $wpdb->query($query);
     }
 
+    public static function removeDebugLogs()
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare(
+            "DELETE FROM `" . $wpdb->get_blog_prefix() . "moloni_logs` WHERE log_level = %s",
+            'debug'
+        );
+
+        $wpdb->query($query);
+    }
+
     //           Privates           //
 
     /**

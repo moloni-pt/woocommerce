@@ -2,6 +2,9 @@
 
 namespace Moloni;
 
+use Moloni\Enums\Boolean;
+use Moloni\Helpers\Debug;
+
 /**
  * Class Start
  * This is one of the main classes of the module
@@ -147,6 +150,10 @@ class Start
             $value = sanitize_text_field($value);
 
             Model::setOption($option, $value);
+        }
+
+        if (isset($options['moloni_debug_mode']) && (int)$options['moloni_debug_mode'] === Boolean::NO) {
+            Debug::deleteAllLogs();
         }
     }
 }

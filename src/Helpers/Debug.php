@@ -5,10 +5,11 @@ namespace Moloni\Helpers;
 use Exception;
 use Moloni\Curl;
 use Moloni\Storage;
+use Moloni\Models\Logs;
 
 class Debug
 {
-    public static function saveDebugAPIRequests($message = '')
+    public static function saveAPIRequests($message = '')
     {
         if (empty($message)) {
             return;
@@ -23,6 +24,31 @@ class Debug
         }
 
         Storage::$LOGGER->debug($message, $data);
+    }
+
+    public static function deleteAllLogs()
+    {
+        $dir = MOLONI_DIR . '/logs';
+
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $objects = scandir($dir);
+
+        if (empty($objects)) {
+            return;
+        }
+
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                unlink($dir . "/" . $object);
+            }
+        }
+
+        rmdir($dir);
+
+        Logs::removeDebugLogs();
     }
 
     /**

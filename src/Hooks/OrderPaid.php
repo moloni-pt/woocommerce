@@ -206,6 +206,6 @@ class OrderPaid
             return;
         }
 
-        Debug::saveDebugAPIRequests(str_replace('{0}', $orderName, __('Call stack da encomenda ({0})')));
+        Debug::saveAPIRequests(str_replace('{0}', $orderName, __('Call stack da encomenda ({0})')));
     }
 }
