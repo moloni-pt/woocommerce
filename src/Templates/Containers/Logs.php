@@ -98,7 +98,7 @@ $logs = Logs::getAllAvailable();
 
                                 <?php if (isset($payload['link'])) : ?>
                                     <a type="button"
-                                       download="<?= $log['message'] ?>"
+                                       download="<?= $log['message'] ?>.log"
                                        class="button action"
                                        href="<?= $payload['link'] ?>">
                                         <?= __("Descarregar") ?>
