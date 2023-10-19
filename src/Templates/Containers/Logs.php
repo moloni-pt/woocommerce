@@ -91,11 +91,30 @@ $logs = Logs::getAllAvailable();
                             <?= $log['message'] ?>
                         </td>
                         <td>
-                            <?php $logContext = htmlspecialchars($log['context']) ?>
+                            <?php $showOverlayButton = true ?>
 
-                            <button type="button" class="button action" onclick="Moloni.Logs.openContextDialog(<?= $logContext ?>)">
-                                <?= __("Ver") ?>
-                            </button>
+                            <?php if ($logLevel === LogLevel::DEBUG) : ?>
+                                <?php $payload = json_decode($log['context'], true) ?>
+
+                                <?php if (isset($payload['link'])) : ?>
+                                    <a type="button"
+                                       download="<?= $log['message'] ?>"
+                                       class="button action"
+                                       href="<?= $payload['link'] ?>">
+                                        <?= __("Descarregar") ?>
+                                    </a>
+
+                                    <?php $showOverlayButton = false ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php if ($showOverlayButton) : ?>
+                                <?php $logContext = htmlspecialchars($log['context']) ?>
+
+                                <button type="button" class="button action" onclick="Moloni.Logs.openContextDialog(<?= $logContext ?>)">
+                                    <?= __("Ver") ?>
+                                </button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -3,6 +3,9 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Curl;
+use Moloni\Enums\Boolean;
+use Moloni\Helpers\Debug;
 use Moloni\Log;
 use Moloni\Error;
 use Moloni\Start;
@@ -72,6 +75,8 @@ class OrderPaid
                                     'request' => $e->getRequest()
                                 ]
                             );
+
+                            $this->saveDebugLog($orderName);
                         }
 
                         $this->removeOrderFromDocumentsInProgress($orderId);
@@ -128,6 +133,8 @@ class OrderPaid
                             'request' => $e->getRequest()
                         ]
                     );
+
+                    $this->saveDebugLog($orderName);
                 }
 
                 $this->removeOrderFromDocumentsInProgress($orderId);
@@ -191,5 +198,14 @@ class OrderPaid
 
             add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $html, 'updated');
         }
+    }
+
+    private function saveDebugLog($orderName)
+    {
+        if (!defined('MOLONI_DEBUG_MODE') || (int)MOLONI_DEBUG_MODE === Boolean::NO) {
+            return;
+        }
+
+        Debug::saveDebugAPIRequests(str_replace('{0}', $orderName, __('Call stack da encomenda ({0})')));
     }
 }

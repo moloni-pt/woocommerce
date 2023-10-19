@@ -120,6 +120,15 @@ class Curl
     }
 
     /**
+     * Returns the last curl request made from the logs
+     * @return array
+     */
+    public static function getLogs(): array
+    {
+        return self::$logs ?? [];
+    }
+
+    /**
      * Do a login request to the API
      * @param $user
      * @param $pass

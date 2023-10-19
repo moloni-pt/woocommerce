@@ -3,6 +3,8 @@
 namespace Moloni;
 
 use WC_Order;
+use Moloni\Helpers\Debug;
+use Moloni\Enums\Boolean;
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
 use Moloni\Hooks\Ajax;
@@ -158,6 +160,10 @@ class Plugin
                     'request' => $e->getRequest()
                 ]
             );
+
+            if (defined('MOLONI_DEBUG_MODE') && (int)MOLONI_DEBUG_MODE === Boolean::YES) {
+                Debug::saveDebugAPIRequests(str_replace('{0}', $orderName, __('Call stack da encomenda ({0})')));
+            }
 
             throw $e;
         }
