@@ -2,7 +2,7 @@
 
 namespace Moloni;
 
-use WP_Error;
+use Moloni\Enums\Boolean;
 
 class Curl
 {
@@ -45,14 +45,20 @@ class Curl
     private static $cache = [];
 
     /**
-     * @param $action
+     * Do simple request
+     *
+     * @param string $action
      * @param bool|array $values
-     * @param bool $debug
+     * @param int $retry
+     *
      * @return array|bool
+     *
      * @throws Error
      */
-    public static function simple($action, $values = false, $debug = false, $retry = 0)
+    public static function simple($action, $values = false, $retry = 0)
     {
+        $debugMode = defined('MOLONI_DEBUG_MODE') && (int)MOLONI_DEBUG_MODE === Boolean::YES;
+
         if (isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
             return self::$cache[$action];
         }
@@ -68,12 +74,15 @@ class Curl
             'timeout' => 45
         ]);
 
-        if ((int)wp_remote_retrieve_response_code($response) === 429) {
+        $responseCode = (int)wp_remote_retrieve_response_code($response);
+        $responseMessage = wp_remote_retrieve_response_message($response);
+
+        if ($responseCode === 429) {
             $retry++;
 
             if ($retry < 5) {
                 sleep(2);
-                return self::simple($action, $values, $debug, $retry);
+                return self::simple($action, $values, $retry);
             }
         }
 
@@ -87,13 +96,12 @@ class Curl
             'received' => $parsed
         ];
 
-        self::$logs[] = $log;
-
-        if ($debug) {
-            echo '<pre>';
-            print_r($log);
-            echo '</pre>';
+        if ($debugMode) {
+            $log['response_code'] = $responseCode;
+            $log['response_message'] = $responseMessage;
         }
+
+        self::$logs[] = $log;
 
         if (!isset($parsed['error'])) {
             if (!isset(self::$cache[$action]) && in_array($action, self::$allowedCachedMethods, false)) {
@@ -112,15 +120,17 @@ class Curl
 
     /**
      * Returns the last curl request made from the logs
+     *
      * @return array
      */
-    public static function getLog()
+    public static function getLog(): array
     {
-        return end(self::$logs);
+        return end(self::$logs) ?? [];
     }
 
     /**
      * Returns the last curl request made from the logs
+     *
      * @return array
      */
     public static function getLogs(): array

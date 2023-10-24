@@ -12,7 +12,7 @@ class Debug
     public static function saveAPIRequests($message = '')
     {
         if (empty($message)) {
-            return;
+            $message = 'Moloni API callstack';
         }
 
         try {
@@ -71,7 +71,8 @@ class Debug
 
         $logFile = fopen($fileFullPath, 'ab');
 
-        fwrite($logFile, base64_encode(json_encode($data)));
+        //fwrite($logFile, base64_encode(json_encode($data)));
+        fwrite($logFile, json_encode($data));
         fclose($logFile);
 
         return MOLONI_PLUGIN_URL . '/logs/' . $fileName;
