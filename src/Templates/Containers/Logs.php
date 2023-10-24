@@ -7,6 +7,8 @@ use Moloni\Enums\LogLevel;
 use Moloni\Models\Logs;
 
 $logs = Logs::getAllAvailable();
+
+$logsContext = [];
 ?>
 
 <div class="wrap">
@@ -109,9 +111,9 @@ $logs = Logs::getAllAvailable();
                             <?php endif; ?>
 
                             <?php if ($showOverlayButton) : ?>
-                                <?php $logContext = htmlspecialchars($log['context']) ?>
+                                <?php $logsContext[$log['id']] = $log['context'] ?>
 
-                                <button type="button" class="button action" onclick="Moloni.Logs.openContextDialog(<?= $logContext ?>)">
+                                <button type="button" class="button action log_button" data-log-id="<?= $log['id'] ?>">
                                     <?= __("Ver") ?>
                                 </button>
                             <?php endif; ?>
@@ -154,5 +156,5 @@ $logs = Logs::getAllAvailable();
 <?php include MOLONI_TEMPLATE_DIR . 'Modals/Logs/LogsContextModal.php'; ?>
 
 <script>
-    Moloni.Logs.init();
+    Moloni.Logs.init(<?= json_encode($logsContext) ?>);
 </script>
