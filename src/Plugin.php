@@ -2,12 +2,10 @@
 
 namespace Moloni;
 
-use Moloni\Exceptions\APIExeption;
+use WC_Order;
 use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
-use Moloni\Exceptions\GenericException;
-use WC_Order;
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
 use Moloni\Hooks\Ajax;

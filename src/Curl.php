@@ -2,9 +2,8 @@
 
 namespace Moloni;
 
-use Moloni\Exceptions\APIExeption;
-use WP_Error;
 use Moloni\Enums\Boolean;
+use Moloni\Exceptions\APIExeption;
 
 class Curl
 {
