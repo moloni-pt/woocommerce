@@ -2,6 +2,8 @@
 
 namespace Moloni;
 
+use Moloni\Enums\Boolean;
+use Moloni\Helpers\Debug;
 use Moloni\Exceptions\APIExeption;
 
 /**
@@ -149,6 +151,10 @@ class Start
             $value = sanitize_text_field($value);
 
             Model::setOption($option, $value);
+        }
+
+        if (isset($options['moloni_debug_mode']) && (int)$options['moloni_debug_mode'] === Boolean::NO) {
+            Debug::deleteAllLogs();
         }
     }
 }

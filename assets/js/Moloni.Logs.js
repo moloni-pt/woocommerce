@@ -4,18 +4,35 @@ if (Moloni === undefined) {
 
 Moloni.Logs = (function($) {
     var Modal;
+    var logs = {};
 
-    function init() {
+    function init(_logs) {
+        logs = _logs;
+
         startObservers();
     }
 
     function startObservers()
     {
         Modal = $("#logs-context-modal");
+
+        $('.log_button').on('click', function () {
+            var id = $(this).data('logId');
+
+            if (!isNaN(id) && id > 0) {
+                openContextDialog(id);
+            }
+        });
     }
 
-    function openContextDialog(data) {
-        var context = JSON.stringify(data || {}, null, 2);
+    function openContextDialog(id) {
+        var context = (id in logs ? logs[id] : '{}');
+
+        try {
+            var data = JSON.parse(context);
+
+            context = JSON.stringify(data || {}, null, 2);
+        } catch (e) {}
 
         Modal.find('#logs-context-modal-content').text(context);
         Modal.find('Button').off('click').on('click', function () {
@@ -27,6 +44,7 @@ Moloni.Logs = (function($) {
 
     function downloadContextData(data) {
         var element = document.createElement('a');
+
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
         element.setAttribute('download', 'log.txt');
         element.style.display = 'none';
@@ -38,6 +56,5 @@ Moloni.Logs = (function($) {
 
     return {
         init: init,
-        openContextDialog: openContextDialog,
     }
 }(jQuery));
