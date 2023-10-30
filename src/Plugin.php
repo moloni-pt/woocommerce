@@ -2,6 +2,11 @@
 
 namespace Moloni;
 
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Exceptions\DocumentError;
+use Moloni\Exceptions\DocumentWarning;
+use Moloni\Exceptions\GenericException;
 use WC_Order;
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
@@ -117,7 +122,7 @@ class Plugin
                         break;
                 }
             }
-        } catch (Error $error) {
+        } catch (MoloniException $error) {
             $pluginErrorException = $error;
         }
 
@@ -131,7 +136,8 @@ class Plugin
     /**
      * Create a single document from order
      *
-     * @throws Warning|Error
+     * @throws DocumentError
+     * @throws DocumentWarning
      */
     private function createDocument(): void
     {
@@ -140,22 +146,22 @@ class Plugin
 
         try {
             $service->run();
-        } catch (Warning $e) {
+        } catch (DocumentWarning $e) {
             Storage::$LOGGER->alert(
                 str_replace('{0}', $orderName, __('Houve um alerta ao gerar o documento ({0})')),
                 [
                     'message' => $e->getMessage(),
-                    'request' => $e->getRequest()
+                    'request' => $e->getData()
                 ]
             );
 
             throw $e;
-        } catch (Error $e) {
+        } catch (DocumentError $e) {
             Storage::$LOGGER->error(
                 str_replace('{0}', $orderName, __('Houve um erro ao gerar o documento ({0})')),
                 [
                     'message' => $e->getMessage(),
-                    'request' => $e->getRequest()
+                    'request' => $e->getData()
                 ]
             );
 

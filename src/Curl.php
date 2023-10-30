@@ -2,6 +2,7 @@
 
 namespace Moloni;
 
+use Moloni\Exceptions\APIExeption;
 use WP_Error;
 
 class Curl
@@ -48,8 +49,10 @@ class Curl
      * @param $action
      * @param bool|array $values
      * @param bool $debug
+     * @param int $retry
      * @return array|bool
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public static function simple($action, $values = false, $debug = false, $retry = 0)
     {
@@ -107,7 +110,7 @@ class Curl
             return $parsed;
         }
 
-        throw new Error(__('Ups, foi encontrado um erro...'), $log);
+        throw new APIExeption(__('Ups, foi encontrado um erro...'), $log);
     }
 
     /**
@@ -124,7 +127,8 @@ class Curl
      * @param $user
      * @param $pass
      * @return array|bool|mixed|object
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public static function login($user, $pass)
     {
@@ -137,7 +141,7 @@ class Curl
         $response = wp_remote_get($url);
 
         if (is_wp_error($response)) {
-            throw new Error($response->get_error_message(), [
+            throw new APIExeption($response->get_error_message(), [
                 'code' => $response->get_error_code(),
                 'data' => $response->get_error_data(),
                 'message' => $response->get_error_message(),
@@ -158,7 +162,7 @@ class Curl
             'received' => $parsed
         ];
 
-        throw new Error(__('Combinação de utilizador/password errados'), $log);
+        throw new APIExeption(__('Combinação de utilizador/password errados'), $log);
     }
 
     /**

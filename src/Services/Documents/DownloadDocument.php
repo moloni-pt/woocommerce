@@ -3,7 +3,7 @@
 namespace Moloni\Services\Documents;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
 
 class DownloadDocument
 {
@@ -33,7 +33,7 @@ class DownloadDocument
             } else {
                 $this->showError(_('Documento não existe'));
             }
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
             $this->showError(_('Erro a obter documento'));
         }
     }

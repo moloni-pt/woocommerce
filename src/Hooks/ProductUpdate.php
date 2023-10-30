@@ -3,10 +3,11 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Exceptions\GenericException;
 use Moloni\Storage;
 use WC_Product;
-use Moloni\Log;
-use Moloni\Error;
 use Moloni\Notice;
 use Moloni\Plugin;
 use Moloni\Start;
@@ -66,7 +67,7 @@ class ProductUpdate
                         }
                     }
                 }
-            } catch (Error $error) {
+            } catch (MoloniException $error) {
                 Notice::addMessageCustom(htmlentities($error->geterror()));
             }
         } catch (exception $ex) {
@@ -84,7 +85,8 @@ class ProductUpdate
      *
      * @param WC_Product $product
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function updateOrInsertProduct(WC_Product $product): void
     {

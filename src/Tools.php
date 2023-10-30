@@ -4,6 +4,7 @@ namespace Moloni;
 
 use Moloni\Enums\SaftType;
 use Moloni\Enums\TaxType;
+use Moloni\Exceptions\APIExeption;
 
 /**
  * Multiple tools for handling recurring tasks
@@ -93,7 +94,7 @@ class Tools
      *
      * @return array
      *
-     * @throws Error
+     * @throws APIExeption
      */
     public static function getTaxFromRate($taxRate, $countryCode = 'PT')
     {
@@ -153,7 +154,7 @@ class Tools
      *
      * @return array|bool
      *
-     * @throws Error
+     * @throws APIExeption
      */
     public static function createTax($taxRate, $countryCode = 'PT')
     {
@@ -175,16 +176,17 @@ class Tools
     /**
      * @param $countryCode
      * @return string
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public static function getCountryIdFromCode($countryCode)
     {
         $countriesList = Curl::simple('countries/getAll', []);
+
         if (!empty($countriesList) && is_array($countriesList)) {
             foreach ($countriesList as $country) {
                 if (strtoupper($country['iso_3166_1']) === strtoupper($countryCode)) {
                     return $country['country_id'];
-                    break;
                 }
             }
         }
@@ -196,11 +198,13 @@ class Tools
      * @param int $from
      * @param int $to
      * @return float
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public static function getCurrencyExchangeRate($from, $to)
     {
         $currenciesList = Curl::simple('currencyExchange/getAll', []);
+
         if (!empty($currenciesList) && is_array($currenciesList)) {
             foreach ($currenciesList as $currency) {
                 if ((int)$currency['from'] === $from && (int)$currency['to'] === $to) {
@@ -215,11 +219,13 @@ class Tools
     /**
      * @param string $currencyCode
      * @return int
-     * @throws Error
+     *
+     * @throws APIExeption
      */
-    public static function getCurrencyIdFromCode($currencyCode)
+    public static function getCurrencyIdFromCode(string $currencyCode): int
     {
         $currenciesList = Curl::simple('currencies/getAll', []);
+
         if (!empty($currenciesList) && is_array($currenciesList)) {
             foreach ($currenciesList as $currency) {
                 if ($currency['iso4217'] === mb_strtoupper($currencyCode)) {
