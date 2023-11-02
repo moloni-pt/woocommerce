@@ -100,6 +100,11 @@ class Curl
         if ($debugMode) {
             $log['response_code'] = $responseCode;
             $log['response_message'] = $responseMessage;
+
+            if (is_wp_error($response)) {
+                $log['error_messages'] = $response->get_error_messages();
+                $log['error_codes'] = $response->get_error_codes();
+            }
         }
 
         self::$logs[] = $log;
