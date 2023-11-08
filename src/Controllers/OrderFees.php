@@ -209,7 +209,7 @@ class OrderFees
                 $taxedValue += $value;
             }
 
-            $taxRate = round(($taxedValue * 100) / (float)$this->fee->get_amount());
+            $taxRate = round(($taxedValue * 100) / $this->price);
         }
 
         if ((float)$taxRate > 0) {
