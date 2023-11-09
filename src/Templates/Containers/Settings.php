@@ -223,6 +223,32 @@ try {
                 </td>
             </tr>
 
+            <!-- Notas da encomenda -->
+            <tr>
+                <th>
+                    <label for="add_order_notes"><?= __('Notas da encomenda') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $addOrderNotes = Boolean::YES;
+
+                    if (defined('ADD_ORDER_NOTES')) {
+                        $addOrderNotes = (int)ADD_ORDER_NOTES;
+                    }
+                    ?>
+
+                    <select id="add_order_notes" name='opt[add_order_notes]' class='inputOut'>
+                        <option value='0' <?= ($addOrderNotes === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($addOrderNotes === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'><?= __('Colocar notas da encomenda nas notas dos documentos.') ?></p>
+                </td>
+            </tr>
+
             <!-- Enviar email -->
             <tr>
                 <th>

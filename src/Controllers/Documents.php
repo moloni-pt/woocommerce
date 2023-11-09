@@ -990,6 +990,10 @@ class Documents
      */
     public function setNotes(): Documents
     {
+        if (defined('ADD_ORDER_NOTES') && (int)ADD_ORDER_NOTES === Boolean::NO) {
+            return $this;
+        }
+
         $notes = $this->order->get_customer_order_notes();
 
         if (!empty($notes)) {
