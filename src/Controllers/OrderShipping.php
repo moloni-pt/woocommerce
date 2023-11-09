@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 use Moloni\Tools;
 use WC_Order;
 
@@ -71,7 +72,9 @@ class OrderShipping
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -127,7 +130,9 @@ class OrderShipping
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setProductId()
     {
@@ -137,13 +142,13 @@ class OrderShipping
             if ($searchProduct[0]['visibility_id'] === 1) {
                 $this->product_id = $searchProduct[0]['product_id'];
             } else {
-                throw new Error('Produto com referência ' . $this->reference . ' tem de estar ativo.');
+                throw new GenericException('Produto com referência ' . $this->reference . ' tem de estar ativo.');
             }
 
             return $this;
         }
 
-        // Lets create the shipping product
+        // Let's create the shipping product
         $this
             ->setCategory()
             ->setUnitId();
@@ -154,17 +159,21 @@ class OrderShipping
             return $this;
         }
 
-        throw new Error('Erro ao inserir portes de envio');
+        throw new GenericException('Erro ao inserir portes de envio');
     }
 
     /**
-     * @throws Error
+     * @return OrderShipping
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setCategory()
     {
         $categoryName = 'Loja Online';
 
         $categoryObj = new ProductCategory($categoryName);
+
         if (!$categoryObj->loadByName()) {
             $categoryObj->create();
         }
@@ -176,14 +185,15 @@ class OrderShipping
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws GenericException
      */
     private function setUnitId()
     {
         if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error('Unidade de medida não definida!');
+            throw new GenericException('Unidade de medida não definida!');
         }
 
         return $this;
@@ -208,7 +218,10 @@ class OrderShipping
 
     /**
      * Set the taxes of a product
-     * @throws Error
+     *
+     * @return OrderShipping
+     *
+     * @throws APIExeption
      */
     private function setTaxes()
     {
@@ -248,8 +261,10 @@ class OrderShipping
 
     /**
      * @param float $taxRate Tax Rate in percentage
+     *
      * @return array
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     private function setTax($taxRate)
     {

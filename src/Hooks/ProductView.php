@@ -3,8 +3,8 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Exceptions\Core\MoloniException;
 use WC_Product;
-use Moloni\Error;
 use Moloni\Start;
 use Moloni\Plugin;
 use Moloni\Controllers\Product;
@@ -66,7 +66,7 @@ class ProductView
                     }
 
                     $this->showProductDetails();
-                } catch (Error $e) {
+                } catch (MoloniException $e) {
                     echo __('Erro ao obter artigo');
                     return null;
                 }

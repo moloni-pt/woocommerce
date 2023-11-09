@@ -2,11 +2,21 @@
 
 namespace Moloni\Helpers;
 
+use Moloni\Enums\Boolean;
 use Moloni\Storage;
 use Psr\Log\AbstractLogger;
 
 class Logger extends AbstractLogger
 {
+    public function error($message, array $context = [])
+    {
+        parent::error($message, $context);
+
+        if (defined('MOLONI_DEBUG_MODE') && (int)MOLONI_DEBUG_MODE === Boolean::YES) {
+            Debug::saveAPIRequests();
+        }
+    }
+
     public function log($level, $message, array $context = []): void
     {
         global $wpdb;

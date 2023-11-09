@@ -812,6 +812,41 @@ try {
                     <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
                 </td>
             </tr>
+            </tbody>
+        </table>
+
+        <!-- Avançado -->
+        <h2 class="title">
+            <?= __('Avançado') ?>
+        </h2>
+        <table class="form-table mb-4">
+            <tbody>
+
+            <!-- Ativar modo debug -->
+            <tr>
+                <th>
+                    <label for="moloni_debug_mode"><?= __('Ativar modo DEBUG') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $moloniDebugMode = Boolean::NO;
+
+                    if (defined('MOLONI_DEBUG_MODE')) {
+                        $moloniDebugMode = (int)MOLONI_DEBUG_MODE;
+                    }
+                    ?>
+
+                    <select id="moloni_debug_mode" name='opt[moloni_debug_mode]' class='inputOut'>
+                        <option value='0' <?= ($moloniDebugMode === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($moloniDebugMode === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'><?= __('Ativar funcionalidades DEV e aumentar logs') ?></p>
+                </td>
+            </tr>
 
             <tr>
                 <th></th>

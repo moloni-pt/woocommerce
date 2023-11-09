@@ -2,13 +2,13 @@
 
 namespace Moloni\Services\Orders;
 
+use Moloni\Exceptions\APIExeption;
 use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
 use WC_Order_Item_Fee;
 use WC_Product;
 use WC_Order_Refund;
 use Moloni\Curl;
-use Moloni\Error;
 use Moloni\Tools;
 use Moloni\Storage;
 use Moloni\Helpers\MoloniOrder;
@@ -83,9 +83,9 @@ class CreateCreditNote
 
         try {
             $this->originalDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
             throw new DocumentError('Error fetching document', [
-                'request' => $e->getRequest()
+                'request' => $e->getData()
             ]);
         }
 
@@ -93,9 +93,9 @@ class CreateCreditNote
 
         try {
             $this->originalUnrelatedProducts = $this->unrelatedProducts = Curl::simple('documents/getUnrelatedProducts', ['document_id' => $documentId]);
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
             throw new DocumentError('Error fetching unrelated products', [
-                'request' => $e->getRequest()
+                'request' => $e->getData()
             ]);
         }
 
@@ -110,9 +110,9 @@ class CreateCreditNote
 
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
             throw new DocumentError('Error creating document', [
-                'request' => $e->getRequest()
+                'request' => $e->getData()
             ]);
         }
 
@@ -147,8 +147,8 @@ class CreateCreditNote
     {
         try {
             $insertedDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
-        } catch (Error $e) {
-            throw new DocumentWarning('Error fetching created credit note', ['request' => $e->getRequest()]);
+        } catch (APIExeption $e) {
+            throw new DocumentWarning('Error fetching created credit note', ['request' => $e->getData()]);
         }
 
         if (empty($insertedDocument) || !isset($insertedDocument['document_id'])) {
@@ -204,8 +204,8 @@ class CreateCreditNote
 
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/update', $closeProps);
-        } catch (Error $e) {
-            throw new DocumentWarning('Error closing credit note', ['request' => $e->getRequest()]);
+        } catch (APIExeption $e) {
+            throw new DocumentWarning('Error closing credit note', ['request' => $e->getData()]);
         }
 
         if (empty($mutation) || !isset($mutation['document_id'])) {

@@ -2,12 +2,13 @@
 
 namespace Moloni\Services\Orders;
 
-use Moloni\Warning;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\DocumentError;
+use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentStatus;
-use Moloni\Error;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Controllers\Documents;
 
@@ -43,17 +44,21 @@ class CreateMoloniDocument
     /**
      * Run service
      *
-     * @throws Warning
-     * @throws Error
+     * @throws DocumentError
+     * @throws DocumentWarning
      */
     public function run(): void
     {
         $this->checkForWarnings();
 
-        $company = Curl::simple('companies/getOne', []);
-        
+        try {
+            $company = Curl::simple('companies/getOne', []);
+        } catch (APIExeption $e) {
+            throw new DocumentError(__('Erro a obter empresa'), $e->getData());
+        }
+
         if (empty($company)) {
-            throw new Error(__('Erro a obter empresa'));
+            throw new DocumentError(__('Erro a obter empresa'));
         }
 
         if ($this->shouldCreateBillOfLading()) {
@@ -133,7 +138,7 @@ class CreateMoloniDocument
     /**
      * Checks if order already has a document associated
      *
-     * @throws Error
+     * @throws DocumentError
      */
     private function checkForWarnings(): void
     {
@@ -144,7 +149,7 @@ class CreateMoloniDocument
                 $forceUrl .= '&document_type=' . sanitize_text_field($this->documentType);
             }
 
-            throw new Error(
+            throw new DocumentError(
                 __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .
                 " <a href='$forceUrl'>" . __('Gerar novamente') . '</a>'
             );

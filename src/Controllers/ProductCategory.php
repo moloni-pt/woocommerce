@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 
 /**
  * Class Product Category
@@ -29,7 +30,8 @@ class ProductCategory
 
     /**
      * This method SHOULD be replaced by a productCategories/getBySearch
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public function loadByName()
     {
@@ -49,18 +51,25 @@ class ProductCategory
 
     /**
      * Create a product based on a WooCommerce Product
-     * @throws Error
+     *
+     * @return ProductCategory
+     * @throws GenericException
      */
-    public function create()
+    public function create(): ProductCategory
     {
-        $insert = Curl::simple('productCategories/insert', $this->mapPropsToValues());
-
-        if (isset($insert['category_id'])) {
-            $this->category_id = $insert['category_id'];
-            return $this;
+        try {
+            $insert = Curl::simple('productCategories/insert', $this->mapPropsToValues());
+        } catch (APIExeption $e) {
+            throw new GenericException(__('Erro ao inserir a categoria') . ' ' . $this->name, $e->getData());
         }
 
-        throw new Error(__('Erro ao inserir a categoria') . $this->name);
+        if (!isset($insert['category_id'])) {
+             throw new GenericException(__('Erro ao inserir a categoria') . ' ' . $this->name);
+        }
+
+        $this->category_id = $insert['category_id'];
+
+        return $this;
     }
 
 

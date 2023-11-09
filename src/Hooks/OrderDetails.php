@@ -2,9 +2,9 @@
 
 namespace Moloni\Hooks;
 
+use Moloni\Exceptions\APIExeption;
 use WC_Order;
 use Moloni\Curl;
-use Moloni\Error;
 use Moloni\Start;
 use Moloni\Plugin;
 use Moloni\Enums\Boolean;
@@ -114,7 +114,7 @@ class OrderDetails
             if (isset($result['url'])) {
                 return $result['url'];
             }
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
         }
 
         return '';
@@ -128,7 +128,7 @@ class OrderDetails
             if (isset($invoice['document_id'])) {
                 return $invoice;
             }
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
         }
 
         return [];

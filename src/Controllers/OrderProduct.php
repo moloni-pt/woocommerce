@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 use Moloni\Tools;
 use WC_Order;
 use WC_Order_Item_Product;
@@ -81,7 +82,9 @@ class OrderProduct
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -224,14 +227,15 @@ class OrderProduct
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setProductId()
     {
         $wcProduct = $this->product->get_product();
 
         if (!($wcProduct instanceof WC_Product)) {
-            throw new Error(__('Artigo da encomenda já não existe: ') . $this->name);
+            throw new GenericException(__('Artigo da encomenda já não existe: ') . $this->name);
         }
 
         $this->moloniProduct = new Product($wcProduct);
@@ -245,7 +249,7 @@ class OrderProduct
         }
 
         if ($this->moloniProduct->visibility_id === 0) {
-            throw new Error('Produto com referência ' . $this->moloniProduct->reference . ' tem de estar ativo.');
+            throw new GenericException('Produto com referência ' . $this->moloniProduct->reference . ' tem de estar ativo.');
         }
 
         $this->composition_type = $this->moloniProduct->composition_type;
@@ -279,7 +283,10 @@ class OrderProduct
 
     /**
      * Set the taxes of a product
-     * @throws Error
+     *
+     * @return OrderProduct
+     *
+     * @throws APIExeption
      */
     private function setTaxes()
     {
@@ -320,7 +327,7 @@ class OrderProduct
     /**
      * @param float $taxRate Tax Rate in percentage
      * @return array
-     * @throws Error
+     * @throws APIExeption
      */
     private function setTax($taxRate)
     {
@@ -360,7 +367,8 @@ class OrderProduct
 
     /**
      * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     private function setChildProducts()
     {

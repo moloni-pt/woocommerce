@@ -11,13 +11,13 @@ class MoloniException extends Exception
      *
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * Throws a new error with a message
      *
-     * @param string|null $message
-     * @param array|null $data
+     * @param string|null $message Exception message
+     * @param array|null $data Exception data
      *
      * @return void
      */
@@ -27,6 +27,15 @@ class MoloniException extends Exception
 
         parent::__construct($message);
     }
+
+    //             Publics             //
+
+    public function getData(): array
+    {
+        return $this->data ?? [];
+    }
+
+    //             Error             //
 
     public function showError()
     {
@@ -43,13 +52,10 @@ class MoloniException extends Exception
         return ob_get_clean();
     }
 
-    public function getDecodedMessage(): string
+    //             Privates             //
+
+    protected function getDecodedMessage(): string
     {
         return '<b>' . $this->getMessage() . '</b>';
-    }
-
-    public function getData(): array
-    {
-        return $this->data ?? [];
     }
 }

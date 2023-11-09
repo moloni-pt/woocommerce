@@ -2,6 +2,10 @@
 
 namespace Moloni;
 
+use Moloni\Enums\Boolean;
+use Moloni\Helpers\Debug;
+use Moloni\Exceptions\APIExeption;
+
 /**
  * Class Start
  * This is one of the main classes of the module
@@ -47,9 +51,9 @@ class Start
 
                     Model::setTokens($login['access_token'], $login['refresh_token']);
                 }
-            } catch (Error $e) {
+            } catch (APIExeption $e) {
                 $errorMessage = $e->getMessage();
-                $errorBag = $e->getRequest();
+                $errorBag = $e->getData();
             }
 
             if (!$loginValid) {
@@ -123,7 +127,7 @@ class Start
     {
         try {
             $companies = Curl::simple('companies/getAll', []);
-        } catch (Error $e) {
+        } catch (APIExeption $e) {
             $companies = [];
         }
 
@@ -147,6 +151,10 @@ class Start
             $value = sanitize_text_field($value);
 
             Model::setOption($option, $value);
+        }
+
+        if (isset($options['moloni_debug_mode']) && (int)$options['moloni_debug_mode'] === Boolean::NO) {
+            Debug::deleteAllLogs();
         }
     }
 }

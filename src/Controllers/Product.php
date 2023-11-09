@@ -3,7 +3,8 @@
 namespace Moloni\Controllers;
 
 use Moloni\Curl;
-use Moloni\Error;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\GenericException;
 use Moloni\Storage;
 use Moloni\Tools;
 use WC_Product;
@@ -62,7 +63,8 @@ class Product
 
     /**
      * Loads a product
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     public function loadByReference()
     {
@@ -93,8 +95,10 @@ class Product
 
     /**
      * Create a product based on a WooCommerce Product
-     * @return $this
-     * @throws Error
+     * @return Product
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function create()
     {
@@ -119,7 +123,7 @@ class Product
             return $this;
         }
 
-        throw new Error(__('Erro ao inserir o artigo ') . $this->name);
+        throw new GenericException(__('Erro ao inserir o artigo ') . $this->name);
     }
 
     /**
@@ -127,7 +131,8 @@ class Product
      *
      * @return $this
      *
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     public function update(): Product
     {
@@ -156,7 +161,7 @@ class Product
             return $this;
         }
 
-        throw new Error(__('Erro ao atualizar o artigo ') . $this->name);
+        throw new GenericException(__('Erro ao atualizar o artigo ') . $this->name);
     }
 
     //          Gets          //
@@ -189,7 +194,8 @@ class Product
     //          Privates          //
 
     /**
-     * @throws Error
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setProduct()
     {
@@ -223,7 +229,10 @@ class Product
     }
 
     /**
-     * @throws Error
+     * @return Product
+     *
+     * @throws APIExeption
+     * @throws GenericException
      */
     private function setCategory()
     {
@@ -343,15 +352,16 @@ class Product
     }
 
     /**
-     * @return $this
-     * @throws Error
+     * Set measurement unit
+     *
+     * @throws GenericException
      */
-    private function setUnitId()
+    private function setUnitId(): Product
     {
         if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
-            throw new Error(__('Unidade de medida não definida!'));
+            throw new GenericException(__('Unidade de medida não definida!'));
         }
 
         return $this;
@@ -359,8 +369,8 @@ class Product
 
     /**
      * Sets the taxes of a product or its exemption reason
-     * @return $this
-     * @throws Error
+     *
+     * @throws APIExeption
      */
     private function setTaxes()
     {
