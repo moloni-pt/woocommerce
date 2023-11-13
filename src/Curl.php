@@ -131,7 +131,12 @@ class Curl
      */
     public static function getLog(): array
     {
-        return end(self::$logs) ?? [];
+        $result = end(self::$logs);
+        if (!is_array($result)) {
+            return [];
+        }
+
+        return $result;
     }
 
     /**

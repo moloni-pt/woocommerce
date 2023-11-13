@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.4.2
+Stable tag: 4.4.5
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.4.5 =
+* FIX: Correção de um erro interno na criação de registos
+
 = 4.4.2 =
 * FEATURE: Adicionado modo DEBUG
 * FIX: Correção de erro no cálculo da percentagem de taxas
