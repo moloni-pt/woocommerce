@@ -109,23 +109,24 @@ class OrderProduct
     }
 
     /**
-     * @param null|string $summary
+     * Set product summary
+     *
+     * @param string|null $summary
+     *
      * @return $this
      */
-    public function setSummary($summary = null)
+    public function setSummary(?string $summary = '')
     {
         $summary = apply_filters('moloni_before_order_item_setSummary', $summary, $this->product);
 
-        if ($summary) {
-            $this->summary = $summary;
-        } else {
-            $this->summary .= $this->getSummaryVariationAttributes();
+        if (empty($summary)) {
+            $summary = $this->getSummaryVariationAttributes();
 
-            if (!empty($this->summary)) {
-                $this->summary .= "\n";
+            if (!empty($summary)) {
+                $summary .= "\n";
             }
 
-            $this->summary .= $this->getSummaryExtraProductOptions();
+            $summary .= $this->getSummaryExtraProductOptions();
         }
 
         $this->summary = apply_filters('moloni_after_order_item_setSummary', $summary, $this->product);
