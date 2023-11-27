@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.3  
 **WC tested up to**    8.0.2  
-**Stable tag:**        4.4.6  
+**Stable tag:**        4.4.7  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.4.7
+* FIX: Correção no sumário dos produtos nos documentos
+
 ### 4.4.6
 * FIX: Correção de um erro interno na criação de registos
 
