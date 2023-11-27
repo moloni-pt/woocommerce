@@ -120,13 +120,27 @@ class OrderProduct
         $summary = apply_filters('moloni_before_order_item_setSummary', $summary, $this->product);
 
         if (empty($summary)) {
-            $summary = $this->getSummaryVariationAttributes();
+            $variationAttributes = $this->getSummaryVariationAttributes();
+            $extraOptions = $this->getSummaryExtraProductOptions();
 
-            if (!empty($summary)) {
-                $summary .= "\n";
+            switch (true) {
+                case !empty($variationAttributes) && !empty($extraOptions):
+                    $summary = $variationAttributes . '\n' . $extraOptions;
+
+                    break;
+                case !empty($variationAttributes):
+                    $summary = $variationAttributes;
+
+                    break;
+                case !empty($extraOptions):
+                    $summary = $extraOptions;
+
+                    break;
+                default:
+                    $summary = '';
+
+                    break;
             }
-
-            $summary .= $this->getSummaryExtraProductOptions();
         }
 
         $this->summary = apply_filters('moloni_after_order_item_setSummary', $summary, $this->product);
