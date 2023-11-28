@@ -73,13 +73,13 @@ class UpdateProductStock
     private function init(): void
     {
         /** Set Warehouse to use */
-        if (defined(MOLONI_STOCK_SYNC) && (int)MOLONI_STOCK_SYNC > 1) {
+        if (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC > 1) {
             $this->warehouseId = (int)MOLONI_STOCK_SYNC;
         }
 
         $moloniStock = 0;
 
-        if ($this->warehouseId > 0) {
+        if ($this->warehouseId > 1) {
             foreach ($this->moloniProduct['warehouses'] as $productWarehouse) {
                 if ((int)$productWarehouse['warehouse_id'] === $this->warehouseId) {
                     $moloniStock = $productWarehouse['stock']; // Get the stock of the particular warehouse
