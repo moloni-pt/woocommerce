@@ -385,7 +385,7 @@ class Product
 
             if (empty($this->fiscalZone)) {
                 $company = Curl::simple('companies/getOne', []);
-                $this->fiscalZone = $company['country']['iso_3166_1'];
+                $this->fiscalZone = strtoupper($company['country']['iso_3166_1']);
             }
 
             foreach ($taxRates as $order => $taxRate) {
