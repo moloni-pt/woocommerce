@@ -1,21 +1,26 @@
 <?php
 
-namespace Moloni\Controllers;
+namespace Moloni\Services\Stocks;
 
-use Exception;
-use Moloni\Exceptions\APIExeption;
 use Moloni\Curl;
 use Moloni\Storage;
+use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\Stocks\StockLockedException;
+use Moloni\Exceptions\Stocks\StockMatchingException;
+use Moloni\Services\MoloniProducts\UpdateProductStock;
 
-class SyncProducts
+class SyncStockFromMoloni
 {
     private $since;
+
     private $offset = 0;
     private $limit = 5000;
     private $found = 0;
+
     private $updated = [];
     private $equal = [];
     private $notFound = [];
+    private $locked = [];
 
     public function __construct($since)
     {
@@ -23,6 +28,7 @@ class SyncProducts
             $sinceTime = $since;
         } else {
             $sinceTime = strtotime($since);
+
             if (!$sinceTime) {
                 $sinceTime = strtotime('-1 week');
             }
@@ -31,65 +37,57 @@ class SyncProducts
         $this->since = gmdate('Y-m-d H:i:s', $sinceTime);
     }
 
+    //            Publics            //
+
     /**
      * Run the sync operation
      */
-    public function run(): SyncProducts
+    public function run(): SyncStockFromMoloni
     {
         $updatedProducts = $this->getAllMoloniProducts();
 
-        if (!empty($updatedProducts) && is_array($updatedProducts)) {
-            $this->found = count($updatedProducts);
+        if (empty($updatedProducts)) {
+            return $this;
+        }
 
-            foreach ($updatedProducts as $product) {
-                try {
-                    $wcProductId = wc_get_product_id_by_sku($product['reference']);
+        $this->found = count($updatedProducts);
 
-                    if ($product['has_stock'] && $wcProductId > 0) {
-                        $wcProduct = wc_get_product($wcProductId);
-                        $currentStock = $wcProduct->get_stock_quantity();
+        foreach ($updatedProducts as $product) {
+            if (empty($product['has_stock'])) {
+                $this->notFound[$product['reference']] = __('Artigo sem stock ativo');
 
-                        /** if the product does not have the set warehouse, stock is 0 (so we do it here) */
-                        $newStock = 0;
+                continue;
+            }
 
-                        if ((int)MOLONI_STOCK_SYNC > 1) {
-                            /** If we have a warehouse selected */
-                            foreach ($product['warehouses'] as $productWarehouse) {
-                                if ((int)$productWarehouse['warehouse_id'] === (int)MOLONI_STOCK_SYNC) {
-                                    $newStock = $productWarehouse['stock']; // Get the stock of the particular warehouse
-                                    break;
-                                }
-                            }
-                        } else {
-                            $newStock = $product['stock'];
-                        }
+            $wcProductId = wc_get_product_id_by_sku($product['reference']);
 
-                        if ((float)$currentStock === (float)$newStock) {
-                            $msg = 'Artigo com a referência ' . $product['reference'] . ' já tem o stock correcto ' . $currentStock . '|' . $newStock;
+            if ($wcProductId <= 0) {
+                $this->notFound[$product['reference']] = __('Artigo não encontrado');
 
-                            $this->equal[$product['reference']] = $msg;
-                        } else {
-                            $msg = 'Artigo com a referência ' . $product['reference'] . ' foi actualizado de ' . $currentStock . ' para ' . $newStock;
+                continue;
+            }
 
-                            $this->updated[$product['reference']] = $msg;
-                            wc_update_product_stock($wcProduct, $newStock);
-                        }
-                    } else {
-                        $msg = 'Artigo com a referência ' . $product['reference'] . ' não encontrado ou sem stock ativo';
+            $wcProduct = wc_get_product($wcProductId);
 
-                        $this->notFound[$product['reference']] = $msg;
-                    }
-                } catch (Exception $error) {
-                    Storage::$LOGGER->critical(__('Erro fatal'), [
-                        'action' => 'stock:sync:service',
-                        'exception' => $error->getMessage()
-                    ]);
-                }
+            try {
+                $service = new UpdateProductStock($wcProduct, $product);
+
+                do_action('moloni_before_product_stock_sync', $service);
+
+                $service->run();
+
+                $this->updated[$product['reference']] = $service->getResultMessage();
+            } catch (StockMatchingException $error) {
+                $this->equal[$product['reference']] = $error->getMessage();
+            } catch (StockLockedException $error) {
+                $this->locked[$product['reference']] = $error->getMessage();
             }
         }
 
         return $this;
     }
+
+    //            Counts            //
 
     /**
      * Get the amount of records found
@@ -132,6 +130,18 @@ class SyncProducts
     }
 
     /**
+     * Get the amount of products locked
+     *
+     * @return int
+     */
+    public function countLocked(): int
+    {
+        return count($this->locked);
+    }
+
+    //            Gets            //
+
+    /**
      * Get date used to fetch
      *
      * @return false|string
@@ -170,6 +180,18 @@ class SyncProducts
     {
         return $this->notFound;
     }
+
+    /**
+     * Return the list of products locked
+     *
+     * @return array
+     */
+    public function getLocked(): array
+    {
+        return $this->locked;
+    }
+
+    //            Auxiliary            //
 
     /**
      * Each request brings a maximum of 50 products

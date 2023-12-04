@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.3  
 **WC tested up to**    8.0.2  
-**Stable tag:**        4.4.7  
+**Stable tag:**        4.5.0  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.5.0
+* FEATURE: Adicionado filtro moloni_before_product_stock_sync
+
 ### 4.4.7
 * FIX: Correção no sumário dos produtos nos documentos
 
