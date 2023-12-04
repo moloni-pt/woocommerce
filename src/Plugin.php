@@ -2,6 +2,7 @@
 
 namespace Moloni;
 
+use Exception;
 use WC_Order;
 use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\DocumentError;
@@ -14,6 +15,7 @@ use Moloni\Services\Documents\DownloadDocument;
 use Moloni\Services\Documents\OpenDocument;
 use Moloni\Services\Orders\CreateMoloniDocument;
 use Moloni\Services\Orders\DiscardOrder;
+use Moloni\Services\Stocks\SyncStockFromMoloni;
 
 /**
  * Main constructor
@@ -291,27 +293,52 @@ class Plugin
     {
         $date = isset($_GET['since']) ? sanitize_text_field($_GET['since']) : gmdate('Y-m-d', strtotime('-1 week'));
 
-        $service = new Controllers\SyncProducts($date);
-        $service->run();
+        try {
+            $service = new SyncStockFromMoloni($date);
+            $service->run();
 
-        if ($service->countUpdated() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Foram actualizados ' . $service->countUpdated() . ' artigos.'), 'updated');
-        }
+            if ($service->countUpdated() > 0) {
+                $message = sprintf(__('Foram actualizados %d artigos.'), $service->countUpdated());
 
-        if ($service->countEqual() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-updated', __('Existem ' . $service->countEqual() . ' artigos com stock igual.'), 'updated');
-        }
+                add_settings_error('moloni', 'moloni-sync-stocks-updated', $message, 'updated');
+            }
 
-        if ($service->countNotFound() > 0) {
-            add_settings_error('moloni', 'moloni-sync-stocks-not-found', __('Não foram encontrados no WooCommerce ' . $service->countNotFound() . ' artigos.'));
-        }
+            if ($service->countEqual() > 0) {
+                $message = sprintf(__('Existem %d artigos com stock igual.'), $service->countEqual());
 
-        if ($service->countFoundRecord() > 0) {
-            Storage::$LOGGER->info(__('Sincronização de stock manual'), [
-                'since' => $service->getSince(),
-                'equal' => $service->getEqual(),
-                'not_found' => $service->getNotFound(),
-                'get_updated' => $service->getUpdated(),
+                add_settings_error('moloni', 'moloni-sync-stocks-equal', $message, 'updated');
+            }
+
+            if ($service->countNotFound() > 0) {
+                $message = sprintf(__('Não foram encontrados no WooCommerce %d artigos.'), $service->countNotFound());
+
+                add_settings_error('moloni', 'moloni-sync-stocks-not-found', $message);
+            }
+
+            if ($service->countLocked() > 0) {
+                $message = sprintf(__('Foram bloqueados %d artigos.'), $service->countLocked());
+
+                add_settings_error('moloni', 'moloni-sync-stocks-locked', $message);
+            }
+
+            if ($service->countFoundRecord() > 0) {
+                Storage::$LOGGER->info(__('Sincronização de stock manual'), [
+                    'action' => 'stock:sync:manual',
+                    'since' => $service->getSince(),
+                    'equal' => $service->getEqual(),
+                    'not_found' => $service->getNotFound(),
+                    'get_updated' => $service->getUpdated(),
+                    'get_locked' => $service->getLocked(),
+                ]);
+            }
+        } catch (Exception $ex) {
+            $message = __('Erro fatal');
+
+            add_settings_error('moloni', 'moloni-sync-stocks-error', $message);
+
+            Storage::$LOGGER->critical($message, [
+                'action' => 'stock:sync:manual:error',
+                'exception' => $ex->getMessage()
             ]);
         }
     }
