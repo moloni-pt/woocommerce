@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.5.0
+Stable tag: 4.5.1
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.5.1 =
+* FIX: Correção de um erro no uso da razão de isenção
+
 = 4.5.0 =
 * FEATURE: Adicionado filtro moloni_before_product_stock_sync
 

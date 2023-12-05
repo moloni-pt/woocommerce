@@ -816,7 +816,7 @@ class Documents
             $fiscalZone = $this->company['country']['iso_3166_1'];
         }
 
-        $this->fiscalZone = $fiscalZone;
+        $this->fiscalZone = strtoupper($fiscalZone);
 
         return $this;
     }
