@@ -34,7 +34,7 @@ $company = $company ?? [];
     </div>
 
     <button class="ml-button ml-button--primary w-full"
-            onclick="window.location.href = 'admin.php?page=moloni&action=logout'">
+            onclick="window.location.href = 'admin.php?page=moloni&company_id=<?= $company["company_id"] ?>'">
         <?= __('Escolher empresa') ?>
     </button>
 </div>
