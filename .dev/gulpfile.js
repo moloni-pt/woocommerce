@@ -11,12 +11,7 @@ gulp.task('css:prod', () => {
 
     const files = [
         './node_modules/jquery-modal/jquery.modal.css',
-        './css/Companies.scss',
-        './css/Legacy.scss',
-        './css/Login.scss',
-        './css/Logs.scss',
-        './css/Settings.scss',
-        './css/Utilities.scss',
+        './css/Main.scss',
     ];
 
     return gulp.src(files)
@@ -24,8 +19,9 @@ gulp.task('css:prod', () => {
         .pipe(sass({includePaths: ['node_modules']}))
         .pipe(cssimport())
         .pipe(postcss([
-            require('autoprefixer'),
-            require('postcss-combine-media-query')
+            require('tailwindcss'),
+            require('postcss-sort-media-queries'),
+            require('autoprefixer')
         ]))
         .pipe(cleanCSS({level: {1: {specialComments: 0}}}))
         .pipe(concat("moloni.min.css"))
@@ -43,6 +39,7 @@ gulp.task('js:prod', () => {
         './js/Logs.js',
         './js/OrdersBulkAction.js',
         './js/Settings.js',
+        './js/Login.js',
     ];
 
     return (
