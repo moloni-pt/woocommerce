@@ -2,6 +2,10 @@ if (Moloni === undefined) {
     var Moloni = {};
 }
 
+if (Moloni.Logs === undefined) {
+    Moloni.Logs = {};
+}
+
 Moloni.Logs = (function($) {
     var Modal;
     var logs = {};

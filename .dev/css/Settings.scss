@@ -1,0 +1,17 @@
+#formOpcoes a[title]:hover::after {
+  content: attr(title);
+  display: block;
+  cursor: help;
+}
+
+#formOpcoes .txt--red {
+  color: #a44;
+}
+
+#formOpcoes .custom-address__wrapper {
+  display: none;
+}
+
+#formOpcoes .custom-address__line {
+  margin-top: 0.5rem;
+}

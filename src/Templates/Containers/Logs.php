@@ -156,5 +156,7 @@ $logsContext = [];
 <?php include MOLONI_TEMPLATE_DIR . 'Modals/Logs/LogsContextModal.php'; ?>
 
 <script>
-    Moloni.Logs.init(<?= json_encode($logsContext) ?>);
+    jQuery(document).ready(function () {
+        Moloni.Logs.init(<?= json_encode($logsContext) ?>);
+    });
 </script>

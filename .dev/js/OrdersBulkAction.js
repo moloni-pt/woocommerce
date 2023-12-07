@@ -1,12 +1,18 @@
-'use strict';
+if (Moloni === undefined) {
+    var Moloni = {};
+}
 
-jQuery(document).ready(function ($) {
-    var ProgressWindow = $("#bulk-action-progress-modal");
-    var ProgressWindowMessage = $('#bulk-action-progress-message');
-    var ProgressWindowCurrent = $('#bulk-action-progress-current');
-    var ProgressWindowTotal = $('#bulk-action-progress-total');
-    var ProgressWindowTitleStart = $('#bulk-action-progress-title-start');
-    var ProgressWindowTitleFinish = $('#bulk-action-progress-title-finish');
+if (Moloni.OrdersBulkAction === undefined) {
+    Moloni.OrdersBulkAction = {};
+}
+
+Moloni.OrdersBulkAction = (function() {
+    var ProgressWindow = jQuery("#bulk-action-progress-modal");
+    var ProgressWindowMessage = jQuery('#bulk-action-progress-message');
+    var ProgressWindowCurrent = jQuery('#bulk-action-progress-current');
+    var ProgressWindowTotal = jQuery('#bulk-action-progress-total');
+    var ProgressWindowTitleStart = jQuery('#bulk-action-progress-title-start');
+    var ProgressWindowTitleFinish = jQuery('#bulk-action-progress-title-finish');
 
     var ProgressCurrent = 0;
     var ProgressWindowCloseButton = '<br><a class="wp-core-ui button-secondary" style="width: 80px; text-align: center; float:right" href="#" rel="modal:close">Fechar</a>'
@@ -32,7 +38,7 @@ jQuery(document).ready(function ($) {
         ShowModal();
         ResetCounters();
 
-        SelectedOrders = $('input[id^="moloni-pending-order-"]:checked');
+        SelectedOrders = jQuery('input[id^="moloni-pending-order-"]:checked');
 
         if (SelectedOrders && SelectedOrders.length === 0) {
             ProgressWindowMessage.html("<div>Não foram selecionadas encomendas" + ProgressWindowCloseButton + "</div>");
@@ -58,7 +64,7 @@ jQuery(document).ready(function ($) {
                 'id': OrderId
             };
 
-            $.ajax({
+            jQuery.ajax({
                 type: 'POST',
                 url: ajaxurl,
                 data,
@@ -71,7 +77,7 @@ jQuery(document).ready(function ($) {
     function HandleGenInvoiceSuccess(result) {
         ProgressWindowMessage.html(result.message);
         if (result.valid) {
-            $("#moloni-pending-order-row-" + GetNextOrder()).remove();
+            jQuery("#moloni-pending-order-row-" + GetNextOrder()).remove();
             FinalResultSuccess.push(result);
         } else {
             FinalResultFailure.push(result);
@@ -102,7 +108,7 @@ jQuery(document).ready(function ($) {
         ShowModal();
         ResetCounters();
 
-        SelectedOrders = $('input[id^="moloni-pending-order-"]:checked');
+        SelectedOrders = jQuery('input[id^="moloni-pending-order-"]:checked');
 
         if (SelectedOrders && SelectedOrders.length === 0) {
             ProgressWindowMessage.html("<div>Não foram selecionadas encomendas" + ProgressWindowCloseButton + "</div>");
@@ -128,7 +134,7 @@ jQuery(document).ready(function ($) {
                 'id': OrderId
             };
 
-            $.ajax({
+            jQuery.ajax({
                 type: 'POST',
                 url: ajaxurl,
                 data,
@@ -142,7 +148,7 @@ jQuery(document).ready(function ($) {
         ProgressWindowMessage.html(result.message);
 
         if (result.valid) {
-            $("#moloni-pending-order-row-" + GetNextOrder()).remove();
+            jQuery("#moloni-pending-order-row-" + GetNextOrder()).remove();
             FinalResultSuccess.push(result);
         } else {
             FinalResultFailure.push(result);
@@ -200,15 +206,15 @@ jQuery(document).ready(function ($) {
     //             Observers             //
 
     function OnMassSelectClick() {
-        $(".moloni-pending-orders-select-all").click(function () {
-            $('input[id^="moloni-pending-order-"]').not(this).prop('checked', this.checked);
+        jQuery(".moloni-pending-orders-select-all").click(function () {
+            jQuery('input[id^="moloni-pending-order-"]').not(this).prop('checked', this.checked);
         });
     }
 
     function OnIndividualSelectClick() {
-        $('input[id^="moloni-pending-order-"]').click(function () {
+        jQuery('input[id^="moloni-pending-order-"]').click(function () {
             var AllSelected = true;
-            var AllPendingOrders = $('input[id^="moloni-pending-order-"]');
+            var AllPendingOrders = jQuery('input[id^="moloni-pending-order-"]');
 
             AllPendingOrders.each(function (Index, PendingOrder) {
                 if (!PendingOrder.checked) {
@@ -216,13 +222,13 @@ jQuery(document).ready(function ($) {
                 }
             });
 
-            $(".moloni-pending-orders-select-all").prop('checked', AllSelected);
+            jQuery(".moloni-pending-orders-select-all").prop('checked', AllSelected);
         });
     }
 
     function OnActionClick() {
-        $('.tablenav #doAction').click(function () {
-            var action = $('#bulk-action-selector-top').val();
+        jQuery('.tablenav #doAction').click(function () {
+            var action = jQuery('#bulk-action-selector-top').val();
 
             if (action === 'bulkGenInvoice') {
                 BulkGenInvoice();

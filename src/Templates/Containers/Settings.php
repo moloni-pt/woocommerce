@@ -863,5 +863,7 @@ try {
 <script>
     var originalCAE = <?= (defined('DOCUMENT_SET_CAE_ID') && (int)DOCUMENT_SET_CAE_ID > 0 ? (int)DOCUMENT_SET_CAE_ID : 0) ?>;
 
-    Moloni.Settings.init(originalCAE);
+    jQuery(document).ready(function () {
+        Moloni.Settings.init(originalCAE);
+    });
 </script>

@@ -1,0 +1,52 @@
+.outBoxEmpresa {
+  margin-left: auto;
+  margin-right: auto;
+  width: 990px;
+  margin-top: 150px;
+}
+
+.caixaLoginEmpresa {
+  float: left;
+  margin: 20px 15px 20px 0;
+  background-color: #fff;
+  padding: 20px 15px;
+  width: 200px;
+  cursor: pointer;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  -moz-box-shadow: 0 0 15px 2px #ccc;
+  -webkit-box-shadow: 0 0 15px 2px #ccc;
+  box-shadow: 0 0 15px 2px #ccc;
+  min-height: 150px;
+}
+
+.no-companies__wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-top: 10rem;
+}
+
+.no-companies__title {
+  font-size: 1.3em;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.no-companies__message {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.no-companies__help {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}

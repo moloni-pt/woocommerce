@@ -177,3 +177,8 @@ $orders = PendingOrders::getAllAvailable();
 
 <?php include MOLONI_TEMPLATE_DIR . 'Modals/PendingOrders/BulkActionModal.php'; ?>
 
+<script>
+    jQuery(document).ready(function () {
+        Moloni.OrdersBulkAction();
+    });
+</script>
