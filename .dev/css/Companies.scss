@@ -1,52 +1,45 @@
-.outBoxEmpresa {
-  margin-left: auto;
-  margin-right: auto;
-  width: 990px;
-  margin-top: 150px;
-}
+.companies {
+  @apply flex flex-col justify-center items-center;
 
-.caixaLoginEmpresa {
-  float: left;
-  margin: 20px 15px 20px 0;
-  background-color: #fff;
-  padding: 20px 15px;
-  width: 200px;
-  cursor: pointer;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border-radius: 6px;
-  -moz-box-shadow: 0 0 15px 2px #ccc;
-  -webkit-box-shadow: 0 0 15px 2px #ccc;
-  box-shadow: 0 0 15px 2px #ccc;
-  min-height: 150px;
-}
+  &__title {
+    @apply text-center;
+  }
 
-.no-companies__wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  margin-top: 10rem;
-}
+  &__list {
+    @apply flex w-full flex-wrap max-w-screen-2xl items-stretch;
+    @apply gap-4;
+  }
 
-.no-companies__title {
-  font-size: 1.3em;
-  margin-top: 1rem;
-  font-weight: bold;
-}
+  &__card {
+    @apply p-5 w-full sm:w-[15rem] gap-2;
+    @apply flex flex-col justify-between items-center rounded-md shadow-md bg-white border-0 box-border border-neutral-900;
 
-.no-companies__message {
-  margin-top: 0.5rem;
-  font-size: 1rem;
-}
+    &-title {
+      @apply text-center font-bold;
+    }
 
-.no-companies__help {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+    &-address {
+      @apply text-left w-full;
+    }
+
+    &-vat {
+      @apply text-left w-full;
+    }
+  }
+
+  &-invalid {
+    @apply flex flex-col items-center;
+
+    &__title {
+      @apply font-bold mt-4 text-lg;
+    }
+
+    &__message {
+      @apply mt-2;
+    }
+
+    &__help {
+      @apply my-6;
+    }
+  }
 }

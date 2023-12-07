@@ -1,9 +1,16 @@
 @tailwind utilities;
 
-@import "Buttons";
-@import "Companies";
+.moloni {
+  @apply mt-6;
+}
+
+#moloni {
+  @import "Buttons";
+  @import "Login";
+  @import "Companies";
+}
+
 @import "Legacy";
-@import "Login";
 @import "Logs";
 @import "Settings";
 @import "Utilities";

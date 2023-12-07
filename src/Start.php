@@ -114,26 +114,40 @@ class Start
      */
     public static function loginForm($error = false, $errorData = false)
     {
-        if (!self::$ajax) {
-            include(MOLONI_TEMPLATE_DIR . 'LoginForm.php');
+        if (self::$ajax) {
+            return;
         }
+
+        include(MOLONI_TEMPLATE_DIR . 'LoginForm.php');
     }
 
     /**
      * Draw all companies available to the user
-     * Except the
+     * Except the demo one
      */
     public static function companiesForm()
     {
+        if (self::$ajax) {
+            return;
+        }
+
         try {
             $companies = Curl::simple('companies/getAll', []);
         } catch (APIExeption $e) {
             $companies = [];
         }
 
-        if (!self::$ajax) {
-            include(MOLONI_TEMPLATE_DIR . 'CompanySelect.php');
+        foreach ($companies as $key => $company) {
+            if ((int)$company['company_id'] !== 5) {
+                continue;
+            }
+
+            unset($companies[$key]);
+
+            break;
         }
+
+        include(MOLONI_TEMPLATE_DIR . 'CompanySelect.php');
     }
 
     /**
