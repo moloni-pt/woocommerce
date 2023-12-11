@@ -6,7 +6,7 @@
   }
 
   &__list {
-    @apply flex w-full flex-wrap max-w-screen-2xl items-stretch;
+    @apply flex w-full flex-wrap max-w-screen-2xl items-stretch justify-center;
     @apply gap-4;
   }
 

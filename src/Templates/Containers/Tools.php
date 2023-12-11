@@ -4,7 +4,6 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<br>
 <table class="wc_status_table wc_status_table--tools widefat">
     <tbody class="tools">
     <tr>

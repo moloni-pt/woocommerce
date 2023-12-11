@@ -8,7 +8,6 @@ $hasValidCompany = false;
 ?>
 
 <section id="moloni" class="moloni">
-
     <div class="companies">
         <?php if (!empty($companies) && is_array($companies)) : ?>
             <div class="companies__title">
