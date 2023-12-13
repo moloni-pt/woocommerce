@@ -2,8 +2,9 @@
 
 namespace Moloni\Services\WcProducts\Page;
 
-use Moloni\Curl;
 use WC_Product;
+use Moloni\Curl;
+use Moloni\Helpers\MoloniProduct;
 use Moloni\Enums\Domains;
 use Moloni\Exceptions\APIExeption;
 
@@ -73,6 +74,10 @@ class FetchAndCheckProducts
 
             $this->createMoloniLink($row);
 
+            if (!defined('MOLONI_STOCK_SYNC') || empty(MOLONI_STOCK_SYNC)) {
+                continue;
+            }
+
             if (!empty($mlProduct['has_stock']) !== $product->managing_stock()) {
                 $row['tool_alert_message'] = __('Estado do controlo de stock diferente');
 
@@ -81,7 +86,10 @@ class FetchAndCheckProducts
 
             if (!empty($mlProduct['has_stock'])) {
                 $wcStock = (int)$product->get_stock_quantity();
-                $moloniStock = (int)$mlProduct['stock'];
+                $moloniStock = (int)MoloniProduct::parseMoloniStock(
+                    $mlProduct,
+                    defined('MOLONI_STOCK_SYNC') ? (int)MOLONI_STOCK_SYNC : 1
+                );
 
                 if ($wcStock !== $moloniStock) {
                     $row['tool_show_update_stock_button'] = true;

@@ -5,14 +5,14 @@ namespace Moloni\Hooks;
 use Exception;
 use Moloni\Curl;
 use Moloni\Exceptions\Core\MoloniException;
-use Moloni\Exceptions\GenericException;
-use Moloni\Start;
-use Moloni\Plugin;
-use Moloni\Storage;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
-use Moloni\Services\Orders\DiscardOrder;
+use Moloni\Exceptions\GenericException;
+use Moloni\Plugin;
 use Moloni\Services\Orders\CreateMoloniDocument;
+use Moloni\Services\Orders\DiscardOrder;
+use Moloni\Start;
+use Moloni\Storage;
 
 class Ajax
 {
@@ -180,6 +180,10 @@ class Ajax
                 throw new GenericException('Produto Moloni não encontrado');
             }
 
+            if (empty($mlProduct['has_stock'])) {
+                throw new GenericException('Produto Moloni não movimenta stock');
+            }
+
             $wcProduct = wc_get_product($wcProductId);
 
             if (empty($wcProduct)) {
@@ -190,7 +194,7 @@ class Ajax
                 throw new GenericException('Produtos não coincidem');
             }
 
-            $service = new \Moloni\Services\WcProducts\UpdateProductStock($mlProduct, $wcProduct);
+            $service = new \Moloni\Services\WcProducts\UpdateProductStock($wcProduct, $mlProduct);
             $service->run();
             $service->saveLog();
 
@@ -286,7 +290,7 @@ class Ajax
                 throw new GenericException('Produtos não coincidem');
             }
 
-            $service = new \Moloni\Services\MoloniProducts\UpdateProductStock($wcProduct, $mlProduct);
+            $service = new \Moloni\Services\MoloniProducts\UpdateProductStock($mlProduct, $wcProduct);
             $service->run();
             $service->saveLog();
 
