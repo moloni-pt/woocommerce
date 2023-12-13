@@ -99,14 +99,12 @@ class FetchAndCheckProducts
 
             if (!empty($product['has_stock'])) {
                 $wcStock = (int)$wcProduct->get_stock_quantity();
-                $moloniStock = (int)MoloniProduct::parseMoloniStock(
-                    $product,
-                    defined('MOLONI_STOCK_SYNC') ? (int)MOLONI_STOCK_SYNC : 1
-                );
+                $moloniStock = (int)MoloniProduct::parseMoloniStock($product, MOLONI_STOCK_SYNC);
 
                 if ($wcStock !== $moloniStock) {
                     $row['tool_show_update_stock_button'] = true;
                     $row['tool_alert_message'] = __('Stock não coincide no WooCommerce e Moloni');
+                    $row['tool_alert_message'] .= " (Moloni:$moloniStock | WooCommerce: $wcStock)";
 
                     continue;
                 }
