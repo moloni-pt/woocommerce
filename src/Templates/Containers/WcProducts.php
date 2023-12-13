@@ -40,7 +40,10 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
     <?= __('Todas as ações nesta página serão na direção WooCommerce -> Moloni.') ?>
 </h4>
 
-<form method="post" action='<?= $currentAction ?>'>
+<form method="get" action='<?= $currentAction ?>'>
+    <input type="hidden" name="page" value="moloni">
+    <input type="hidden" name="tab" value="wcProductsList">
+
     <div class="tablenav top">
         <a href='<?= $backAction ?>' class="button button-large">
             <?= __('Voltar') ?>
@@ -152,7 +155,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
 
 <script>
     jQuery(document).ready(function () {
-        Moloni.WcProducts.init("<?= $currentAction ?>");
+        Moloni.WcProducts.init();
     });
 </script>
 
