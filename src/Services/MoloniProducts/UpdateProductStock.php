@@ -68,6 +68,11 @@ class UpdateProductStock
         return $this->locked;
     }
 
+    public function saveLog()
+    {
+        // todo: this
+    }
+
     //            Privates            //
 
     private function init(): void

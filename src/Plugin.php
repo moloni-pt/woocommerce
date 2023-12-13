@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpPropertyOnlyWrittenInspection */
+
 namespace Moloni;
 
 use Exception;
@@ -24,6 +26,9 @@ use Moloni\Services\Stocks\SyncStockFromMoloni;
  */
 class Plugin
 {
+    private $action = '';
+    private $activeTab = '';
+
     /**
      * Constructor
      */
@@ -43,6 +48,9 @@ class Plugin
      */
     private function onStart()
     {
+        $this->action = sanitize_text_field($_REQUEST['action'] ?? '');
+        $this->activeTab = sanitize_text_field($_GET['tab'] ?? '');
+
         Storage::$USES_NEW_ORDERS_SYSTEM = Context::isNewOrdersSystemEnabled();
         Storage::$LOGGER = new Logger();
     }
@@ -96,9 +104,7 @@ class Plugin
 
             /** If the user is not logged in show the login form */
             if ($authenticated) {
-                $action = isset($_REQUEST['action']) ? sanitize_text_field($_REQUEST['action']) : '';
-
-                switch ($action) {
+                switch ($this->action) {
                     case 'remInvoice':
                         $this->removeOrder();
                         break;

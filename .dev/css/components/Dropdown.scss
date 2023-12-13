@@ -1,0 +1,56 @@
+.dropdown {
+  @apply w-fit list-none;
+
+  &__manager {
+
+  }
+
+  &__content {
+    @apply relative;
+  }
+
+  &--disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    &:not(.dropdown--disabled){
+      ul {
+        @apply visible z-20;
+      }
+    }
+  }
+
+  /*--- DROPDOWN ---*/
+
+  ul {
+    @apply absolute m-0 p-0 bg-neutral-0 invisible left-0;
+
+    button {
+      all: unset;
+
+      &:hover {
+        @apply underline;
+      }
+    }
+
+    a {
+      all: unset;
+
+      &:hover {
+        @apply underline;
+      }
+    }
+
+    li {
+      margin-bottom: unset;
+      @apply cursor-pointer whitespace-nowrap p-2;
+
+      &:hover {
+        @apply bg-neutral-16;
+      }
+    }
+  }
+}
