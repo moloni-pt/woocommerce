@@ -13,7 +13,6 @@ use Moloni\Storage;
 
 class UpdateProductStock extends ExportService
 {
-
     private $locked = false;
 
     private $warehouseId = 0;

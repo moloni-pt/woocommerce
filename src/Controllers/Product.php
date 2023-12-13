@@ -113,7 +113,7 @@ class Product
             $this->product_id = $insert['product_id'];
 
             Storage::$LOGGER->info(
-                str_replace('{0}', $this->reference, __('Artigo inserido com sucesso ({0})')),
+                str_replace('{0}', $this->reference, __('Artigo Moloni criado com sucesso ({0})')),
                 [
                     'product_id' => $this->product_id,
                     'props' => $props
@@ -151,7 +151,7 @@ class Product
             $this->product_id = $update['product_id'];
 
             Storage::$LOGGER->info(
-                str_replace('{0}', $this->reference, __('Artigo atualizado com sucesso ({0})')),
+                str_replace('{0}', $this->reference, __('Artigo Moloni atualizado com sucesso ({0})')),
                 [
                     'product_id' => $this->product_id,
                     'props' => $props

@@ -3,6 +3,7 @@
 namespace Moloni\Hooks;
 
 use Exception;
+use Moloni\Controllers\Product;
 use Moloni\Curl;
 use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\DocumentError;
@@ -235,15 +236,13 @@ class Ajax
                 throw new GenericException('Produto WooCommerce não tem referência');
             }
 
-            $mlProduct = Curl::simple('products/getByReference', ['reference' => $wcProduct->get_sku(), 'with_invisible' => true, 'exact' => 1]);
+            $service = new Product($wcProduct);
 
-            if (!empty($mlProduct)) {
+            if ($service->loadByReference()) {
                 throw new GenericException('Produto Moloni já existe');
             }
 
-            $service = new \Moloni\Services\MoloniProducts\CreateProduct($wcProduct);
-            $service->run();
-            $service->saveLog();
+            $service->create();
 
             $response['product_row'] = ''; // todo: this
         } catch (MoloniException $e) {
