@@ -37,71 +37,8 @@ class FetchAndCheckProducts
 
         $this->fetchProducts();
 
-        /** @var WC_Product $product */
         foreach ($this->products as $product) {
-            $this->rows[] = [
-                'tool_show_create_button' => false,
-                'tool_show_update_stock_button' => false,
-                'tool_alert_message' => '',
-                'wc_product_id' => $product->get_id(),
-                'wc_product_link' => '',
-                'wc_product_object' => $product,
-                'moloni_product_id' => 0,
-                'moloni_product_array' => [],
-                'moloni_product_link' => ''
-            ];
-
-            end($this->rows);
-            $row = &$this->rows[key($this->rows)];
-
-            $this->createWcLink($row);
-
-            if ($product->is_type('variable')) {
-                $row['tool_alert_message'] = __('Produto WooCommerce tem variantes');
-
-                continue;
-            }
-
-            if (empty($product->get_sku())) {
-                $row['tool_alert_message'] = __('Produto WooCommerce sem referência');
-
-                continue;
-            }
-
-            $mlProduct = Curl::simple('products/getByReference', ['reference' => $product->get_sku(), 'with_invisible' => true, 'exact' => 1]);
-
-            if (empty($mlProduct)) {
-                $row['tool_show_create_button'] = true;
-                $row['tool_alert_message'] = __('Produto não encontrado na conta Moloni');
-
-                continue;
-            }
-
-            $mlProduct = $mlProduct[0];
-
-            $row['moloni_product_id'] = $mlProduct['product_id'];
-            $row['moloni_product_array'] = $mlProduct;
-
-            $this->createMoloniLink($row);
-
-            if (!empty($mlProduct['has_stock']) !== $product->managing_stock()) {
-                $row['tool_alert_message'] = __('Estado do controlo de stock diferente');
-
-                continue;
-            }
-
-            if (!empty($mlProduct['has_stock'])) {
-                $wcStock = (int)$product->get_stock_quantity();
-                $moloniStock = (int)MoloniProduct::parseMoloniStock($mlProduct, $this->warehouseId);
-
-                if ($wcStock !== $moloniStock) {
-                    $row['tool_show_update_stock_button'] = true;
-                    $row['tool_alert_message'] = __('Stock não coincide no WooCommerce e Moloni');
-                    $row['tool_alert_message'] .= " (Moloni:$moloniStock | WooCommerce: $wcStock)";
-
-                    continue;
-                }
-            }
+            $this->checkProduct($product);
         }
     }
 
@@ -121,6 +58,101 @@ class FetchAndCheckProducts
         ];
 
         return paginate_links($args);
+    }
+
+    //            Private's            //
+
+    private function checkProduct(WC_Product $product)
+    {
+        $this->rows[] = [
+            'tool_show_create_button' => false,
+            'tool_show_update_stock_button' => false,
+            'tool_alert_message' => '',
+            'wc_product_id' => $product->get_id(),
+            'wc_product_parent_id' => $product->get_parent_id(),
+            'wc_product_link' => '',
+            'wc_product_object' => $product,
+            'moloni_product_id' => 0,
+            'moloni_product_array' => [],
+            'moloni_product_link' => ''
+        ];
+
+        end($this->rows);
+        $row = &$this->rows[key($this->rows)];
+
+        if ($product->is_type('variable') && $product->has_child()) {
+            $this->checkParentProduct($row, $product);
+
+            $children = $product->get_children();
+
+            foreach ($children as $child) {
+                $childObject = wc_get_product($child);
+
+                $this->checkProduct($childObject);
+            }
+        } else {
+            $this->checkNormalProduct($row, $product);
+        }
+    }
+
+    private function checkParentProduct(array &$row, WC_Product $product)
+    {
+        $this->createWcLink($row);
+
+        if ($product->managing_stock()) {
+            $row['tool_alert_message'] = __('Gestão de stock deve ser efetuada ao nível das variações');
+
+            return;
+        }
+    }
+
+    private function checkNormalProduct(array &$row, WC_Product $product)
+    {
+        /** Child products do not have their own page */
+        if (empty($product->get_parent_id())) {
+            $this->createWcLink($row);
+        }
+
+        if (empty($product->get_sku())) {
+            $row['tool_alert_message'] = __('Produto WooCommerce sem referência');
+
+            return;
+        }
+
+        $mlProduct = Curl::simple('products/getByReference', ['reference' => $product->get_sku(), 'with_invisible' => true, 'exact' => 1]);
+
+        if (empty($mlProduct)) {
+            $row['tool_show_create_button'] = true;
+            $row['tool_alert_message'] = __('Produto não encontrado na conta Moloni');
+
+            return;
+        }
+
+        $mlProduct = $mlProduct[0];
+
+        $row['moloni_product_id'] = $mlProduct['product_id'];
+        $row['moloni_product_array'] = $mlProduct;
+
+        $this->createMoloniLink($row);
+
+        if (!empty($mlProduct['has_stock']) !== $product->managing_stock()) {
+            $row['tool_alert_message'] = __('Estado do controlo de stock diferente');
+
+            return;
+        }
+
+        if (!empty($mlProduct['has_stock'])) {
+            $wcStock = (int)$product->get_stock_quantity();
+            $moloniStock = (int)MoloniProduct::parseMoloniStock($mlProduct, $this->warehouseId);
+
+            if ($wcStock !== $moloniStock) {
+                $row['tool_show_update_stock_button'] = true;
+                $row['tool_alert_message'] = __('Stock não coincide no WooCommerce e Moloni');
+                $row['tool_alert_message'] .= " (Moloni:$moloniStock | WooCommerce: $wcStock)";
+
+                return;
+            }
+        }
     }
 
     //            Auxiliary            //

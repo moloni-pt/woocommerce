@@ -20,7 +20,34 @@ $row = $row ?? [];
         <?= $row['wc_product_object']->get_sku() ?>
     </td>
     <td>
-        <?= $row['wc_product_object']->get_type() ?>
+        <?php
+        switch ($row['wc_product_object']->get_type()) {
+            case 'external':
+                echo __('Externo');
+
+                break;
+            case 'grouped':
+                echo __('Composto');
+
+                break;
+            case 'simple':
+                echo __('Simples');
+
+                break;
+            case 'variable':
+                echo __('Variável');
+
+                break;
+            case 'variation':
+                echo __('Variação');
+
+                break;
+            default:
+                echo __('Outro');
+
+                break;
+        }
+        ?>
     </td>
     <td>
         <?= ($row['tool_alert_message'] ?? '') ?: '---' ?>
@@ -32,11 +59,13 @@ $row = $row ?? [];
             </button>
             <div class="dropdown__content">
                 <ul>
-                    <li>
-                        <a target="_blank" href="<?= $row['wc_product_link'] ?>">
-                            <?= __('Ver no WooCommerce') ?>
-                        </a>
-                    </li>
+                    <?php if (!empty($row['wc_product_link'])) : ?>
+                        <li>
+                            <a target="_blank" href="<?= $row['wc_product_link'] ?>">
+                                <?= __('Ver no WooCommerce') ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
                     <?php if (!empty($row['moloni_product_link'])) : ?>
                         <li>

@@ -52,6 +52,7 @@ class FetchAndCheckProducts
                 'tool_show_update_stock_button' => false,
                 'tool_alert_message' => '',
                 'wc_product_id' => 0,
+                'wc_product_parent_id' => 0,
                 'wc_product_link' => '',
                 'wc_product_object' => null,
                 'moloni_product_id' => $product['product_id'],
@@ -80,7 +81,8 @@ class FetchAndCheckProducts
 
             $wcProduct = wc_get_product($wcProductId);
 
-            $row['wc_product_id'] = $wcProductId;
+            $row['wc_product_id'] = $wcProduct->get_id();
+            $row['wc_product_parent_id'] = $wcProduct->get_parent_id();
             $row['wc_product_object'] = $wcProduct;
 
             $this->createWcLink($row);
