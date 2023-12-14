@@ -20,6 +20,8 @@ class FetchAndCheckProducts
     private $products = [];
     private $totalProducts = 0;
 
+    private $warehouseId = 0;
+
     //            Public's            //
 
     /**
@@ -31,6 +33,8 @@ class FetchAndCheckProducts
      */
     public function run()
     {
+        $this->warehouseId = MoloniProduct::getWarehouseIdForManualDataSyncTools();
+
         $this->fetchProducts();
 
         /** @var WC_Product $product */
@@ -51,6 +55,12 @@ class FetchAndCheckProducts
             $row = &$this->rows[key($this->rows)];
 
             $this->createWcLink($row);
+
+            if ($product->is_type('variable')) {
+                $row['tool_alert_message'] = __('Produto WooCommerce tem variantes');
+
+                continue;
+            }
 
             if (empty($product->get_sku())) {
                 $row['tool_alert_message'] = __('Produto WooCommerce sem referência');
@@ -74,10 +84,6 @@ class FetchAndCheckProducts
 
             $this->createMoloniLink($row);
 
-            if (!defined('MOLONI_STOCK_SYNC') || empty(MOLONI_STOCK_SYNC)) {
-                continue;
-            }
-
             if (!empty($mlProduct['has_stock']) !== $product->managing_stock()) {
                 $row['tool_alert_message'] = __('Estado do controlo de stock diferente');
 
@@ -86,7 +92,7 @@ class FetchAndCheckProducts
 
             if (!empty($mlProduct['has_stock'])) {
                 $wcStock = (int)$product->get_stock_quantity();
-                $moloniStock = (int)MoloniProduct::parseMoloniStock($mlProduct, MOLONI_STOCK_SYNC);
+                $moloniStock = (int)MoloniProduct::parseMoloniStock($mlProduct, $this->warehouseId);
 
                 if ($wcStock !== $moloniStock) {
                     $row['tool_show_update_stock_button'] = true;
@@ -169,7 +175,12 @@ class FetchAndCheckProducts
         return $this->rows;
     }
 
-    //            Requests            //
+    public function getWarehouseId(): int
+    {
+        return $this->warehouseId;
+    }
+
+    //            Sets            //
 
     public function setPage(int $page): void
     {
@@ -181,7 +192,7 @@ class FetchAndCheckProducts
         $this->filters = $filters;
     }
 
-    //            Sets            //
+    //            Requests            //
 
     /**
      * Fetch products from Moloni

@@ -23,10 +23,16 @@ class UpdateProductStock extends ExportService
     private $resultMessage = '';
     private $resultData = [];
 
-    public function __construct(array $moloniProduct, WC_Product $wcProduct)
+    public function __construct(array $moloniProduct, WC_Product $wcProduct, ?int $warehouseId = null)
     {
         $this->moloniProduct = $moloniProduct;
         $this->wcProduct = $wcProduct;
+
+        if (!is_null($warehouseId)) {
+            $this->warehouseId = $warehouseId;
+        } elseif (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC > 1) {
+            $this->warehouseId = (int)MOLONI_STOCK_SYNC;
+        }
 
         $this->init();
     }
@@ -63,7 +69,7 @@ class UpdateProductStock extends ExportService
             'unit_price' => 0,
             'qty' => $this->wcStock - $this->moloniStock,
             'warehouse_id' => $this->warehouseId > 1 ? $this->warehouseId : 0,
-            'notes' => 'WooCommerce',
+            'notes' => __('WooCommerce - sincronização manual'),
         ];
 
         try {
@@ -121,11 +127,6 @@ class UpdateProductStock extends ExportService
 
     private function init(): void
     {
-        /** Set Warehouse to use */
-        if (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC > 1) {
-            $this->warehouseId = (int)MOLONI_STOCK_SYNC;
-        }
-
         $this->moloniStock = (int)MoloniProduct::parseMoloniStock($this->moloniProduct, $this->warehouseId);
         $this->wcStock = $this->wcProduct->get_stock_quantity();
     }

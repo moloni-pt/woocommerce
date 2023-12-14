@@ -1,6 +1,7 @@
 <?php
 
 use Moloni\Exceptions\APIExeption;
+use Moloni\Helpers\MoloniWarehouse;
 use Moloni\Services\WcProducts\Page\FetchAndCheckProducts;
 
 if (!defined('ABSPATH')) {
@@ -40,8 +41,34 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
     <?= __('Todas as ações nesta página serão na direção WooCommerce -> Moloni.') ?>
 </h4>
 
+<div class="notice notice-warning m-0">
+    <p>
+        <?= __('Valores do stock Moloni baseados em:') ?>
+    </p>
+    <p>
+        <?php
+        $warehouseId = $service->getWarehouseId();
+
+        if ($warehouseId === 0) {
+            echo '- ' . __('Stock acumulado de todos os armazéns.');
+        } else {
+            try {
+                $warehouse = MoloniWarehouse::getWarehouseById($warehouseId);
+            } catch (APIExeption $e) {
+                $e->showError();
+                return;
+            }
+
+            echo '- ' . __('Armazém');
+            echo ': ' . $warehouse['title'] . ' (' . $warehouse['code'] . ')';
+        }
+        ?>
+    </p>
+</div>
+
 <form method="get" action='<?= $currentAction ?>'>
     <input type="hidden" name="page" value="moloni">
+    <input type="hidden" name="paged" value="<?= $page ?>">
     <input type="hidden" name="tab" value="wcProductsList">
 
     <div class="tablenav top">

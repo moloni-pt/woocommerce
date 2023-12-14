@@ -9,6 +9,7 @@ use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Exceptions\GenericException;
+use Moloni\Helpers\MoloniProduct;
 use Moloni\Plugin;
 use Moloni\Services\Orders\CreateMoloniDocument;
 use Moloni\Services\Orders\DiscardOrder;
@@ -191,11 +192,18 @@ class Ajax
                 throw new GenericException('Produto WooCommerce não encontrado');
             }
 
+            if (empty($wcProduct->is_type('variable'))) {
+                throw new GenericException('Produto WooCommerce tem variantes');
+            }
+
             if ($mlProduct['reference'] !== $wcProduct->get_sku()) {
                 throw new GenericException('Produtos não coincidem');
             }
 
-            $service = new \Moloni\Services\WcProducts\UpdateProductStock($wcProduct, $mlProduct);
+            /** Warehouse that is used to check Moloni store in tools */
+            $warehouseId = MoloniProduct::getWarehouseIdForManualDataSyncTools();
+
+            $service = new \Moloni\Services\WcProducts\UpdateProductStock($wcProduct, $mlProduct, $warehouseId);
             $service->run();
             $service->saveLog();
 
@@ -279,6 +287,10 @@ class Ajax
                 throw new GenericException('Produto WooCommerce não encontrado');
             }
 
+            if (empty($wcProduct->is_type('variable'))) {
+                throw new GenericException('Produto WooCommerce tem variantes');
+            }
+
             $mlProduct = Curl::simple('products/getOne', ['product_id' => $mlProductId]);
 
             if (empty($mlProduct)) {
@@ -289,7 +301,10 @@ class Ajax
                 throw new GenericException('Produtos não coincidem');
             }
 
-            $service = new \Moloni\Services\MoloniProducts\UpdateProductStock($mlProduct, $wcProduct);
+            /** Warehouse that is used to check Moloni store in tools */
+            $warehouseId = MoloniProduct::getWarehouseIdForManualDataSyncTools();
+
+            $service = new \Moloni\Services\MoloniProducts\UpdateProductStock($mlProduct, $wcProduct, $warehouseId);
             $service->run();
             $service->saveLog();
 
