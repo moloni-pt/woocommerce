@@ -6,7 +6,7 @@ if (Moloni.modals === undefined) {
     Moloni.modals = {};
 }
 
-Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, updateStockAction) {
+Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, updateStockAction, endCallback) {
     const $ = jQuery;
 
     const history = {
@@ -68,56 +68,41 @@ Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, 
         let toggle = $('<a class="mt-1" href="#">Clique para ver</a>');
         let wrapper = $('<div></div>');
 
-        if (history['create'].length) {
+        let possibleActions = [
+            {
+                name: 'create',
+                label: 'processos de criação de produtos.'
+            },
+            {
+                name: 'update',
+                label: 'processos de atualização de produtos.'
+            },
+            {
+                name: 'stock',
+                label: 'processos de atualização de stock.'
+            }
+        ];
+
+        possibleActions.forEach((possibleAction) => {
+            if (!history[possibleAction.name].length) {
+                return;
+            }
+
             let tempList = list.clone();
             let tempToggle = toggle.clone();
             let tempWrapper = wrapper.clone();
 
-            history['create'].forEach((element) => tempList.append('<div>' + element + '</div>'));
+            history[possibleAction.name].forEach((element) => tempList.append('<div>' + element + '</div>'));
 
             tempToggle.on('click', function () {
                 tempList.toggle(200);
             });
 
-            tempWrapper.append('<div>Concluídos ' + history['create'].length + ' processos de criação de produtos.</div>');
+            tempWrapper.append('<div>Concluídos ' + history[possibleAction.name].length + ' ' + possibleAction.label + '</div>');
             tempWrapper.append(tempList, tempToggle);
 
             processReport.append(tempWrapper);
-        }
-
-        if (history['update'].length) {
-            let tempList = list.clone();
-            let tempToggle = toggle.clone();
-            let tempWrapper = wrapper.clone();
-
-            history['update'].forEach((element) => tempList.append('<div>' + element + '</div>'));
-
-            tempToggle.on('click', function () {
-                tempList.toggle(200);
-            });
-
-            tempWrapper.append('<div>Concluídos ' + history['update'].length + ' processos de atualização de produtos.</div>');
-            tempWrapper.append(tempList, tempToggle);
-
-            processReport.append(tempWrapper);
-        }
-
-        if (history['stock'].length) {
-            let tempList = list.clone();
-            let tempToggle = toggle.clone();
-            let tempWrapper = wrapper.clone();
-
-            history['stock'].forEach((element) => tempList.append('<div>' + element + '</div>'));
-
-            tempToggle.on('click', function () {
-                tempList.toggle(200);
-            });
-
-            tempWrapper.append('<div>Concluídos ' + history['stock'].length + ' processos de atualização de stock.</div>');
-            tempWrapper.append(tempList, tempToggle);
-
-            processReport.append(tempWrapper);
-        }
+        });
 
         content.append(processReport);
     };
@@ -158,6 +143,8 @@ Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, 
 
         if (data && data.valid) {
             history[action].push(displayName + ': Processado com sucesso');
+
+            row.replaceWith(data.product_row);
         } else {
             history[action].push(displayName + ': Erro no processo');
             console.log(data);
@@ -192,4 +179,8 @@ Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, 
     titleStart.hide();
     titleEnd.show();
     closeButton.show(200);
+
+    if (endCallback) {
+        endCallback();
+    }
 });

@@ -106,7 +106,7 @@ class FetchAndCheckProducts
                 if ($wcStock !== $moloniStock) {
                     $row['tool_show_update_stock_button'] = true;
                     $row['tool_alert_message'] = __('Stock não coincide no WooCommerce e Moloni');
-                    $row['tool_alert_message'] .= " (Moloni:$moloniStock | WooCommerce: $wcStock)";
+                    $row['tool_alert_message'] .= " (Moloni: $moloniStock | WooCommerce: $wcStock)";
 
                     continue;
                 }

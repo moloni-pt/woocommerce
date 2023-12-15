@@ -129,8 +129,7 @@ class Ajax
                 'action' => 'toolsCreateWcProduct'
             ]
         ];
-        sleep(2);
-        $this->sendJson($response);
+
         try {
             $mlProduct = Curl::simple('products/getOne', ['product_id' => $mlProductId]);
 
@@ -175,8 +174,7 @@ class Ajax
                 'action' => 'toolsUpdateWcStock'
             ]
         ];
-        sleep(2);
-        $this->sendJson($response);
+
         try {
             $mlProduct = Curl::simple('products/getOne', ['product_id' => $mlProductId]);
 
@@ -194,7 +192,7 @@ class Ajax
                 throw new GenericException('Produto WooCommerce não encontrado');
             }
 
-            if (empty($wcProduct->is_type('variable'))) {
+            if (!empty($wcProduct->is_type('variable'))) {
                 throw new GenericException('Produto WooCommerce tem variantes');
             }
 
@@ -289,7 +287,7 @@ class Ajax
                 throw new GenericException('Produto WooCommerce não encontrado');
             }
 
-            if (empty($wcProduct->is_type('variable'))) {
+            if (!empty($wcProduct->is_type('variable'))) {
                 throw new GenericException('Produto WooCommerce tem variantes');
             }
 

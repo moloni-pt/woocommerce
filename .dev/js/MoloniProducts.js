@@ -21,7 +21,7 @@ Moloni.MoloniProducts = (function ($) {
             } else {
                 actionButton.attr("disabled", true);
             }
-        });
+        }).trigger('change');
 
         actionButton.off('click').on('click', function () {
             let rows = [];
@@ -31,7 +31,12 @@ Moloni.MoloniProducts = (function ($) {
             });
 
             if (rows.length) {
-                Moloni.modals.ProductsBulkProcess(rows, 'toolsCreateWcProduct', 'toolsUpdateWcStock');
+                Moloni.modals.ProductsBulkProcess(
+                    rows,
+                    'toolsCreateWcProduct',
+                    'toolsUpdateWcStock',
+                    startObservers
+                );
             }
         });
     }
