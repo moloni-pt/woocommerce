@@ -12,86 +12,28 @@ Moloni.WcProducts = (function ($) {
     }
 
     function startObservers() {
-        $('.export_product').off('click').on('click', function () {
-            var wcProductId = $(this).closest('.product__row').data('wcId');
+        let allSelectedCheckboxQuery = '.checkbox_create_product:enabled:checked, .checkbox_update_stock_product:enabled:checked';
+        let actionButton = $('.button-start-exports');
 
-            exportProduct(wcProductId);
+        $('.checkbox_create_product:enabled, .checkbox_update_stock_product:enabled').off('change').on('change', function () {
+            if ($(allSelectedCheckboxQuery).length) {
+                actionButton.removeAttr("disabled");
+            } else {
+                actionButton.attr("disabled", true);
+            }
         });
 
-        $('.export_stock').off('click').on('click', function () {
-            var mlProductId = $(this).closest('.product__row').data('moloniId');
-            var wcProductId = $(this).closest('.product__row').data('wcId');
+        actionButton.off('click').on('click', function () {
+            let rows = [];
 
-            exportStock(wcProductId, mlProductId);
+            $(allSelectedCheckboxQuery).each(function () {
+                rows.push($(this));
+            });
+
+            if (rows.length) {
+                Moloni.modals.ProductsBulkProcess(rows, 'toolsCreateMoloniProduct', 'toolsUpdateMoloniStock');
+            }
         });
-    }
-
-    //            Requests            //
-
-    function exportStock(wcProductId, mlProductId) {
-        disableAllButtons();
-
-        var data = {
-            'action': 'toolsUpdateMoloniStock',
-            'wc_product_id': wcProductId,
-            'ml_product_id': mlProductId
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: ajaxurl,
-            data,
-            success: onAjaxRequestFinishes,
-            async: true
-        });
-    }
-
-    function exportProduct(wcProductId) {
-        disableAllButtons();
-
-        var data = {
-            'action': 'toolsCreateMoloniProduct',
-            'wc_product_id': wcProductId
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: ajaxurl,
-            data,
-            success: onAjaxRequestFinishes,
-            async: true
-        });
-    }
-
-    //            Request callbacks            //
-
-    function onAjaxRequestFinishes(result) {
-        // enableAllButtons();
-
-        if (result.valid) {
-            location.reload();
-
-            // toggleRow();
-        } else {
-            console.log(result);
-            alert('Ocorreu um erro!');
-        }
-    }
-
-    //            Auxiliary            //
-
-    function enableAllButtons() {
-        $('.dropdown').removeClass('dropdown--disabled')
-    }
-
-    function disableAllButtons() {
-        $('.dropdown').addClass('dropdown--disabled')
-    }
-
-    function toggleRow() {
-        // todo: do stuff
-
-        startObservers();
     }
 
     return {

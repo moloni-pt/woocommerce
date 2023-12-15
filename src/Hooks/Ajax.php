@@ -129,7 +129,8 @@ class Ajax
                 'action' => 'toolsCreateWcProduct'
             ]
         ];
-
+        sleep(2);
+        $this->sendJson($response);
         try {
             $mlProduct = Curl::simple('products/getOne', ['product_id' => $mlProductId]);
 
@@ -174,7 +175,8 @@ class Ajax
                 'action' => 'toolsUpdateWcStock'
             ]
         ];
-
+        sleep(2);
+        $this->sendJson($response);
         try {
             $mlProduct = Curl::simple('products/getOne', ['product_id' => $mlProductId]);
 

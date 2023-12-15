@@ -76,6 +76,10 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             <?= __('Voltar') ?>
         </a>
 
+        <button type="button" class="button button-large button-primary button-start-imports" disabled>
+            <?= __('Correr importações') ?>
+        </button>
+
         <div class="tablenav-pages">
             <?= $paginator ?>
         </div>
@@ -96,8 +100,12 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             <th>
                 <a><?= __('Alertas') ?></a>
             </th>
-            <th>
-                <a><?= __('Ações') ?></a>
+            <th></th>
+            <th class="w-12 text-center">
+                <a><?= __('Importar produto') ?></a>
+            </th>
+            <th class="w-12 text-center">
+                <a><?= __('Importar Stock') ?></a>
             </th>
         </tr>
         <tr>
@@ -116,12 +124,8 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
                         name="filter_reference"
                         value="<?= $filters['filter_reference'] ?>"
             </th>
-            <th>
-                ---
-            </th>
-            <th>
-                ---
-            </th>
+            <th></th>
+            <th></th>
             <th>
                 <button type="submit" class="button button-primary">
                     <?= __('Pesquisar') ?>
@@ -131,6 +135,8 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
                     <?= __('Limpar') ?>
                 </a>
             </th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
 
@@ -162,8 +168,12 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             <th>
                 <a><?= __('Alertas') ?></a>
             </th>
-            <th>
-                <a><?= __('Ações') ?></a>
+            <th></th>
+            <th class="w-12 text-center">
+                <a><?= __('Importar produto') ?></a>
+            </th>
+            <th class="w-12 text-center">
+                <a><?= __('Importar Stock') ?></a>
             </th>
         </tr>
         </tfoot>
@@ -174,11 +184,17 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             <?= __('Voltar') ?>
         </a>
 
+        <button type="button" class="button button-large button-primary button-start-imports" disabled>
+            <?= __('Correr importações') ?>
+        </button>
+
         <div class="tablenav-pages">
             <?= $paginator ?>
         </div>
     </div>
 </form>
+
+<?php include MOLONI_TEMPLATE_DIR . 'Modals/Products/ActionModal.php'; ?>
 
 <script>
     jQuery(document).ready(function () {

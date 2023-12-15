@@ -13,10 +13,10 @@ $row = $row ?? [];
     data-wc-id="<?= $row['wc_product_id'] ?? 0 ?>"
     data-moloni-id="<?= $row['moloni_product_id'] ?? 0 ?>"
 >
-    <td>
+    <td class="product__row-name">
         <?= $row['moloni_product_array']['name'] ?? '---' ?>
     </td>
-    <td>
+    <td class="product__row-reference">
         <?= $row['moloni_product_array']['reference'] ?? '---' ?>
     </td>
     <td>
@@ -46,43 +46,41 @@ $row = $row ?? [];
         <?= ($row['tool_alert_message'] ?? '') ?: '---' ?>
     </td>
     <td>
-        <div class="dropdown">
-            <button type="button" class="dropdown--manager button button-primary">
-                <?= __('Mais') ?> &#8628;
-            </button>
-            <div class="dropdown__content">
-                <ul>
-                    <li>
-                        <a target="_blank" href="<?= $row['moloni_product_link'] ?>">
-                            <?= __('Ver no Moloni') ?>
-                        </a>
-                    </li>
+        <?php if (!empty($row['wc_product_link']) || !empty($row['moloni_product_link'])) : ?>
+            <div class="dropdown">
+                <button type="button" class="dropdown--manager button button-primary">
+                    <?= __('Ver') ?> &#8628;
+                </button>
+                <div class="dropdown__content">
+                    <ul>
+                        <?php if (!empty($row['moloni_product_link'])) : ?>
+                            <li>
+                                <a target="_blank" href="<?= $row['moloni_product_link'] ?>">
+                                    <?= __('Ver no Moloni') ?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
 
-                    <?php if (!empty($row['wc_product_link'])) : ?>
-                        <li>
-                            <a target="_blank" href="<?= $row['wc_product_link'] ?>">
-                                <?= __('Ver no WooCommerce') ?>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-
-                    <?php if (!empty($row['tool_show_create_button'])) : ?>
-                        <li>
-                            <button type="button" class="import_product">
-                                <?= __('Importar produto') ?>
-                            </button>
-                        </li>
-                    <?php endif; ?>
-
-                    <?php if (!empty($row['tool_show_update_stock_button'])) : ?>
-                        <li>
-                            <button type="button" class="import_stock">
-                                <?= __('Importar stock') ?>
-                            </button>
-                        </li>
-                    <?php endif; ?>
-                </ul>
+                        <?php if (!empty($row['wc_product_link'])) : ?>
+                            <li>
+                                <a target="_blank" href="<?= $row['wc_product_link'] ?>">
+                                    <?= __('Ver no WooCommerce') ?>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
+    </td>
+    <td>
+        <input type="checkbox" class="checkbox_create_product"
+            <?= empty($row['tool_show_create_button']) ? 'disabled' : '' ?>
+        >
+    </td>
+    <td>
+        <input type="checkbox" class="checkbox_update_stock_product"
+            <?= empty($row['tool_show_update_stock_button']) ? 'disabled' : '' ?>
+        >
     </td>
 </tr>

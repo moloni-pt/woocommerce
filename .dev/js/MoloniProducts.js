@@ -12,86 +12,28 @@ Moloni.MoloniProducts = (function ($) {
     }
 
     function startObservers() {
-        $('.import_product').off('click').on('click', function () {
-            var mlProductId = $(this).closest('.product__row').data('moloniId');
+        let allSelectedCheckboxQuery = '.checkbox_create_product:enabled:checked, .checkbox_update_stock_product:enabled:checked';
+        let actionButton = $('.button-start-imports');
 
-            importProduct(mlProductId);
+        $('.checkbox_create_product:enabled, .checkbox_update_stock_product:enabled').off('change').on('change', function () {
+            if ($(allSelectedCheckboxQuery).length) {
+                actionButton.removeAttr("disabled");
+            } else {
+                actionButton.attr("disabled", true);
+            }
         });
 
-        $('.import_stock').off('click').on('click', function () {
-            var mlProductId = $(this).closest('.product__row').data('moloniId');
-            var wcProductId = $(this).closest('.product__row').data('wcId');
+        actionButton.off('click').on('click', function () {
+            let rows = [];
 
-            importStock(mlProductId, wcProductId);
+            $(allSelectedCheckboxQuery).each(function () {
+                rows.push($(this));
+            });
+
+            if (rows.length) {
+                Moloni.modals.ProductsBulkProcess(rows, 'toolsCreateWcProduct', 'toolsUpdateWcStock');
+            }
         });
-    }
-
-    //            Requests            //
-
-    function importStock(mlProductId, wcProductId) {
-        disableAllButtons();
-
-        var data = {
-            'action': 'toolsUpdateWcStock',
-            'ml_product_id': mlProductId,
-            'wc_product_id': wcProductId
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: ajaxurl,
-            data,
-            success: onAjaxRequestFinishes,
-            async: true
-        });
-    }
-
-    function importProduct(mlProductId) {
-        disableAllButtons();
-
-        var data = {
-            'action': 'toolsCreateWcProduct',
-            'ml_product_id': mlProductId
-        };
-
-        $.ajax({
-            type: 'POST',
-            url: ajaxurl,
-            data,
-            success: onAjaxRequestFinishes,
-            async: true
-        });
-    }
-
-    //            Request callbacks            //
-
-    function onAjaxRequestFinishes(result) {
-        // enableAllButtons();
-
-        if (result.valid) {
-            location.reload();
-
-            // toggleRow();
-        } else {
-            console.log(result);
-            alert('Ocorreu um erro!');
-        }
-    }
-
-    //            Auxiliary            //
-
-    function enableAllButtons() {
-        $('.dropdown').removeClass('dropdown--disabled')
-    }
-
-    function disableAllButtons() {
-        $('.dropdown').addClass('dropdown--disabled')
-    }
-
-    function toggleRow() {
-        // todo: do stuff
-
-        startObservers();
     }
 
     return {
