@@ -41,11 +41,7 @@ class FetchAndCheckProducts
             $service = new CheckProduct($product, $this->warehouseId);
             $service->run();
 
-            $rows = $service->getRows();
-
-            foreach ($rows as $row) {
-                $this->rows[] = $row;
-            }
+            $this->rows[] = $service->getRowsHtml();
         }
     }
 

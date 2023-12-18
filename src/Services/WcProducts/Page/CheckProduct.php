@@ -126,6 +126,17 @@ class CheckProduct
         return $this->rows;
     }
 
+    public function getRowsHtml(): string
+    {
+        ob_start();
+
+        foreach ($this->rows as $row) {
+            include MOLONI_TEMPLATE_DIR . 'Blocks/WcProducts/ProductRow.php';
+        }
+
+        return ob_get_clean() ?: '';
+    }
+
     //            Auxiliary            //
 
     private function createMoloniLink(array &$row)

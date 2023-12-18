@@ -50,7 +50,7 @@ class FetchAndCheckProducts
             $service = new CheckProduct($product, $this->warehouseId);
             $service->run();
 
-            $this->rows[] = $service->getRow();
+            $this->rows[] = $service->getRowsHtml();
         }
     }
 

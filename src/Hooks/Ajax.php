@@ -143,11 +143,17 @@ class Ajax
                 throw new GenericException('Produto WooCommerce já existe');
             }
 
+            /** Warehouse that is used to check Moloni store in tools */
+            $warehouseId = MoloniProduct::getWarehouseIdForManualDataSyncTools();
+
             $service = new \Moloni\Services\WcProducts\CreateProduct($mlProduct);
             $service->run();
             $service->saveLog();
 
-            $response['product_row'] = ''; // todo: this
+            $checkService = new \Moloni\Services\MoloniProducts\Page\CheckProduct($mlProduct, $warehouseId);
+            $checkService->run();
+
+            $response['product_row'] = $checkService->getRowsHtml();
         } catch (MoloniException $e) {
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();
@@ -207,7 +213,10 @@ class Ajax
             $service->run();
             $service->saveLog();
 
-            $response['product_row'] = ''; // todo: this
+            $checkService = new \Moloni\Services\MoloniProducts\Page\CheckProduct($mlProduct, $warehouseId);
+            $checkService->run();
+
+            $response['product_row'] = $checkService->getRowsHtml();
         } catch (MoloniException $e) {
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();
@@ -252,7 +261,13 @@ class Ajax
 
             $service->create();
 
-            $response['product_row'] = ''; // todo: this
+            /** Warehouse that is used to check Moloni store in tools */
+            $warehouseId = MoloniProduct::getWarehouseIdForManualDataSyncTools();
+
+            $checkService = new \Moloni\Services\WcProducts\Page\CheckProduct($wcProduct, $warehouseId);
+            $checkService->run();
+
+            $response['product_row'] = $checkService->getRowsHtml();
         } catch (MoloniException $e) {
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();
@@ -308,7 +323,10 @@ class Ajax
             $service->run();
             $service->saveLog();
 
-            $response['product_row'] = ''; // todo: this
+            $checkService = new \Moloni\Services\WcProducts\Page\CheckProduct($wcProduct, $warehouseId);
+            $checkService->run();
+
+            $response['product_row'] = $checkService->getRowsHtml();
         } catch (MoloniException $e) {
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();

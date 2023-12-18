@@ -144,10 +144,23 @@ Moloni.modals.ProductsBulkProcess = (async function (rows, createProductAction, 
         if (data && data.valid) {
             history[action].push(displayName + ': Processado com sucesso');
 
-            row.replaceWith(data.product_row);
+            var newRow = $(data.product_row);
+
+            row.replaceWith(newRow);
+            newRow.addClass('product__row--new');
+
+            setTimeout(() => {
+                newRow.removeClass('product__row--new');
+            }, 3000);
         } else {
             history[action].push(displayName + ': Erro no processo');
             console.log(data);
+
+            row.addClass('product__row--error');
+
+            setTimeout(() => {
+                row.removeClass('product__row--error');
+            }, 3000);
         }
 
         if (actionModal.is(':visible')) {
