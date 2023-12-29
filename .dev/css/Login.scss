@@ -1,42 +1,48 @@
 .login {
+  @apply text-base font-poppins;
+
   &__wrapper {
     @apply flex justify-center items-center content-center mt-20;
   }
 
   &__card {
-    @apply p-10 w-10/12 md:w-[30rem];
-    @apply flex flex-col justify-center items-center rounded-md shadow-md bg-white border-0 box-border border-neutral-900;
-  }
+    @apply p-20 w-full md:w-[560px];
+    @apply flex flex-col rounded-3xl;
+    @apply border-0 box-border;
+    @apply bg-white;
 
-  &__error {
-    @apply p-2 w-full flex rounded bg-error-100 text-neutral-0 box-border;
+    box-shadow: 0px 16px 32px #315EA426;
   }
 
   &__image {
-    @apply flex justify-center;
+    @apply flex;
+  }
+
+  &__title {
+    @apply text-neutral-172 text-left mt-10 text-[40px]/[48px] font-semibold;
+
+    span {
+      @apply text-primary-100;
+    }
+  }
+
+  &__error {
+    @apply min-h-[5.375rem] flex items-center;
   }
 
   &__inputs {
-    @apply flex flex-col w-full;
+    @apply flex flex-col gap-4 font-sans;
 
-    & label {
-      @apply font-bold;
-    }
-
-    & input {
-
+    label {
+      @apply text-[16px]/[20px] text-neutral-172;
     }
   }
 
-  &__divider {
-    @apply flex w-full items-center justify-center;
+  &__help {
+    @apply w-full mt-5 text-end text-sm text-primary-115;
+  }
 
-    & span {
-      @apply w-full h-px bg-neutral-100;
-    }
-
-    & div {
-      @apply shrink-0 px-4 font-semibold;
-    }
+  &__button {
+    @apply w-full mt-10;
   }
 }
