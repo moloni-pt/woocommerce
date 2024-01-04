@@ -255,13 +255,12 @@ class OrderCustomer
      *
      * @param string|bool $forField
      *
-     * @return bool
+     * @return bool|array
      *
      * @throws APIExeption
      */
     public function searchForCustomer($forField = false)
     {
-        $result = false;
         $search = [];
         $search['exact'] = 1;
 
@@ -272,18 +271,30 @@ class OrderCustomer
             $searchResult = Curl::simple('customers/getByVat', $search);
 
             if (isset($searchResult[0]['customer_id'])) {
-                $result = $searchResult[0];
+                return $searchResult[0];
             }
         } else if (!empty($this->email)) {
             $search['email'] = $this->email;
             $searchResult = Curl::simple('customers/getByEmail', $search);
 
-            if (isset($searchResult[0]['customer_id'])) {
-                $result = $searchResult[0];
+            if (empty($searchResult) || !is_array($searchResult)) {
+                return false;
+            }
+
+            foreach ($searchResult as $customer) {
+                if (!isset($customer['customer_id']) || !isset($customer['vat'])) {
+                    continue;
+                }
+
+                if ($customer['vat'] !== '999999990') {
+                    continue;
+                }
+
+                return $customer;
             }
         }
 
-        return $result;
+        return false;
     }
 
     //                 Auxiliary                 //
