@@ -47,7 +47,7 @@
   }
 
   &-invalid {
-    @apply flex flex-col items-center;
+    @apply flex flex-col items-center self-center;
 
     &__title {
       @apply font-bold mt-4 text-lg;
