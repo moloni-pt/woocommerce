@@ -67,7 +67,7 @@ class CheckProduct
         $this->row['wc_product_parent_id'] = $wcProduct->get_parent_id();
         $this->row['wc_product_object'] = $wcProduct;
 
-        $this->createWcLink($this->row);
+        $this->createWcLink();
 
         if ($wcProduct->is_type('variable')) {
             $this->row['tool_alert_message'] = __('Produto WooCommerce tem variantes');
