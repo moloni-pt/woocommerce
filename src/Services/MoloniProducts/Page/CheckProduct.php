@@ -15,19 +15,6 @@ class CheckProduct
     {
         $this->product = $product;
         $this->warehouseId = $warehouseId;
-
-        $this->row = [
-            'tool_show_create_button' => false,
-            'tool_show_update_stock_button' => false,
-            'tool_alert_message' => '',
-            'wc_product_id' => 0,
-            'wc_product_parent_id' => 0,
-            'wc_product_link' => '',
-            'wc_product_object' => null,
-            'moloni_product_id' => $this->product['product_id'],
-            'moloni_product_array' => $this->product,
-            'moloni_product_link' => ''
-        ];
     }
 
     public function run()
