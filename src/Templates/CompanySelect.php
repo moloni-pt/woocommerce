@@ -8,7 +8,7 @@ $hasValidCompany = false;
 ?>
 
 <section id="moloni" class="moloni">
-    <?php include MOLONI_TEMPLATE_DIR . '/assets/Fonts.php' ?>
+    <?php include MOLONI_TEMPLATE_DIR . '/Assets/Fonts.php' ?>
 
     <div class="companies">
         <?php if (!empty($companies) && is_array($companies)) : ?>

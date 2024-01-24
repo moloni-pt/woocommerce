@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 
 <section id="moloni" class="moloni">
     <?php include MOLONI_DIR . '/assets/icons/plugin.svg' ?>
-    <?php include MOLONI_TEMPLATE_DIR . '/assets/Fonts.php' ?>
+    <?php include MOLONI_TEMPLATE_DIR . '/Assets/Fonts.php' ?>
 
     <?php if (!empty($errorData)): ?>
         <pre style="display: none;" id="curl_error_data">
