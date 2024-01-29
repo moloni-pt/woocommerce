@@ -74,6 +74,7 @@ New plugin version fully re-written
 
 == changelog ==
 = 4.5.2 =
+* FEATURE: Novo visual da página de login e escolha de empresa
 * FIX: Correção na pesquisa de clientes sem contribuinte definido
 * FIX: Correção de erro fatal na listagem de encomendas pendentes
 * MINOR: Adicionado ID das notas de crédito na meta dos reembolsos

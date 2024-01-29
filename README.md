@@ -79,6 +79,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 ## Changelog
 ### 4.5.2
+* FEATURE: Novo visual da página de login e escolha de empresa
 * FIX: Correção na pesquisa de clientes sem contribuinte definido
 * FIX: Correção de erro fatal na listagem de encomendas pendentes
 * MINOR: Adicionado ID das notas de crédito na meta dos reembolsos
