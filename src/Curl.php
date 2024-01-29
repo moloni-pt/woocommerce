@@ -189,7 +189,7 @@ class Curl
             'received' => $parsed
         ];
 
-        throw new APIExeption(__('Combinação de utilizador/password errados'), $log);
+        throw new APIExeption(__('O seu e-mail ou palavra-passe estão errados.'), $log);
     }
 
     /**

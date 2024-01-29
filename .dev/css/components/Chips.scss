@@ -1,0 +1,27 @@
+.chip {
+  padding: 0.2rem 0.4rem;
+  border-radius: 3rem;
+  display: inline-block;
+
+  color: #ffffff;
+
+  &--green {
+    background-color: #21CB97;
+  }
+
+  &--red {
+    background-color: #FE6868;
+  }
+
+  &--blue {
+    background-color: #0082F2;
+  }
+
+  &--yellow {
+    background-color: #F2BE49;
+  }
+
+  &--neutral {
+    background-color: #8F9EB9;
+  }
+}
