@@ -99,6 +99,7 @@ class PendingOrders
             'orderby' => 'date',
             'paginate' => true,
             'order' => 'DESC',
+            'post_type' => 'shop_order', //filter out refunds
             'meta_query' => [
                 'relation' => 'OR',
                 [
@@ -109,7 +110,7 @@ class PendingOrders
                     'key' => '_moloni_sent',
                     'value' => '0',
                     'compare' => '='
-                ]
+                ],
             ],
         ];
 
