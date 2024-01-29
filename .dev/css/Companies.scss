@@ -1,0 +1,64 @@
+.companies {
+  @apply flex flex-col justify-start items-start font-poppins;
+  @apply bg-neutral-0 p-6 sm:mr-6 mr-3 rounded;
+
+  &__title {
+    @apply text-neutral-200 text-[17px]/[25px] font-medium;
+  }
+
+  &__list {
+    @apply flex w-full flex-wrap max-w-screen-2xl items-stretch justify-start;
+    @apply gap-4 mt-[1.094rem];
+  }
+
+  &__card {
+    @apply p-4 w-full sm:w-[18.75rem] gap-6;
+    @apply flex flex-col justify-between items-start bg-white;
+    @apply rounded-lg border box-border border-solid border-neutral-56;
+
+    &-content{
+      @apply flex flex-col w-full;
+    }
+
+    &-accent {
+      @apply h-[1.875rem] w-1 rounded bg-neutral-100;
+    }
+
+    &-divider {
+      @apply h-px w-full bg-neutral-56 mt-[1.094rem];
+    }
+
+    &-header {
+      @apply flex items-center h-[1.875rem] justify-start w-full gap-[0.813rem];
+      @apply text-base/[20px] font-semibold;
+    }
+
+    &-section {
+      @apply mt-4;
+    }
+
+    &-label {
+      @apply font-normal text-xs/[17px] text-neutral-116;
+    }
+
+    &-text {
+      @apply font-normal text-sm text-neutral-200;
+    }
+  }
+
+  &-invalid {
+    @apply flex flex-col items-center self-center;
+
+    &__title {
+      @apply font-bold mt-4 text-lg;
+    }
+
+    &__message {
+      @apply mt-2;
+    }
+
+    &__help {
+      @apply my-6;
+    }
+  }
+}

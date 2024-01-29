@@ -7,6 +7,7 @@ if (!defined('ABSPATH')) {
 <?php
 
 use Moloni\Curl;
+use Moloni\Exceptions\APIExeption;
 use Moloni\Model;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
@@ -23,7 +24,7 @@ try {
     if (!is_array($exemptionReasons)) {
         $exemptionReasons = [];
     }
-} catch (\Moloni\Error $e) {
+} catch (APIExeption $e) {
     $e->showError();
     return;
 }
@@ -863,5 +864,7 @@ try {
 <script>
     var originalCAE = <?= (defined('DOCUMENT_SET_CAE_ID') && (int)DOCUMENT_SET_CAE_ID > 0 ? (int)DOCUMENT_SET_CAE_ID : 0) ?>;
 
-    Moloni.Settings.init(originalCAE);
+    jQuery(document).ready(function () {
+        Moloni.Settings.init(originalCAE);
+    });
 </script>

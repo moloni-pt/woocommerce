@@ -502,6 +502,9 @@ class CreateCreditNote
 
     private function saveRecord()
     {
+        $this->refund->add_meta_data('_moloni_sent', $this->results['document_id']);
+        $this->refund->save();
+
         $this->order->add_meta_data('_moloni_credit_note', $this->results['document_id']);
         $this->order->save();
     }

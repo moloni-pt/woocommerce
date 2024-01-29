@@ -1,0 +1,27 @@
+.ml-button {
+  @apply focus:outline-none font-normal rounded flex justify-center items-center transition ease-out duration-300 box-border;
+  @apply no-underline cursor-pointer text-[13px]/[19px];
+  @apply px-2 py-3;
+
+  &:hover,
+  &:active,
+  &:focus {
+    @apply text-neutral-0;
+  }
+
+  &--primary {
+    @apply border-0 bg-primary-100 hover:opacity-75 text-white fill-neutral-0;
+  }
+
+  &--secondary {
+    @apply border-0 bg-secondary-100 hover:opacity-75 text-white fill-neutral-0;
+  }
+
+  &--danger {
+    @apply border-0 bg-error-100 hover:opacity-75 text-white fill-neutral-0;
+  }
+
+  &:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+}

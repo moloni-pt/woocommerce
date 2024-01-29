@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.5.1
+Stable tag: 4.5.2
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,12 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.5.2 =
+* FEATURE: Novo visual da página de login e escolha de empresa
+* FIX: Correção na pesquisa de clientes sem contribuinte definido
+* FIX: Correção de erro fatal na listagem de encomendas pendentes
+* MINOR: Adicionado ID das notas de crédito na meta dos reembolsos
+
 = 4.5.1 =
 * FIX: Correção de um erro no uso da razão de isenção
 

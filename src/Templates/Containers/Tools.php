@@ -4,9 +4,6 @@ if (!defined('ABSPATH')) {
 }
 ?>
 
-<?php use Moloni\Log; ?>
-
-<br>
 <table class="wc_status_table wc_status_table--tools widefat">
     <tbody class="tools">
     <tr>

@@ -1,0 +1,15 @@
+.ml-alert {
+  @apply py-2 px-4 w-full flex rounded box-border items-center text-[14px]/[20px] gap-4;
+
+  &--danger {
+    @apply text-neutral-0 bg-error-100 fill-error-25;
+
+    &-light {
+      @apply bg-error-25 text-error-160 fill-error-100;
+    }
+  }
+
+  svg {
+    @apply w-8 h-8 text-inherit shrink-0;
+  }
+}

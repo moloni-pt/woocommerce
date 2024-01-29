@@ -1,0 +1,20 @@
+.ml-input-text {
+  @apply w-full box-border flex flex-col font-sans;
+
+  all: unset;
+
+  label {
+    @apply text-base leading-none;
+  }
+
+  input {
+    @apply h-10 flex flex-row relative text-sm w-full rounded-sm bg-clip-border border-solid border;
+    @apply bg-neutral-0 border-neutral-40;
+  }
+
+  &--with-error {
+    input {
+      @apply border-error-100;
+    }
+  }
+}

@@ -2,6 +2,10 @@ if (Moloni === undefined) {
     var Moloni = {};
 }
 
+if (Moloni.Settings === undefined) {
+    Moloni.Settings = {};
+}
+
 Moloni.Settings = (function($) {
     var definedCAE;
 

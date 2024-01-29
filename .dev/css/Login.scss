@@ -1,0 +1,48 @@
+.login {
+  @apply text-base font-poppins;
+
+  &__wrapper {
+    @apply flex justify-center items-center content-center mt-20;
+  }
+
+  &__card {
+    @apply p-20 w-full md:w-[560px];
+    @apply flex flex-col rounded-3xl;
+    @apply border-0 box-border;
+    @apply bg-white;
+
+    box-shadow: 0px 16px 32px #315EA426;
+  }
+
+  &__image {
+    @apply flex;
+  }
+
+  &__title {
+    @apply text-neutral-172 text-left mt-10 text-[40px]/[48px] font-semibold;
+
+    span {
+      @apply text-primary-100;
+    }
+  }
+
+  &__error {
+    @apply min-h-[5.375rem] flex items-center;
+  }
+
+  &__inputs {
+    @apply flex flex-col gap-4 font-sans;
+
+    label {
+      @apply text-[16px]/[20px] text-neutral-172;
+    }
+  }
+
+  &__help {
+    @apply w-full mt-5 text-end text-sm text-primary-115;
+  }
+
+  &__button {
+    @apply w-full mt-10;
+  }
+}
