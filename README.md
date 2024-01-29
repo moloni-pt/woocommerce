@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.3  
 **WC tested up to**    8.0.2  
-**Stable tag:**        4.5.1  
+**Stable tag:**        4.5.2  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.5.2
+* FIX: Correção na pesquisa de clientes sem contribuinte definido
+* FIX: Correção de erro fatal na listagem de encomendas pendentes
+* MINOR: Adicionado ID das notas de crédito na meta dos reembolsos
+
 ### 4.5.1
 * FIX: Correção de um erro no uso da razão de isenção
 
@@ -90,7 +95,6 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 ### 4.4.6
 * FIX: Correção de um erro interno na criação de registos
 
-## Changelog
 ### 4.4.2
 * FEATURE: Adicionado modo DEBUG
 * FIX: Correção de erro no cálculo da percentagem de taxas
