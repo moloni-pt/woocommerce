@@ -3,6 +3,7 @@
 namespace Moloni\Services\Orders;
 
 use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\DocumentProcessStopped;
 use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
 use WC_Order_Item_Fee;
@@ -19,6 +20,14 @@ use Moloni\Exceptions\DocumentError;
 
 class CreateCreditNote
 {
+    /**
+     * Field used in filter to cancel credit note creation
+     *
+     * @var bool
+     */
+    private $stopProcess = false;
+
+
     /**
      * Order object
      *
@@ -72,9 +81,16 @@ class CreateCreditNote
      *
      * @throws DocumentError
      * @throws DocumentWarning
+     * @throws DocumentProcessStopped
      */
     public function run()
     {
+        apply_filters('moloni_before_start_credit_note', $this);
+
+        if ($this->stopProcess) {
+            throw new DocumentProcessStopped('Document creation stopped');
+        }
+
         $documentId = MoloniOrder::getLastCreatedDocument($this->order);
 
         if (empty($documentId) || $documentId < 0) {
@@ -108,6 +124,12 @@ class CreateCreditNote
         $this->setShipping($creditNoteProps);
         $this->setFees($creditNoteProps);
 
+        apply_filters('moloni_before_insert_credit_note', $this);
+
+        if ($this->stopProcess) {
+            throw new DocumentProcessStopped('Document creation stopped');
+        }
+
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
         } catch (APIExeption $e) {
@@ -132,6 +154,8 @@ class CreateCreditNote
         ];
 
         $this->saveRecord();
+
+        apply_filters('moloni_after_insert_credit_note', $this);
 
         if ($this->shouldCloseDocument()) {
             $this->closeDocument((int)$mutation['document_id'], $creditNoteProps);
@@ -213,6 +237,8 @@ class CreateCreditNote
         }
 
         $this->results['document_status'] = DocumentStatus::CLOSED;
+
+        apply_filters('moloni_after_close_credit_note', $this);
     }
 
     public function saveLog()
@@ -239,7 +265,7 @@ class CreateCreditNote
         $this->order->add_order_note($note);
     }
 
-    //          SETS          //
+    //          Data builders          //
 
     /**
      * Set basic props
@@ -477,6 +503,13 @@ class CreateCreditNote
         }
     }
 
+    //          SETS          //
+
+    public function setStopProcess(bool $stopProcess): void
+    {
+        $this->stopProcess = $stopProcess;
+    }
+
     //          GETS          //
 
     public function getOrder()
@@ -491,6 +524,15 @@ class CreateCreditNote
         }
 
         return $this->order->get_id();
+    }
+
+    public function getOrderNumber()
+    {
+        if (empty($this->order)) {
+            return $this->refund->get_id();
+        }
+
+        return $this->order->get_order_number();
     }
 
     public function getResults(): array
