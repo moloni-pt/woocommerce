@@ -26,7 +26,7 @@ class OrderStatusChanged
     {
         $this->parent = $parent;
 
-        add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged']);
+        add_action('woocommerce_order_status_changed', [$this, 'orderStatusChanged'], 10, 3);
     }
 
     public function orderStatusChanged($orderId, $previousStatus, $nextStatus)
