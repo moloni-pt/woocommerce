@@ -757,7 +757,7 @@ try {
                                 }
                             ?>
 
-                            <option value='<?= $parsedId ?>' <?= $invoiceAutoStatus === $name ? 'selected' : '' ?>>
+                            <option value='<?= $parsedId ?>' <?= $invoiceAutoStatus === $parsedId ? 'selected' : '' ?>>
                                 <?= $name ?>
                             </option>
                         <?php endforeach; ?>
