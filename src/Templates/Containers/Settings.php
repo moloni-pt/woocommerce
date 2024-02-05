@@ -843,7 +843,7 @@ try {
         <table class="form-table mb-4">
             <tbody>
 
-            <!-- Limitar encomenas por data -->
+            <!-- Limitar encomendas por data -->
             <tr>
                 <th>
                     <label for="order_created_at_max"><?= __('Apresentar encomendas desde a seguinte data') ?></label>
