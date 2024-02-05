@@ -823,6 +823,33 @@ try {
         <table class="form-table mb-4">
             <tbody>
 
+            <!-- Limitar encomenas por data -->
+            <tr>
+                <th>
+                    <label for="order_created_at_max"><?= __('Apresentar encomendas desde a seguinte data') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $orderCreatedAtMax = '';
+
+                    if (defined('ORDER_CREATED_AT_MAX')) {
+                        $orderCreatedAtMax = ORDER_CREATED_AT_MAX;
+                    }
+                    ?>
+
+                    <input value="<?= $orderCreatedAtMax ?>"
+                           id="order_created_at_max"
+                           name='opt[order_created_at_max]'
+                           type="date"
+                           style="width: 330px;"
+                           placeholder="">
+
+                    <p class='description'>
+                        <?= __('Data usada para limitar a pesquisa de encomendas pendentes') ?>
+                    </p>
+                </td>
+            </tr>
+
             <!-- Ativar modo debug -->
             <tr>
                 <th>
