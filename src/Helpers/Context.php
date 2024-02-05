@@ -14,4 +14,13 @@ class Context
 
         return false;
     }
+
+    public static function isMoloniVatPluginActive(): bool
+    {
+        if (!function_exists('is_plugin_active')) {
+            return false;
+        }
+
+        return is_plugin_active('woocommerce-contribuinte/contribuinte-checkout.php');
+    }
 }

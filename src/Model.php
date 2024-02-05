@@ -167,31 +167,40 @@ class Model
     }
 
     /**
-     * Get all available custom fields
+     * Get all available custom fields to use as vat field
+     *
+     * @return array
      */
-    public static function getCustomFields(): array
+    public static function getPossibleVatFields(): array
     {
-        global $wpdb;
+        $customFields = [];
+        $args = [
+            'posts_per_page' => 50,
+            'orderby' => 'date',
+            'paginate' => false,
+            'order' => 'DESC',
+            'post_type' => 'shop_order'
+        ];
 
-        $prefix = $wpdb->get_blog_prefix();
+        $orders = wc_get_orders($args);
 
-        if (Storage::$USES_NEW_ORDERS_SYSTEM) {
-            $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $prefix . "wc_orders_meta ORDER BY `" . $prefix . "wc_orders_meta`.`meta_key` ASC",
-                ARRAY_A
-            );
-        } else {
-            $results = $wpdb->get_results(
-                "SELECT DISTINCT meta_key FROM " . $prefix . "postmeta ORDER BY `" . $prefix . "postmeta`.`meta_key` ASC",
-                ARRAY_A
-            );
+        if (empty($orders)) {
+            return $customFields;
         }
 
-        $customFields = [];
+        foreach ($orders as $order) {
+            $metas = $order->get_meta_data();
 
-        if ($results && is_array($results)) {
-            foreach ($results as $result) {
-                $customFields[] = $result;
+            if (empty($metas)) {
+                continue;
+            }
+
+            foreach ($metas as $meta) {
+                if (in_array($meta->key, $customFields)) {
+                    continue;
+                }
+
+                $customFields[] = $meta->key;
             }
         }
 
