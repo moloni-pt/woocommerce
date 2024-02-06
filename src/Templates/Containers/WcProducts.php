@@ -126,7 +126,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             </th>
             <th></th>
             <th></th>
-            <th>
+            <th class="flex flex-row gap-2">
                 <button type="submit" class="button button-primary">
                     <?= __('Pesquisar') ?>
                 </button>
@@ -135,8 +135,16 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
                     <?= __('Limpar') ?>
                 </a>
             </th>
-            <th></th>
-            <th></th>
+            <th>
+                <div class="text-center">
+                    <input type="checkbox" class="checkbox_create_product_master m-0-important">
+                </div>
+            </th>
+            <th>
+                <div class="text-center">
+                    <input type="checkbox" class="checkbox_update_stock_product_master m-0-important">
+                </div>
+            </th>
         </tr>
         </thead>
 

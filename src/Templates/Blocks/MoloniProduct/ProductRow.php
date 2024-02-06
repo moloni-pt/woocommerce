@@ -73,13 +73,13 @@ $row = $row ?? [];
             </div>
         <?php endif; ?>
     </td>
-    <td>
-        <input type="checkbox" class="checkbox_create_product"
+    <td class="text-center">
+        <input type="checkbox" class="checkbox_create_product m-0-important"
             <?= empty($row['tool_show_create_button']) ? 'disabled' : '' ?>
         >
     </td>
-    <td>
-        <input type="checkbox" class="checkbox_update_stock_product"
+    <td class="text-center">
+        <input type="checkbox" class="checkbox_update_stock_product m-0-important"
             <?= empty($row['tool_show_update_stock_button']) ? 'disabled' : '' ?>
         >
     </td>
