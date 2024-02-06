@@ -12,7 +12,9 @@ Moloni.MoloniProducts = (function ($) {
     }
 
     function startObservers() {
+        let form = $('.list_form');
         let actionButton = $('.button-start-imports');
+        let searchButton = $('.search_button');
         let allProductCheckbox = $('.checkbox_create_product:enabled');
         let allStockCheckbox = $('.checkbox_update_stock_product:enabled');
         let productMaster = $('.checkbox_create_product_master');
@@ -39,6 +41,11 @@ Moloni.MoloniProducts = (function ($) {
             dealWithActionButton();
         });
 
+        searchButton.off('click').on('click', function () {
+            $('#moloni input[type=hidden][name=paged]').val('1');
+            form.submit();
+        });
+
         dealWithMasters();
         dealWithActionButton();
     }
@@ -54,8 +61,16 @@ Moloni.MoloniProducts = (function ($) {
     }
 
     function dealWithMasters() {
-        $(".checkbox_create_product_master").prop('checked', $(".checkbox_create_product:enabled:checked").length === $(".checkbox_create_product:enabled").length);
-        $(".checkbox_update_stock_product_master").prop('checked', $(".checkbox_update_stock_product:enabled:checked").length === $(".checkbox_update_stock_product:enabled").length);
+        let enabledProducts = $(".checkbox_create_product:enabled");
+        let enabledStocks = $(".checkbox_update_stock_product:enabled");
+
+        if (enabledProducts.length) {
+            $(".checkbox_create_product_master").prop('checked', $(".checkbox_create_product:enabled:checked").length === enabledProducts.length);
+        }
+
+        if (enabledStocks.length) {
+            $(".checkbox_update_stock_product_master").prop('checked', $(".checkbox_update_stock_product:enabled:checked").length === enabledStocks.length);
+        }
     }
 
     function doAction() {
