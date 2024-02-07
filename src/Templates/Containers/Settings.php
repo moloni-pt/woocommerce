@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
 
 use Moloni\Curl;
 use Moloni\Exceptions\APIExeption;
+use Moloni\Helpers\Context;
 use Moloni\Model;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
@@ -221,6 +222,32 @@ try {
                     </div>
 
                     <p class='description'><?= __('Morada de carga utilizada nos dados de transporte') ?></p>
+                </td>
+            </tr>
+
+            <!-- Notas da encomenda -->
+            <tr>
+                <th>
+                    <label for="add_order_notes"><?= __('Notas da encomenda') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $addOrderNotes = Boolean::YES;
+
+                    if (defined('ADD_ORDER_NOTES')) {
+                        $addOrderNotes = (int)ADD_ORDER_NOTES;
+                    }
+                    ?>
+
+                    <select id="add_order_notes" name='opt[add_order_notes]' class='inputOut'>
+                        <option value='0' <?= ($addOrderNotes === Boolean::NO ? 'selected' : '') ?>>
+                            <?= __('Não') ?>
+                        </option>
+                        <option value='1' <?= ($addOrderNotes === Boolean::YES ? 'selected' : '') ?>>
+                            <?= __('Sim') ?>
+                        </option>
+                    </select>
+                    <p class='description'><?= __('Colocar notas da encomenda nas notas dos documentos.') ?></p>
                 </td>
             </tr>
 
@@ -646,15 +673,34 @@ try {
                     <label for="vat_field"><?= __('Contribuinte do cliente') ?></label>
                 </th>
                 <td>
+                    <?php
+                    $customFields = Model::getPossibleVatFields();
+
+                    $vatField = '';
+
+                    if (defined('VAT_FIELD') && !empty(VAT_FIELD)) {
+                        $vatField = VAT_FIELD;
+                    } elseif (Context::isMoloniVatPluginActive()) {
+                        $vatField = '_billing_vat';
+
+                        if (!in_array($vatField, $customFields, true)) {
+                            $customFields[] = $vatField;
+                        }
+                    }
+                    ?>
+
                     <select id="vat_field" name='opt[vat_field]' class='inputOut'>
-                        <option value='' <?= defined('VAT_FIELD') && VAT_FIELD === '' ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
-                        <?php $customFields = Model::getCustomFields(); ?>
-                        <?php if (is_array($customFields)): ?>
-                            <?php foreach ($customFields as $customField) : ?>
-                                <option value='<?= $customField['meta_key'] ?>' <?= defined('VAT_FIELD') && VAT_FIELD === $customField['meta_key'] ? 'selected' : '' ?>><?= $customField['meta_key'] ?></option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <option value='' <?= empty($vatField) ? 'selected' : '' ?>>
+                            <?= __('Escolha uma opção') ?>
+                        </option>
+
+                        <?php foreach ($customFields as $customField) : ?>
+                            <option value='<?= $customField ?>' <?= $vatField === $customField ? 'selected' : '' ?>>
+                                <?= $customField ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
+
                     <p class='description'>
                         <?= __('Custom field associado ao contribuinte do cliente. Se o campo não aparecer, certifique-se que tem pelo menos uma encomenda com o campo em uso.') ?>
                         <br>
@@ -822,6 +868,33 @@ try {
         </h2>
         <table class="form-table mb-4">
             <tbody>
+
+            <!-- Limitar encomendas por data -->
+            <tr>
+                <th>
+                    <label for="order_created_at_max"><?= __('Apresentar encomendas desde a seguinte data') ?></label>
+                </th>
+                <td>
+                    <?php
+                    $orderCreatedAtMax = '';
+
+                    if (defined('ORDER_CREATED_AT_MAX')) {
+                        $orderCreatedAtMax = ORDER_CREATED_AT_MAX;
+                    }
+                    ?>
+
+                    <input value="<?= $orderCreatedAtMax ?>"
+                           id="order_created_at_max"
+                           name='opt[order_created_at_max]'
+                           type="date"
+                           style="width: 330px;"
+                           placeholder="">
+
+                    <p class='description'>
+                        <?= __('Data usada para limitar a pesquisa de encomendas pendentes') ?>
+                    </p>
+                </td>
+            </tr>
 
             <!-- Ativar modo debug -->
             <tr>
