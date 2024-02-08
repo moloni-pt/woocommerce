@@ -29,18 +29,8 @@ class PendingOrders
             'paginate' => true,
             'order' => 'DESC',
             'post_type' => 'shop_order', //filter out refunds
-            'meta_query' => [
-                'relation' => 'OR',
-                [
-                    'key' => '_moloni_sent',
-                    'compare' => 'NOT EXISTS'
-                ],
-                [
-                    'key' => '_moloni_sent',
-                    'value' => '0',
-                    'compare' => '='
-                ],
-            ],
+            'meta_key'      => '_moloni_sent',
+            'meta_compare'  => 'NOT EXISTS',
         ];
 
         if (defined('ORDER_CREATED_AT_MAX') && !empty(ORDER_CREATED_AT_MAX)) {

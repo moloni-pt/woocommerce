@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.6.0
+Stable tag: 4.6.1
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.6.1 =
+* FIX: Correção na listagem de encomendas pendentes
+
 = 4.6.0 =
 * FEATURE: Nova definição para limitar encomendas por data
 * FEATURE: Nova definição que torna opcional a inclusão das notas da encomenda no documento
