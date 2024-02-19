@@ -1,17 +1,14 @@
 <?php
 
-namespace Moloni\Services\MoloniProducts;
+namespace Moloni\Services\WcProducts;
 
-use WC_Product;
-use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
-use Moloni\Exceptions\Stocks\StockException;
 use Moloni\Exceptions\Stocks\StockLockedException;
 use Moloni\Exceptions\Stocks\StockMatchingException;
 use Moloni\Helpers\MoloniProduct;
 use Moloni\Storage;
+use WC_Product;
 
-class UpdateProductStock extends ExportService
+class UpdateProductStock extends ImportService
 {
     private $locked = false;
 
@@ -23,10 +20,10 @@ class UpdateProductStock extends ExportService
     private $resultMessage = '';
     private $resultData = [];
 
-    public function __construct(array $moloniProduct, WC_Product $wcProduct, ?int $warehouseId = null)
+    public function __construct(WC_Product $wcProduct, array $moloniProduct, ?int $warehouseId = null)
     {
-        $this->moloniProduct = $moloniProduct;
         $this->wcProduct = $wcProduct;
+        $this->moloniProduct = $moloniProduct;
 
         if (!is_null($warehouseId)) {
             $this->warehouseId = $warehouseId;
@@ -42,7 +39,6 @@ class UpdateProductStock extends ExportService
     /**
      * Service runner
      *
-     * @throws StockException
      * @throws StockLockedException
      * @throws StockMatchingException
      */
@@ -54,7 +50,7 @@ class UpdateProductStock extends ExportService
 
         if ($this->wcStock === $this->moloniStock) {
             $message = sprintf(
-                __('Stock já se encontra correto no Moloni (%d|%d) (%s)'),
+                __('Stock já se encontra correto no WooCommerce (%d|%d) (%s)'),
                 $this->wcStock,
                 $this->moloniStock,
                 $this->moloniProduct['reference']
@@ -63,38 +59,16 @@ class UpdateProductStock extends ExportService
             throw new StockMatchingException($message);
         }
 
-        $params = [
-            'product_id' => $this->moloniProduct['product_id'],
-            'movement_date' => date('Y-m-d H:i:s'),
-            'unit_price' => 0,
-            'qty' => $this->wcStock - $this->moloniStock,
-            'warehouse_id' => $this->warehouseId > 1 ? $this->warehouseId : 0,
-            'notes' => __('WooCommerce - sincronização manual'),
-        ];
-
-        try {
-            $request = Curl::simple('stockMovements/insert', $params);
-        } catch (APIExeption $e) {
-            throw new StockException($e->getMessage(), $e->getData());
-        }
-
-        if (empty($request) || empty($request['valid'])) {
-            $message = sprintf(
-                __('Erro a atualizar stock de produto Moloni (%s)'),
-                $this->moloniProduct['reference']
-            );
-
-            throw new StockException($message, $request);
-        }
+        wc_update_product_stock($this->wcProduct, $this->moloniStock);
 
         $this->resultMessage = sprintf(
-            __('Stock atualizado no Moloni (antes: %s | depois: %s) (%s)'),
-            $this->moloniStock,
+            __('Stock atualizado no WooCommerce (antes: %s | depois: %s) (%s)'),
             $this->wcStock,
+            $this->moloniStock,
             $this->moloniProduct['reference']
         );
         $this->resultData = [
-            'tag' => 'service:mlproduct:update:stock',
+            'tag' => 'service:wcproduct:update:stock',
             'wc_id' => $this->wcProduct->get_id(),
             'wc_stock' => $this->wcStock,
             'ml_id' => $this->moloniProduct['product_id'],

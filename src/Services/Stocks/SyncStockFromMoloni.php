@@ -7,7 +7,7 @@ use Moloni\Storage;
 use Moloni\Exceptions\APIExeption;
 use Moloni\Exceptions\Stocks\StockLockedException;
 use Moloni\Exceptions\Stocks\StockMatchingException;
-use Moloni\Services\MoloniProducts\UpdateProductStock;
+use Moloni\Services\WcProducts\UpdateProductStock;
 
 class SyncStockFromMoloni
 {

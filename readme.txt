@@ -2,7 +2,7 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.6.1
+Stable tag: 4.7.0
 Tested up to: 6.3
 WC tested up to: 8.0.2
 
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.7.0 =
+* FEATURE: Novas páginas de listagem de produtos para importação/exportação de stocks/produtos
+
 = 4.6.1 =
 * FIX: Correção na listagem de encomendas pendentes
 
