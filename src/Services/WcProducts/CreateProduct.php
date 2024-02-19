@@ -2,12 +2,16 @@
 
 namespace Moloni\Services\WcProducts;
 
-use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
-use Moloni\Helpers\MoloniProduct;
+use WC_Tax;
 use WC_Product;
+use Moloni\Curl;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
+use Moloni\Enums\TaxType;
+use Moloni\Enums\SaftType;
+use Moloni\Helpers\MoloniProduct;
+use Moloni\Exceptions\APIExeption;
+
 
 class CreateProduct extends ImportService
 {
@@ -75,8 +79,53 @@ class CreateProduct extends ImportService
     {
         if (empty($this->moloniProduct['taxes'])) {
             $this->wcProduct->set_tax_status('none');
-        } else {
-            $this->wcProduct->set_tax_status('taxable');
+
+            return;
+        }
+
+        $this->wcProduct->set_tax_status('taxable');
+
+        if ($this->wcProduct->exists()) {
+            return;
+        }
+
+        if (count($this->moloniProduct['taxes']) > 1) {
+            return;
+        }
+
+        $moloniTax = $this->moloniProduct['taxes'][0]['tax'] ?? [];
+
+        if (empty($moloniTax)) {
+            return;
+        }
+
+        if (
+            (int)$moloniTax['saft_type'] !== SaftType::IVA ||
+            (int)$moloniTax['type'] !== TaxType::PERCENTAGE
+        ) {
+            return;
+        }
+
+        $taxClasses = wc_get_product_tax_class_options() ?? [];
+
+        if (empty($taxClasses)) {
+            return;
+        }
+
+        foreach ($taxClasses as $taxClass => $taxClassLabel) {
+            $taxRates = WC_Tax::find_rates([
+                'country' => $moloniTax['fiscal_zone'],
+                'tax_class' => $taxClass
+            ]);
+
+            foreach ($taxRates as $taxRate) {
+                if ((int)($taxRate['rate'] * 100000) !== (int)($moloniTax['value'] * 100000)) {
+                    continue;
+                }
+
+                $this->wcProduct->set_tax_class($taxClass);
+                return;
+            }
         }
     }
 
