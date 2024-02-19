@@ -5,8 +5,6 @@ use Moloni\Exceptions\Core\MoloniException;
 if (!defined('ABSPATH')) {
     exit;
 }
-
-$tab = $_GET['tab'] ?? '';
 ?>
 
 <section id="moloni" class="moloni">
@@ -18,22 +16,22 @@ $tab = $_GET['tab'] ?? '';
 
     <nav class="nav-tab-wrapper woo-nav-tab-wrapper">
         <a href="<?= admin_url('admin.php?page=moloni') ?>"
-           class="nav-tab <?= $tab === '' ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= $this->activeTab === '' ? 'nav-tab-active' : '' ?>">
             <?= __('Encomendas') ?>
         </a>
 
         <a href="<?= admin_url('admin.php?page=moloni&tab=settings') ?>"
-           class="nav-tab <?= $tab === 'settings' ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= $this->activeTab === 'settings' ? 'nav-tab-active' : '' ?>">
             <?= __('Configurações') ?>
         </a>
 
         <a href="<?= admin_url('admin.php?page=moloni&tab=logs') ?>"
-           class="nav-tab <?= $tab === 'logs' ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= $this->activeTab === 'logs' ? 'nav-tab-active' : '' ?>">
             <?= __('Registos') ?>
         </a>
 
         <a href="<?= admin_url('admin.php?page=moloni&tab=tools') ?>"
-           class="nav-tab <?= $tab === 'tools' ? 'nav-tab-active' : '' ?>">
+           class="nav-tab <?= in_array($this->activeTab, ['tools', 'wcProductsList', 'moloniProductsList']) ? 'nav-tab-active' : '' ?>">
             <?= __('Ferramentas') ?>
         </a>
     </nav>
@@ -45,7 +43,7 @@ $tab = $_GET['tab'] ?? '';
             $pluginErrorException->showError();
         }
 
-        switch ($tab) {
+        switch ($this->activeTab) {
             case 'tools':
                 include MOLONI_TEMPLATE_DIR . 'Containers/Tools.php';
                 break;
@@ -54,6 +52,12 @@ $tab = $_GET['tab'] ?? '';
                 break;
             case 'logs':
                 include MOLONI_TEMPLATE_DIR . 'Containers/Logs.php';
+                break;
+            case 'wcProductsList':
+                include MOLONI_TEMPLATE_DIR . 'Containers/WcProducts.php';
+                break;
+            case 'moloniProductsList':
+                include MOLONI_TEMPLATE_DIR . 'Containers/MoloniProducts.php';
                 break;
             default:
                 include MOLONI_TEMPLATE_DIR . 'Containers/PendingOrders.php';

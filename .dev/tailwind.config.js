@@ -4,6 +4,7 @@ module.exports = {
     mode: 'jit',
     content: [
         './../src/**/*.php',
+        './js/**/*.js',
     ],
     safelist: [{
         pattern: /(bg|text)-(primary|secondary|success|warning|critical|error|alternate|subalternate|neutral)-([01]?[0-9][0-9])$/,

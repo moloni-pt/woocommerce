@@ -1,0 +1,14 @@
+.product{
+
+  &__row {
+    @apply transition;
+
+    &--new{
+      @apply bg-success-40;
+    }
+
+    &--error{
+      @apply bg-error-40;
+    }
+  }
+}

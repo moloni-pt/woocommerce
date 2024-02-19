@@ -16,7 +16,10 @@ $orders = PendingOrders::getAllAvailable();
 
 <div class="tablenav top">
     <div class="alignleft actions bulkactions">
-        <label for="bulk-action-selector-top" class="screen-reader-text">Seleccionar acção por lotes</label><select
+        <label for="bulk-action-selector-top" class="screen-reader-text">
+            <?= __('Seleccionar acção por lotes') ?>
+        </label>
+        <select
                 name="action" id="bulk-action-selector-top">
             <option value="-1"><?= __('Ações por lotes') ?></option>
             <option value="bulkGenInvoice"><?= __('Gerar documentos') ?></option>
@@ -145,7 +148,6 @@ $orders = PendingOrders::getAllAvailable();
                 <?= __('Não foram encontadas encomendas por gerar!') ?>
             </td>
         </tr>
-
     <?php endif; ?>
 
     <tfoot>
