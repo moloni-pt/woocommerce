@@ -8,6 +8,7 @@ use Moloni\Storage;
 use Moloni\Enums\Boolean;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
+use Moloni\Exceptions\DocumentProcessStopped;
 use Moloni\Services\Mails\CreditNoteFailed;
 use Moloni\Services\Mails\CreditNoteWarning;
 use Moloni\Services\Orders\CreateCreditNote;
@@ -41,9 +42,25 @@ class OrderRefunded
         try {
             $service->run();
             $service->saveLog();
+        } catch (DocumentProcessStopped $e) {
+            $orderName = $service->getOrderNumber();
+
+            /**
+             * Save plugin log
+             */
+
+            $message = __('Processamento de reembolso bloqueado');
+            $message .= ' (' . $orderName . ')';
+            $message .= '.';
+
+            Storage::$LOGGER->info($message, [
+                'tag' => 'automatic:refund:create:stopped',
+                'exception' => $e->getMessage(),
+                'data' => $e->getData(),
+            ]);
         } catch (DocumentError $e) {
             $order = $service->getOrder();
-            $orderName = empty($order) ? $refundId : $order->get_order_number();
+            $orderName = $service->getOrderNumber();
 
             /**
              * Save plugin log
@@ -80,7 +97,7 @@ class OrderRefunded
             }
         } catch (DocumentWarning $e) {
             $order = $service->getOrder();
-            $orderName = $order->get_order_number();
+            $orderName = $service->getOrderNumber();
 
             /**
              * Save plugin log
