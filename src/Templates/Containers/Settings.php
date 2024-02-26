@@ -15,6 +15,8 @@ use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
 use Moloni\Tools;
 
+$wcOrdersStatus = wc_get_order_statuses();
+
 try {
     $company = Curl::simple('companies/getOne', []);
     $warehouses = Curl::simple('warehouses/getAll', []);
@@ -786,8 +788,25 @@ try {
                 </th>
                 <td>
                     <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
-                        <option value='completed' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'completed' ? 'selected' : '') ?>><?= __('Completa') ?></option>
-                        <option value='processing' <?= (defined('INVOICE_AUTO_STATUS') && INVOICE_AUTO_STATUS === 'processing' ? 'selected' : '') ?>><?= __('Em processamento') ?></option>
+                        <?php
+                            $invoiceAutoStatus = defined('INVOICE_AUTO_STATUS') ? INVOICE_AUTO_STATUS : '' ;
+                        ?>
+
+                        <?php foreach ($wcOrdersStatus as $id => $name) : ?>
+                            <?php
+                                $needle = 'wc-';
+
+                                if(substr($id, 0, strlen($needle)) === $needle) {
+                                    $parsedId = substr($id, strlen($needle));
+                                } else {
+                                    $parsedId = $id;
+                                }
+                            ?>
+
+                            <option value='<?= $parsedId ?>' <?= $invoiceAutoStatus === $parsedId ? 'selected' : '' ?>>
+                                <?= $name ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                     <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
                 </td>

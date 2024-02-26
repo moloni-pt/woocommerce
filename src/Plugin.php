@@ -71,7 +71,7 @@ class Plugin
         new Hooks\ProductUpdate($this);
         new Hooks\ProductView($this);
         new Hooks\OrderView($this);
-        new Hooks\OrderPaid($this);
+        new Hooks\OrderStatusChanged($this);
         new Hooks\OrderList($this);
         new Hooks\OrderRefunded($this);
         new Hooks\OrderDetails($this);
