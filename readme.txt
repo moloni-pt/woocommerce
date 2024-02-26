@@ -2,9 +2,9 @@
 Moloni
 Contributors: molonidevteam
 Tags: Invoicing, Orders
-Stable tag: 4.7.0
-Tested up to: 6.3
-WC tested up to: 8.0.2
+Stable tag: 4.7.1
+Tested up to: 6.4.3
+WC tested up to: 8.6.1
 
 Requires PHP: 7.2
 Requires at least: 4.6
@@ -73,6 +73,12 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.7.1 =
+* FEATURE: Adicionados filtros à criação de notas de crédito
+* FEATURE: Adicionados novos estados para criação de documentos de forma automática
+* MINOR: Testado até à versão 6.4.3 do Wordpress
+* MINOR: Testado até à versão 8.6.1 do WooCommerce
+
 = 4.7.0 =
 * FEATURE: Novas páginas de listagem de produtos para importação/exportação de stocks/produtos
 
