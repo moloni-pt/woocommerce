@@ -1,6 +1,7 @@
 === Plugin Name ===
 Moloni
 Contributors: molonidevteam
+Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Stable tag: 4.7.1
 Tested up to: 6.4.3
