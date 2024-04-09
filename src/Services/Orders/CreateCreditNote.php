@@ -343,8 +343,7 @@ class CreateCreditNote
             }
 
             if ($matchedDocumentProduct['discount'] > 0) {
-                $discountedPrice = $refundedPrice * ($matchedDocumentProduct['discount'] / 100);
-                $refundedPrice -= $discountedPrice;
+                $refundedPrice = ($refundedPrice * 100) / (100 - $matchedDocumentProduct['discount']);
             }
 
             if (abs($refundedPrice - $matchedDocumentProduct['price']) < 0.02) {
@@ -469,8 +468,7 @@ class CreateCreditNote
             }
 
             if ($matchedDocumentFee['discount'] > 0) {
-                $discountedPrice = $refundedPrice * ($matchedDocumentFee['discount'] / 100);
-                $refundedPrice -= $discountedPrice;
+                $refundedPrice = ($refundedPrice * 100) / (100 - $matchedDocumentFee['discount']);
             }
 
             if (abs($refundedPrice - $matchedDocumentFee['price']) < 0.02) {
