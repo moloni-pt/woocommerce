@@ -4,9 +4,9 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.4.3
-Stable tag: 4.7.1
+Stable tag: 4.7.2
 Requires PHP: 7.2
-WC tested up to: 8.6.1
+WC tested up to: 8.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,12 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.7.2 =
+* FIX: Correção na criação de notas de crédito com descontos
+* MINOR: Adicionado WooCommerce como dependência
+* MINOR: Testado até à versão 6.5.0 do Wordpress
+* MINOR: Testado até à versão 8.7.0 do WooCommerce
+
 = 4.7.1 =
 * FEATURE: Adicionados filtros à criação de notas de crédito
 * FEATURE: Adicionados novos estados para criação de documentos de forma automática
