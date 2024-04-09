@@ -1,20 +1,19 @@
-=== Plugin Name ===
-Moloni
+=== Moloni ===
 Contributors: molonidevteam
 Requires Plugins: woocommerce
 Tags: Invoicing, Orders
-Stable tag: 4.7.1
-Tested up to: 6.5.0
-WC tested up to: 8.6.1
-
-Requires PHP: 7.2
 Requires at least: 4.6
+Tested up to: 6.4.3
+Stable tag: 4.7.1
+Requires PHP: 7.2
+WC tested up to: 8.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Software de faturação inovador que se adapta ao seu negócio! Destinado a profissionais liberais, micro, pequenas e médias empresas. Sem investimento inicial, completo e intuitivo.
+Software de faturação inovador que se adapta ao seu negócio! Destinado a profissionais liberais, micro, pequenas e médias empresas.
 
 == Description ==
+
 O Moloni é um inovador software de faturação e POS online que inclui acesso a inúmeras ferramentas úteis e funcionais que permitem a cada empresa gerir a sua faturação, controlar stocks, automatizar processos e emitir documentos de forma rápida, simples e intuitiva.
 
 Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atualizado e de acordo com a lei em vigor!
