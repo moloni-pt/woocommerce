@@ -342,8 +342,10 @@ class CreateCreditNote
                 $refundedPrice /= $this->originalDocument['exchange_rate'];
             }
 
-            if ($matchedDocumentProduct['discount'] > 0) {
-                $refundedPrice = $refundedPrice / ($matchedDocumentProduct['discount'] / 100);
+            if (abs($matchedDocumentProduct['discount']) >= 100) {
+                $refundedPrice = $matchedDocumentProduct['price'];
+            } else if ($matchedDocumentProduct['discount'] > 0) {
+                $refundedPrice = ($refundedPrice * 100) / (100 - $matchedDocumentProduct['discount']);
             }
 
             if (abs($refundedPrice - $matchedDocumentProduct['price']) < 0.02) {
@@ -467,8 +469,10 @@ class CreateCreditNote
                 $refundedPrice /= $this->originalDocument['exchange_rate'];
             }
 
-            if ($matchedDocumentFee['discount'] > 0) {
-                $refundedPrice = $refundedPrice / ($matchedDocumentFee['discount'] / 100);
+            if (abs($matchedDocumentFee['discount']) >= 100) {
+                $refundedPrice = $matchedDocumentFee['price'];
+            } else if ($matchedDocumentFee['discount'] > 0) {
+                $refundedPrice = ($refundedPrice * 100) / (100 - $matchedDocumentFee['discount']);
             }
 
             if (abs($refundedPrice - $matchedDocumentFee['price']) < 0.02) {
