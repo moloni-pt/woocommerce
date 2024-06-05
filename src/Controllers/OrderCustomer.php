@@ -270,8 +270,20 @@ class OrderCustomer
             $search['vat'] = $this->vat;
             $searchResult = Curl::simple('customers/getByVat', $search);
 
-            if (isset($searchResult[0]['customer_id'])) {
-                return $searchResult[0];
+            if (empty($searchResult) || !is_array($searchResult)) {
+                return false;
+            }
+
+            foreach ($searchResult as $customer) {
+                if (!isset($customer['customer_id'])) {
+                    continue;
+                }
+
+                if ((string)$customer['vat'] !== (string)$this->vat) {
+                    continue;
+                }
+
+                return $customer;
             }
         } else if (!empty($this->email)) {
             $search['email'] = $this->email;
