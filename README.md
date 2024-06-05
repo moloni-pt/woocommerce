@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.5.0  
 **WC tested up to**    8.7.0  
-**Stable tag:**        4.7.2  
+**Stable tag:**        4.7.3  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.7.3
+* FIX: Correção na pesquisa de clientes por NIF
+
 ### 4.7.2
 * FIX: Correção na criação de notas de crédito com descontos
 * MINOR: Adicionado WooCommerce como dependência
