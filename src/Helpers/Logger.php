@@ -8,7 +8,7 @@ use Psr\Log\AbstractLogger;
 
 class Logger extends AbstractLogger
 {
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         parent::error($message, $context);
 
