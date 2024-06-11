@@ -2,7 +2,7 @@
 
 namespace Moloni;
 
-use Psr\Log\LoggerInterface;
+use Moloni\Helpers\Logger;
 
 /**
  * Class Storage
@@ -25,7 +25,7 @@ class Storage
     /**
      * Logger instance
      *
-     * @var LoggerInterface|null
+     * @var Logger|null
      */
     public static $LOGGER;
 }
