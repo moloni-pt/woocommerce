@@ -12,8 +12,7 @@
   "require": {
     "php": ">=7.2",
     "ext-curl": "*",
-    "ext-mbstring": "*",
-    "psr/log": "1.1.4"
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {

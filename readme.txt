@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.4.3
-Stable tag: 4.7.3
+Stable tag: 4.7.4
 Requires PHP: 7.2
 WC tested up to: 8.7.0
 License: GPLv2 or later
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.7.4 =
+* FIX: Correção de erro com versão do "Psr Logger Interface"
+
 = 4.7.3 =
 * FIX: Correção na pesquisa de clientes por NIF
 
