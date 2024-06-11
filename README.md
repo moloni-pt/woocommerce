@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.5.0  
 **WC tested up to**    8.7.0  
-**Stable tag:**        4.7.3  
+**Stable tag:**        4.7.4  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.7.4
+* FIX: Correção de erro com versão do "Psr Logger Interface"
+
 ### 4.7.3
 * FIX: Correção na pesquisa de clientes por NIF
 
