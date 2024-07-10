@@ -34,14 +34,14 @@ $logsContext = [];
                         type="date"
                         class="inputOut ml-0"
                         name="filter_date"
-                        value="<?= $_GET['filter_date'] ?? $_POST['filter_date'] ?? '' ?>"
+                        value="<?= esc_html($_GET['filter_date'] ?? $_POST['filter_date'] ?? '') ?>"
                 >
             </th>
             <th>
                 <?php $options = LogLevel::getForRender() ?>
 
                 <select name="filter_level">
-                    <?php $filterLevel = $_GET['filter_level'] ?? $_POST['filter_level'] ?? '' ?>
+                    <?php $filterLevel = esc_html($_GET['filter_level'] ?? $_POST['filter_level'] ?? '') ?>
 
                     <option value='' selected><?=
                         __('Escolha uma opção') ?>
@@ -62,7 +62,7 @@ $logsContext = [];
                         type="text"
                         class="inputOut ml-0"
                         name="filter_message"
-                        value="<?= $_GET['filter_message'] ?? $_POST['filter_message'] ?? '' ?>"
+                        value="<?= esc_html($_GET['filter_message'] ?? $_POST['filter_message'] ?? '') ?>"
                 >
             </th>
             <th>
