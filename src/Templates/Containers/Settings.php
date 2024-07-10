@@ -94,20 +94,14 @@ try {
                     <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
                         <?php foreach ($documentSets as $documentSet) : ?>
                             <?php
-                            $htmlProps = '';
                             $documentSetId = $documentSet['document_set_id'];
-
-                            if ((int)$documentSet['eac_id'] > 0 && !empty($documentSet['eac'])) {
-                                $htmlProps .= ' data-eac-id="' . $documentSet['eac']['eac_id'] . '"';
-                                $htmlProps .= ' data-eac-name="' . htmlspecialchars($documentSet['eac']['description'], ENT_QUOTES) . '"';
-                            }
-
-                            if (defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID === (int)$documentSet['document_set_id']) {
-                                $htmlProps .= ' selected';
-                            }
                             ?>
 
-                            <option value='<?= esc_html($documentSetId) ?>' <?= esc_attr($htmlProps) ?>>
+                            <option value='<?= esc_html($documentSetId) ?>'
+                                <?= isset($documentSet['eac']['eac_id']) ? ' data-eac-id="' . esc_html($documentSet['eac']['eac_id']) . '"' : '' ?>
+                                <?= isset($documentSet['eac']['description']) ? ' data-eac-name="' . esc_html($documentSet['eac']['description']) . '"' : '' ?>
+                                <?= defined('DOCUMENT_SET_ID') && (int)DOCUMENT_SET_ID === (int)$documentSet['document_set_id'] ? ' selected' : '' ?>
+                            >
                                 <?= esc_html($documentSet['name']) ?>
                             </option>
                         <?php endforeach; ?>
