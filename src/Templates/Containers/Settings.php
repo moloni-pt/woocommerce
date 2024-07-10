@@ -23,6 +23,9 @@ try {
     $countries = Curl::simple('countries/getAll', []);
     $documentSets = Curl::simple('documentSets/getAll', []);
     $exemptionReasons = Curl::simple('taxExemptions/getAll', []);
+    $measurementUnits = Curl::simple('measurementUnits/getAll', []);
+    $maturityDates = Curl::simple('maturityDates/getAll', []);
+    $paymentMethods = Curl::simple('paymentMethods/getAll', []);
 
     if (!is_array($exemptionReasons)) {
         $exemptionReasons = [];
@@ -50,7 +53,7 @@ try {
                 </th>
                 <td>
                     <input id="company_slug" name="opt[company_slug]" type="text"
-                           value="<?= $company['slug'] ?>" readonly
+                           value="<?= esc_html($company['slug']) ?>" readonly
                            style="width: 330px;">
                 </td>
             </tr>
@@ -73,7 +76,7 @@ try {
                         ?>
 
                         <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
-                            <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                            <option value='<?= esc_html($id) ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
                                 <?php esc_html_e($name) ?>
                             </option>
                         <?php endforeach; ?>
@@ -104,8 +107,8 @@ try {
                             }
                             ?>
 
-                            <option value='<?= $documentSetId ?>' <?= $htmlProps ?>>
-                                <?= $documentSet['name'] ?>
+                            <option value='<?= esc_html($documentSetId) ?>' <?= esc_attr($htmlProps) ?>>
+                                <?= esc_html($documentSet['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -197,16 +200,24 @@ try {
 
                     <div class="custom-address__wrapper" id="load_address_custom_line">
                         <div class="custom-address__line">
+                            <?php $loadAddressCustomAddress = defined('LOAD_ADDRESS_CUSTOM_ADDRESS') ? LOAD_ADDRESS_CUSTOM_ADDRESS : ''; ?>
+
+
                             <input name="opt[load_address_custom_address]" id="load_address_custom_address"
-                                   value="<?= defined('LOAD_ADDRESS_CUSTOM_ADDRESS') ? LOAD_ADDRESS_CUSTOM_ADDRESS : '' ?>"
+                                   value="<?= esc_html($loadAddressCustomAddress) ?>"
                                    placeholder="Morada" type="text" class="inputOut">
                         </div>
                         <div class="custom-address__line">
+                            <?php $loadAddressCustomCode = defined('LOAD_ADDRESS_CUSTOM_CODE') ? LOAD_ADDRESS_CUSTOM_CODE : ''; ?>
+
                             <input name="opt[load_address_custom_code]" id="load_address_custom_code"
-                                   value="<?= defined('LOAD_ADDRESS_CUSTOM_CODE') ? LOAD_ADDRESS_CUSTOM_CODE : '' ?>"
+                                   value="<?= esc_html($loadAddressCustomCode) ?>"
                                    placeholder="Código Postal" type="text" class="inputOut inputOut--sm">
+
+                            <?php $loadAddressCustomCity = defined('LOAD_ADDRESS_CUSTOM_CITY') ? LOAD_ADDRESS_CUSTOM_CITY : ''; ?>
+
                             <input name="opt[load_address_custom_city]" id="load_address_custom_city"
-                                   value="<?= defined('LOAD_ADDRESS_CUSTOM_CITY') ? LOAD_ADDRESS_CUSTOM_CITY : '' ?>"
+                                   value="<?= esc_html($loadAddressCustomCity) ?>"
                                    placeholder="Localidade" type="text" class="inputOut inputOut--sm">
                         </div>
                         <div class="custom-address__line">
@@ -215,8 +226,8 @@ try {
                                 <?php $activeCountry = defined('LOAD_ADDRESS_CUSTOM_COUNTRY') ? (int)LOAD_ADDRESS_CUSTOM_COUNTRY : 0; ?>
 
                                 <?php foreach ($countries as $country) : ?>
-                                    <option value='<?= $country['country_id'] ?>' <?= $activeCountry === (int)$country['country_id'] ? 'selected' : '' ?>>
-                                        <?= $country['languages'][0]['name'] ?>
+                                    <option value='<?= esc_html($country['country_id']) ?>' <?= $activeCountry === (int)$country['country_id'] ? 'selected' : '' ?>>
+                                        <?= esc_html($country['languages'][0]['name']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -305,10 +316,10 @@ try {
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
                             <option
-                                    title="<?= $exemptionReason['description'] ?>"
-                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonProduct === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    title="<?= esc_html($exemptionReason['description']) ?>"
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonProduct === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -340,10 +351,10 @@ try {
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
                             <option
-                                    title="<?= $exemptionReason['description'] ?>"
-                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonShipping === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    title="<?= esc_html($exemptionReason['description']) ?>"
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShipping === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -388,10 +399,10 @@ try {
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
                             <option
-                                    title="<?= $exemptionReason['description'] ?>"
-                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    title="<?= esc_html($exemptionReason['description']) ?>"
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -425,10 +436,10 @@ try {
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
                             <option
-                                    title="<?= $exemptionReason['description'] ?>"
-                                    value='<?= $exemptionReason['code'] ?>' <?= $exemptionReasonShippingExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    title="<?= esc_html($exemptionReason['description']) ?>"
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShippingExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= $exemptionReason['code'] . ' - ' . $exemptionReason['name'] ?>
+                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -491,8 +502,8 @@ try {
                             }
                             ?>
 
-                            <option value='<?= $documentSetId ?>' <?= $htmlProps ?>>
-                                <?= $documentSet['name'] ?>
+                            <option value='<?= esc_html($documentSetId) ?>' <?= esc_html($htmlProps) ?>>
+                                <?= esc_html($documentSet['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -567,8 +578,8 @@ try {
                         <select id="moloni_product_warehouse" name='opt[moloni_product_warehouse]' class='inputOut'>
                             <option value='0'><?php esc_html_e('Armazém pré-definido') ?></option>
                             <?php foreach ($warehouses as $warehouse) : ?>
-                                <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE === (int)$warehouse['warehouse_id'] ? 'selected' : '' ?>>
-                                    <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
+                                <option value='<?= esc_html($warehouse['warehouse_id']) ?>' <?= defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE === (int)$warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                    <?= esc_html($warehouse['title']) ?> (<?= esc_html($warehouse['code']) ?>)
                                 </option>
                             <?php endforeach; ?>
 
@@ -584,10 +595,11 @@ try {
                 </th>
                 <td>
                     <select id="measure_unit_id" name='opt[measure_unit]' class='inputOut'>
-                        <?php $measurementUnits = Curl::simple('measurementUnits/getAll', []); ?>
                         <?php if (is_array($measurementUnits)): ?>
                             <?php foreach ($measurementUnits as $measurementUnit) : ?>
-                                <option value='<?= $measurementUnit['unit_id'] ?>' <?= defined('MEASURE_UNIT') && (int)MEASURE_UNIT === (int)$measurementUnit['unit_id'] ? 'selected' : '' ?>><?= $measurementUnit['name'] ?></option>
+                                <option value='<?= esc_html($measurementUnit['unit_id']) ?>' <?= defined('MEASURE_UNIT') && (int)MEASURE_UNIT === (int)$measurementUnit['unit_id'] ? 'selected' : '' ?>>
+                                    <?= esc_html($measurementUnit['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -641,10 +653,11 @@ try {
                 <td>
                     <select id="maturity_date_id" name='opt[maturity_date]' class='inputOut'>
                         <option value='0' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === 0 ? 'selected' : '' ?>><?php esc_html_e('Escolha uma opção') ?></option>
-                        <?php $maturityDates = Curl::simple('maturityDates/getAll', []); ?>
                         <?php if (is_array($maturityDates)): ?>
                             <?php foreach ($maturityDates as $maturityDate) : ?>
-                                <option value='<?= $maturityDate['maturity_date_id'] ?>' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === (int)$maturityDate['maturity_date_id'] ? 'selected' : '' ?>><?= $maturityDate['name'] ?></option>
+                                <option value='<?= esc_html($maturityDate['maturity_date_id']) ?>' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === (int)$maturityDate['maturity_date_id'] ? 'selected' : '' ?>>
+                                    <?= esc_html($maturityDate['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -659,10 +672,11 @@ try {
                 <td>
                     <select id="payment_method_id" name='opt[payment_method]' class='inputOut'>
                         <option value='0' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === 0 ? 'selected' : '' ?>><?php esc_html_e('Escolha uma opção') ?></option>
-                        <?php $paymentMethods = Curl::simple('paymentMethods/getAll', []); ?>
                         <?php if (is_array($paymentMethods)): ?>
                             <?php foreach ($paymentMethods as $paymentMethod) : ?>
-                                <option value='<?= $paymentMethod['payment_method_id'] ?>' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === (int)$paymentMethod['payment_method_id'] ? 'selected' : '' ?>><?= $paymentMethod['name'] ?></option>
+                                <option value='<?= esc_html($paymentMethod['payment_method_id']) ?>' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === (int)$paymentMethod['payment_method_id'] ? 'selected' : '' ?>>
+                                    <?= esc_html($paymentMethod['name']) ?>
+                                </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
@@ -697,8 +711,8 @@ try {
                         </option>
 
                         <?php foreach ($customFields as $customField) : ?>
-                            <option value='<?= $customField ?>' <?= $vatField === $customField ? 'selected' : '' ?>>
-                                <?= $customField ?>
+                            <option value='<?= esc_html($customField) ?>' <?= $vatField === $customField ? 'selected' : '' ?>>
+                                <?= esc_html($customField) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -803,8 +817,8 @@ try {
                                 }
                             ?>
 
-                            <option value='<?= $parsedId ?>' <?= $invoiceAutoStatus === $parsedId ? 'selected' : '' ?>>
-                                <?= $name ?>
+                            <option value='<?= esc_html($parsedId) ?>' <?= $invoiceAutoStatus === $parsedId ? 'selected' : '' ?>>
+                                <?= esc_html($name) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -817,7 +831,7 @@ try {
                     <label for="alert_email"><?php esc_html_e('Alerta de erros via e-mail') ?></label>
                 </th>
                 <td>
-                    <input value="<?= (defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
+                    <input value="<?= esc_html(defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
                            id="alert_email"
                            name='opt[alert_email]'
                            type="text"
@@ -840,8 +854,8 @@ try {
                             <optgroup label="<?php esc_html_e('Sim, apenas do armazém:') ?>">
 
                                 <?php foreach ($warehouses as $warehouse) : ?>
-                                    <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
-                                        <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
+                                    <option value='<?= esc_html($warehouse['warehouse_id']) ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
+                                        <?= esc_html($warehouse['title']) ?> (<?= esc_html($warehouse['code']) ?>)
                                     </option>
                                 <?php endforeach; ?>
 
@@ -902,7 +916,7 @@ try {
                     }
                     ?>
 
-                    <input value="<?= $orderCreatedAtMax ?>"
+                    <input value="<?= esc_html($orderCreatedAtMax) ?>"
                            id="order_created_at_max"
                            name='opt[order_created_at_max]'
                            type="date"
