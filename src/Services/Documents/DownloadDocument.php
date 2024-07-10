@@ -31,10 +31,10 @@ class DownloadDocument
 
                 header('Location: ' . $downloadUrl);
             } else {
-                $this->showError(_('Documento não existe'));
+                $this->showError(__('Documento não existe'));
             }
         } catch (APIExeption $e) {
-            $this->showError(_('Erro a obter documento'));
+            $this->showError(__('Erro a obter documento'));
         }
     }
 

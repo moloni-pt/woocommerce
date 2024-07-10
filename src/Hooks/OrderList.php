@@ -108,7 +108,7 @@ class OrderList
 
                 echo '<a class="button" target="_blank" onclick="window.open(\'' . $redirectUrl . '\', \'_blank\')">' . __('Descarregar') . '</a>';
             } else {
-                echo '<div>' . _('Sem documento associado') . '</div>';
+                echo '<div>' . __('Sem documento associado') . '</div>';
             }
         }
     }
