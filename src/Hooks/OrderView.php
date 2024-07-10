@@ -54,7 +54,7 @@ class OrderView
 
         <select id="moloni_document_type" style="float:right">
             <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
-                <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                <option value='<?= esc_html($id) ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
                     <?php esc_html_e($name) ?>
                 </option>
             <?php endforeach; ?>
@@ -88,7 +88,7 @@ class OrderView
 
             Start::login(true);
 
-            echo '<div style="display: none"><pre>' . print_r($order->get_taxes(), true) . '</pre></div>';
+            echo '<div style="display: none"><pre>' . esc_html(print_r($order->get_taxes(), true)) . '</pre></div>';
 
             if ($documentId > 0) {
                 echo esc_html__('O documento já foi gerado no moloni');

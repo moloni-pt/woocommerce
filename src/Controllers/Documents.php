@@ -326,11 +326,11 @@ class Documents
 
             $this->order->add_order_note($note);
 
-            $viewUrl = esc_url(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id));
+            $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
 
             throw new DocumentWarning(
                 __('O documento foi inserido mas os totais não correspondem.') .
-                '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
+                '<a href="' . esc_url($viewUrl) . '" target="_BLANK">Ver documento</a>'
             );
         }
 

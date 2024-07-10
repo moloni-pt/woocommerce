@@ -41,7 +41,7 @@ class DownloadDocument
     private function showError($message): void
     {
         echo "<script>";
-        echo "  alert('" . $message . "');";
+        echo "  alert('" . esc_js($message) . "');";
         echo "  window.close();";
         echo "</script>";
     }

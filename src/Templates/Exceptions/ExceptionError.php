@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
             <pre>
                 <?=
                     /** @var array $data */
-                    json_encode($data ?? [], JSON_PRETTY_PRINT)
+                    wp_json_encode($data ?? [], JSON_PRETTY_PRINT)
                 ?>
             </pre>
         </div>

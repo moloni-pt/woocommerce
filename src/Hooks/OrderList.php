@@ -104,9 +104,9 @@ class OrderList
             $documentId = MoloniOrder::getLastCreatedDocument($order);
 
             if ($documentId > 0) {
-                $redirectUrl = esc_url(admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId));
+                $redirectUrl = admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId);
 
-                echo '<a class="button" target="_blank" onclick="window.open(\'' . $redirectUrl . '\', \'_blank\')">' . esc_html__('Descarregar') . '</a>';
+                echo '<a class="button" target="_blank" onclick="window.open(\'' . esc_url($redirectUrl) . '\', \'_blank\')">' . esc_html__('Descarregar') . '</a>';
             } else {
                 echo '<div>' . esc_html__('Sem documento associado') . '</div>';
             }
