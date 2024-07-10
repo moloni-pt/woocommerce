@@ -3,10 +3,10 @@ Contributors: molonidevteam
 Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
-Tested up to: 6.4.3
+Tested up to: 6.5.5
 Stable tag: 4.7.4
 Requires PHP: 7.2
-WC tested up to: 8.7.0
+WC tested up to: 9.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
