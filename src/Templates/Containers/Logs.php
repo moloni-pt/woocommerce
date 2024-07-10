@@ -156,6 +156,6 @@ $logsContext = [];
 
 <script>
     jQuery(document).ready(function () {
-        Moloni.Logs.init(<?= json_encode($logsContext) ?>);
+        Moloni.Logs.init(<?= wp_json_encode($logsContext) ?>);
     });
 </script>
