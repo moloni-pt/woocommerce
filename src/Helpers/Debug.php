@@ -42,7 +42,7 @@ class Debug
 
         foreach ($objects as $object) {
             if ($object != "." && $object != "..") {
-                unlink($dir . "/" . $object);
+                wp_delete_file($dir . "/" . $object);
             }
         }
 
@@ -66,12 +66,12 @@ class Debug
             throw new Exception(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
 
-        $fileName = time() . '_' . rand(0, 1000) . '.log';
+        $fileName = time() . '_' . wp_rand(0, 1000) . '.log';
         $fileFullPath = $concurrentDirectory . '/' . $fileName;
 
         $logFile = fopen($fileFullPath, 'ab');
 
-        fwrite($logFile, base64_encode(json_encode($data)));
+        fwrite($logFile, base64_encode(wp_json_encode($data)));
         fclose($logFile);
 
         return MOLONI_PLUGIN_URL . '/logs/' . $fileName;

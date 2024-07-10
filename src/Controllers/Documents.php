@@ -330,7 +330,7 @@ class Documents
 
             throw new DocumentWarning(
                 __('O documento foi inserido mas os totais não correspondem.') .
-                '<a href="' . $viewUrl . '" target="_BLANK">Ver documento</a>'
+                '<a href="' . esc_url($viewUrl) . '" target="_BLANK">Ver documento</a>'
             );
         }
 
@@ -780,7 +780,7 @@ class Documents
     public function setDocumentSetId(): Documents
     {
         if (!defined('DOCUMENT_SET_ID') || (int)DOCUMENT_SET_ID === 0) {
-            throw new DocumentError(__('Série de documentos em falta. <br>Por favor selecione uma série nas opções do plugin', false));
+            throw new DocumentError(__('Série de documentos em falta. <br>Por favor selecione uma série nas opções do plugin'));
         }
 
         $this->document_set_id = DOCUMENT_SET_ID;
