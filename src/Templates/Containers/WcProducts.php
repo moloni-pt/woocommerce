@@ -151,7 +151,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         <tbody>
         <?php if (!empty($rows) && is_array($rows)) : ?>
             <?php foreach ($rows as $row) : ?>
-                <?= wp_kses_post($row) ?>
+                <?= $row ?>
             <?php endforeach; ?>
         <?php else : ?>
             <tr class="text-center">
