@@ -81,7 +81,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         </button>
 
         <div class="tablenav-pages">
-            <?= wp_kses_post($paginator) ?>
+            <?= $paginator ?>
         </div>
     </div>
 
@@ -197,7 +197,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         </button>
 
         <div class="tablenav-pages">
-            <?= wp_kses_post($paginator) ?>
+            <?= $paginator ?>
         </div>
     </div>
 </form>

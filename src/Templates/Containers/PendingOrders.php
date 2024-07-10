@@ -32,7 +32,7 @@ $pagination = PendingOrders::getPagination();
     </div>
 
     <div class="tablenav-pages">
-        <?= wp_kses_post($pagination) ?>
+        <?= $pagination ?>
     </div>
 </div>
 
@@ -178,7 +178,7 @@ $pagination = PendingOrders::getPagination();
 
 <div class="tablenav bottom">
     <div class="tablenav-pages">
-        <?= wp_kses_post($pagination) ?>
+        <?= $pagination ?>
     </div>
 </div>
 

@@ -16,7 +16,7 @@ $logsContext = [];
 
 <div class="tablenav top">
     <div class="tablenav-pages">
-        <?= wp_kses_post($pagination) ?>
+        <?= $pagination ?>
     </div>
 </div>
 
@@ -148,7 +148,7 @@ $logsContext = [];
     </div>
 
     <div class="tablenav-pages">
-        <?= wp_kses_post($pagination) ?>
+        <?= $pagination ?>
     </div>
 </div>
 
