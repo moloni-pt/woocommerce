@@ -5,31 +5,34 @@ if (!defined('ABSPATH')) {
 ?>
 
 <?php
+
 use Moloni\Enums\DocumentTypes;
 use Moloni\Models\PendingOrders;
 
 /** @var WC_Order[] $orders */
 $orders = PendingOrders::getAllAvailable();
+$pagination = PendingOrders::getPagination();
 ?>
 
-<h3><?= __('Aqui pode consultar todas as encomendas que tem por gerar') ?></h3>
+<h3>
+    <?php esc_html_e('Aqui pode consultar todas as encomendas que tem por gerar') ?>
+</h3>
 
 <div class="tablenav top">
     <div class="alignleft actions bulkactions">
         <label for="bulk-action-selector-top" class="screen-reader-text">
-            <?= __('Seleccionar acção por lotes') ?>
+            <?php esc_html_e('Seleccionar acção por lotes') ?>
         </label>
-        <select
-                name="action" id="bulk-action-selector-top">
-            <option value="-1"><?= __('Ações por lotes') ?></option>
-            <option value="bulkGenInvoice"><?= __('Gerar documentos') ?></option>
-            <option value="bulkDiscardOrder"><?= __('Descartar encomendas') ?></option>
+        <select name="action" id="bulk-action-selector-top">
+            <option value="-1"><?php esc_html_e('Ações por lotes') ?></option>
+            <option value="bulkGenInvoice"><?php esc_html_e('Gerar documentos') ?></option>
+            <option value="bulkDiscardOrder"><?php esc_html_e('Descartar encomendas') ?></option>
         </select>
-        <input type="submit" id="doAction" class="button action" value="<?= __('Correr') ?>">
+        <input type="submit" id="doAction" class="button action" value="<?php esc_html_e('Correr') ?>">
     </div>
 
     <div class="tablenav-pages">
-        <?= PendingOrders::getPagination() ?>
+        <?= wp_kses_post($pagination) ?>
     </div>
 </div>
 
@@ -40,12 +43,12 @@ $orders = PendingOrders::getAllAvailable();
             <label for="moloni-pending-orders-select-all" class="screen-reader-text"></label>
             <input id="moloni-pending-orders-select-all" class="moloni-pending-orders-select-all" type="checkbox">
         </td>
-        <th><a><?= __('Encomenda') ?></a></th>
-        <th><a><?= __('Cliente') ?></a></th>
-        <th><a><?= __('Contribuinte') ?></a></th>
-        <th><a><?= __('Total') ?></a></th>
-        <th><a><?= __('Estado') ?></a></th>
-        <th><a><?= __('Data de Pagamento') ?></a></th>
+        <th><a><?php esc_html_e('Encomenda') ?></a></th>
+        <th><a><?php esc_html_e('Cliente') ?></a></th>
+        <th><a><?php esc_html_e('Contribuinte') ?></a></th>
+        <th><a><?php esc_html_e('Total') ?></a></th>
+        <th><a><?php esc_html_e('Estado') ?></a></th>
+        <th><a><?php esc_html_e('Data de Pagamento') ?></a></th>
         <th style="width: 350px;"></th>
     </tr>
     </thead>
@@ -54,21 +57,23 @@ $orders = PendingOrders::getAllAvailable();
 
         <!-- Let's draw a list of all the available orders -->
         <?php foreach ($orders as $order) : ?>
-            <tr id="moloni-pending-order-row-<?= $order->get_id() ?>">
+            <tr id="moloni-pending-order-row-<?= esc_html($order->get_id()) ?>">
                 <td class="">
-                    <label for="moloni-pending-order-<?= $order->get_id() ?>" class="screen-reader-text"></label>
-                    <input id="moloni-pending-order-<?= $order->get_id() ?>" type="checkbox"
-                           value="<?= $order->get_id() ?>">
+                    <label for="moloni-pending-order-<?= esc_html($order->get_id()) ?>" class="screen-reader-text"></label>
+                    <input id="moloni-pending-order-<?= esc_html($order->get_id()) ?>" type="checkbox"
+                           value="<?= esc_html($order->get_id()) ?>">
                 </td>
                 <td>
-                    <a target="_blank" href=<?= $order->get_edit_order_url() ?>>#<?= $order->get_order_number() ?></a>
+                    <a target="_blank" href=<?= esc_url($order->get_edit_order_url()) ?>>
+                        #<?= esc_html($order->get_order_number()) ?>
+                    </a>
                 </td>
                 <td>
                     <?php
                     if (!empty($order->get_billing_first_name())) {
-                        echo $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+                        echo esc_html($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
                     } else {
-                        echo __('Desconhecido');
+                        esc_html_e('Desconhecido');
                     }
                     ?>
                 <td>
@@ -81,36 +86,38 @@ $orders = PendingOrders::getAllAvailable();
                         $vat = $meta;
                     }
 
-                    echo empty($vat) ? '999999990' : $vat;
+                    echo esc_html(empty($vat) ? '999999990' : $vat);
                     ?>
                 </td>
-                <td><?= $order->get_total() . $order->get_currency() ?></td>
+                <td>
+                    <?= esc_html($order->get_total() . $order->get_currency()) ?>
+                </td>
                 <td>
                     <?php
                     $availableStatus = wc_get_order_statuses();
                     $needle = 'wc-' . $order->get_status();
 
                     if (isset($availableStatus[$needle])) {
-                        echo $availableStatus[$needle];
+                        echo esc_html($availableStatus[$needle]);
                     } else {
-                       echo $needle;
+                       echo esc_html($needle);
                     }
                     ?>
                 </td>
                 <td>
                     <?php
                     if (!empty($order->get_date_paid())) {
-                        echo date('Y-m-d H:i:s', strtotime($order->get_date_paid()));
+                        echo esc_html(date('Y-m-d H:i:s', strtotime($order->get_date_paid())));
                     } else {
                         echo 'n/a';
                     }
                     ?>
                 </td>
                 <td class="order_status column-order_status" style="text-align: right">
-                    <form action="<?= admin_url('admin.php') ?>">
+                    <form action="<?= esc_url(admin_url('admin.php')) ?>">
                         <input type="hidden" name="page" value="moloni">
                         <input type="hidden" name="action" value="genInvoice">
-                        <input type="hidden" name="id" value="<?= $order->get_id() ?>">
+                        <input type="hidden" name="id" value="<?= esc_html($order->get_id()) ?>">
 
                         <?php
                         if (defined('DOCUMENT_TYPE')) {
@@ -122,8 +129,8 @@ $orders = PendingOrders::getAllAvailable();
 
                         <select name="document_type" style="margin-right: 5px">
                             <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
-                                <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
-                                    <?= __($name) ?>
+                                <option value='<?= esc_html($id) ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
+                                    <?php esc_html_e($name) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -131,11 +138,11 @@ $orders = PendingOrders::getAllAvailable();
                         <input type="submit"
                                class="wp-core-ui button-primary"
                                style="width: 80px; text-align: center; margin-right: 5px"
-                               value="<?= __('Gerar') ?>">
+                               value="<?php esc_html_e('Gerar') ?>">
 
                         <a class="wp-core-ui button-secondary" style="width: 80px; text-align: center"
-                           href="<?= admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id()) ?>">
-                            <?= __('Descartar') ?>
+                           href="<?= esc_url(admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id())) ?>">
+                            <?php esc_html_e('Descartar') ?>
                         </a>
                     </form>
                 </td>
@@ -145,7 +152,7 @@ $orders = PendingOrders::getAllAvailable();
     <?php else : ?>
         <tr>
             <td colspan="8">
-                <?= __('Não foram encontadas encomendas por gerar!') ?>
+                <?php esc_html_e('Não foram encontadas encomendas por gerar!') ?>
             </td>
         </tr>
     <?php endif; ?>
@@ -158,12 +165,12 @@ $orders = PendingOrders::getAllAvailable();
                    type="checkbox">
         </td>
 
-        <th><a><?= __('Encomenda') ?></a></th>
-        <th><a><?= __('Cliente') ?></a></th>
-        <th><a><?= __('Contribuinte') ?></a></th>
-        <th><a><?= __('Total') ?></a></th>
-        <th><a><?= __('Estado') ?></a></th>
-        <th><a><?= __('Data de Pagamento') ?></a></th>
+        <th><a><?php esc_html_e('Encomenda') ?></a></th>
+        <th><a><?php esc_html_e('Cliente') ?></a></th>
+        <th><a><?php esc_html_e('Contribuinte') ?></a></th>
+        <th><a><?php esc_html_e('Total') ?></a></th>
+        <th><a><?php esc_html_e('Estado') ?></a></th>
+        <th><a><?php esc_html_e('Data de Pagamento') ?></a></th>
         <th></th>
     </tr>
     </tfoot>
@@ -171,7 +178,7 @@ $orders = PendingOrders::getAllAvailable();
 
 <div class="tablenav bottom">
     <div class="tablenav-pages">
-        <?= PendingOrders::getPagination() ?>
+        <?= wp_kses_post($pagination) ?>
     </div>
 </div>
 

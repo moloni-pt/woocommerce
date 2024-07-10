@@ -30,8 +30,8 @@ if (!defined('ABSPATH')) {
                 </tr>
                 <tr>
                     <td style="text-align:center;">
-                        <a href="<?= $url ?? '' ?>" title="logo" target="_blank">
-                            <img width="200px" src="<?= $image ?? '' ?>" title="logo"
+                        <a href="<?= esc_url($url ?? '') ?>" title="logo" target="_blank">
+                            <img width="200px" src="<?= esc_url($image ?? '') ?>" title="logo"
                                  alt="logo">
                         </a>
                     </td>
@@ -72,7 +72,7 @@ if (!defined('ABSPATH')) {
     <tr>
         <td style="text-align:center;">
             <p style="font-size:14px; color:#fff; line-height:18px; margin:0 0 0;">
-                &copy; <strong><?= $year ?? '' ?> Moloni - Software de faturação online</strong>
+                &copy; <strong><?= esc_html($year ?? '') ?> Moloni - Software de faturação online</strong>
             </p>
         </td>
     </tr>

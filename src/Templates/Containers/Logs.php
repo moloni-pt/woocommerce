@@ -7,26 +7,27 @@ use Moloni\Enums\LogLevel;
 use Moloni\Models\Logs;
 
 $logs = Logs::getAllAvailable();
+$pagination = Logs::getPagination();
 
 $logsContext = [];
 ?>
 
-<h3><?= __('Aqui pode consultar todas os registos do plugin') ?></h3>
+<h3><?php esc_html_e('Aqui pode consultar todas os registos do plugin') ?></h3>
 
 <div class="tablenav top">
     <div class="tablenav-pages">
-        <?= Logs::getPagination() ?>
+        <?= wp_kses_post($pagination) ?>
     </div>
 </div>
 
-<form method="post" action='<?= admin_url('admin.php?page=moloni&tab=logs') ?>'>
+<form method="post" action='<?= esc_url(admin_url('admin.php?page=moloni&tab=logs')) ?>'>
     <table class='wp-list-table widefat striped posts'>
         <thead>
         <tr>
-            <th><a><?= __('Data') ?></a></th>
-            <th><a><?= __('Nível') ?></a></th>
-            <th><a><?= __('Mensagem') ?></a></th>
-            <th><a><?= __('Contexto') ?></a></th>
+            <th><a><?php esc_html_e('Data') ?></a></th>
+            <th><a><?php esc_html_e('Nível') ?></a></th>
+            <th><a><?php esc_html_e('Mensagem') ?></a></th>
+            <th><a><?php esc_html_e('Contexto') ?></a></th>
         </tr>
         <tr>
             <th>
@@ -43,16 +44,16 @@ $logsContext = [];
                 <select name="filter_level">
                     <?php $filterLevel = esc_html($_GET['filter_level'] ?? $_POST['filter_level'] ?? '') ?>
 
-                    <option value='' selected><?=
-                        __('Escolha uma opção') ?>
+                    <option value='' selected>
+                        <?php esc_html_e('Escolha uma opção') ?>
                     </option>
 
                     <?php foreach ($options as $option) : ?>
                         <option
-                                value='<?= $option['value'] ?>'
+                                value='<?= esc_html($option['value']) ?>'
                             <?= $filterLevel === $option['value'] ? 'selected' : '' ?>
                         >
-                            <?= $option['label'] ?>
+                            <?= esc_html($option['label']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -67,7 +68,7 @@ $logsContext = [];
             </th>
             <th>
                 <button type="submit" name="submit" id="submit" class="button button-primary">
-                    <?= __('Pesquisar') ?>
+                    <?php esc_html_e('Pesquisar') ?>
                 </button>
             </th>
         </tr>
@@ -77,19 +78,19 @@ $logsContext = [];
             <?php foreach ($logs as $log) : ?>
                 <tr>
                     <td>
-                        <?= $log['created_at'] ?>
+                        <?= esc_html($log['created_at']) ?>
                     </td>
                     <td>
                         <?php
                         $logLevel = $log['log_level'] ?? '';
                         ?>
 
-                        <div class="chip <?= LogLevel::getClass($logLevel) ?>">
-                            <?= LogLevel::getTranslation($logLevel) ?>
+                        <div class="chip <?= esc_html(LogLevel::getClass($logLevel)) ?>">
+                            <?= esc_html(LogLevel::getTranslation($logLevel)) ?>
                         </div>
                     </td>
                     <td>
-                        <?= $log['message'] ?>
+                        <?= esc_html($log['message']) ?>
                     </td>
                     <td>
                         <?php $showOverlayButton = true ?>
@@ -99,10 +100,10 @@ $logsContext = [];
 
                             <?php if (isset($payload['link'])) : ?>
                                 <a type="button"
-                                   download="<?= $log['message'] ?>.log"
+                                   download="<?= esc_html($log['message']) ?>.log"
                                    class="button action"
-                                   href="<?= $payload['link'] ?>">
-                                    <?= __("Descarregar") ?>
+                                   href="<?= esc_url($payload['link']) ?>">
+                                    <?php esc_html_e("Descarregar") ?>
                                 </a>
 
                                 <?php $showOverlayButton = false ?>
@@ -112,8 +113,8 @@ $logsContext = [];
                         <?php if ($showOverlayButton) : ?>
                             <?php $logsContext[$log['id']] = $log['context'] ?>
 
-                            <button type="button" class="button action log_button" data-log-id="<?= $log['id'] ?>">
-                                <?= __("Ver") ?>
+                            <button type="button" class="button action log_button" data-log-id="<?= esc_html($log['id']) ?>">
+                                <?php esc_html_e("Ver") ?>
                             </button>
                         <?php endif; ?>
                     </td>
@@ -122,17 +123,17 @@ $logsContext = [];
         <?php else : ?>
             <tr>
                 <td colspan="4">
-                    <?= __('Não foram encontados registos!') ?>
+                    <?php esc_html_e('Não foram encontados registos!') ?>
                 </td>
             </tr>
         <?php endif; ?>
 
         <tfoot>
         <tr>
-            <th><a><?= __('Data') ?></a></th>
-            <th><a><?= __('Nível') ?></a></th>
-            <th><a><?= __('Mensagem') ?></a></th>
-            <th><a><?= __('Contexto') ?></a></th>
+            <th><a><?php esc_html_e('Data') ?></a></th>
+            <th><a><?php esc_html_e('Nível') ?></a></th>
+            <th><a><?php esc_html_e('Mensagem') ?></a></th>
+            <th><a><?php esc_html_e('Contexto') ?></a></th>
         </tr>
         </tfoot>
     </table>
@@ -141,13 +142,13 @@ $logsContext = [];
 <div class="tablenav bottom">
     <div class="alignleft actions">
         <a class="button button-primary"
-           href='<?= admin_url('admin.php?page=moloni&tab=logs&action=remLogs') ?>'>
-            <?= __('Apagar registos com mais de 1 semana') ?>
+           href='<?= esc_url(admin_url('admin.php?page=moloni&tab=logs&action=remLogs')) ?>'>
+            <?php esc_html_e('Apagar registos com mais de 1 semana') ?>
         </a>
     </div>
 
     <div class="tablenav-pages">
-        <?= Logs::getPagination() ?>
+        <?= wp_kses_post($pagination) ?>
     </div>
 </div>
 

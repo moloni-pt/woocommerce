@@ -33,12 +33,12 @@ try {
 }
 ?>
 
-<form method='POST' action='<?= admin_url('admin.php?page=moloni&tab=settings') ?>' id='formOpcoes'>
+<form method='POST' action='<?= esc_url(admin_url('admin.php?page=moloni&tab=settings')) ?>' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>
     <div>
         <!-- Documento -->
         <h2 class="title">
-            <?= __('Documentos') ?>
+            <?php esc_html_e('Documentos') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -46,7 +46,7 @@ try {
             <!-- Slug da empresa -->
             <tr>
                 <th>
-                    <label for="company_slug"><?= __('Slug da empresa') ?></label>
+                    <label for="company_slug"><?php esc_html_e('Slug da empresa') ?></label>
                 </th>
                 <td>
                     <input id="company_slug" name="opt[company_slug]" type="text"
@@ -59,7 +59,7 @@ try {
             <tr>
                 <th>
                     <label for="document_type">
-                        <?= __('Tipo de documento') ?>
+                        <?php esc_html_e('Tipo de documento') ?>
                     </label>
                 </th>
                 <td>
@@ -74,18 +74,18 @@ try {
 
                         <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
                             <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
-                                <?= __($name) ?>
+                                <?php esc_html_e($name) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class='description'><?= __('Obrigatório') ?></p>
+                    <p class='description'><?php esc_html_e('Obrigatório') ?></p>
                 </td>
             </tr>
 
             <!-- Série de documento -->
             <tr>
                 <th>
-                    <label for="document_set_id"><?= __('Série do documento') ?></label>
+                    <label for="document_set_id"><?php esc_html_e('Série do documento') ?></label>
                 </th>
                 <td>
                     <select id="document_set_id" name='opt[document_set_id]' class='inputOut'>
@@ -109,21 +109,21 @@ try {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class='description'><?= __('Obrigatório') ?></p>
+                    <p class='description'><?php esc_html_e('Obrigatório') ?></p>
                 </td>
             </tr>
 
             <!-- CAE -->
             <tr id="document_set_cae_line" style="display: none;">
                 <th>
-                    <label for="document_set_cae_name"><?= __('CAE da série') ?></label>
+                    <label for="document_set_cae_name"><?php esc_html_e('CAE da série') ?></label>
                 </th>
                 <td>
                     <input id="document_set_cae_id" name="opt[document_set_cae_id]" type="hidden" value="0">
                     <input id="document_set_cae_name" type="text" value="Placeholder" readonly style="width: 330px;">
 
                     <p id="document_set_cae_warning" class='description txt--red' style="display: none;">
-                        <?= __('Guarde alterações para associar a CAE ao plugin') ?>
+                        <?php esc_html_e('Guarde alterações para associar a CAE ao plugin') ?>
                     </p>
                 </td>
             </tr>
@@ -131,21 +131,21 @@ try {
             <!-- Estado do documento -->
             <tr id="document_status_line">
                 <th>
-                    <label for="document_status"><?= __('Estado do documento') ?></label>
+                    <label for="document_status"><?php esc_html_e('Estado do documento') ?></label>
                 </th>
                 <td>
                     <select id="document_status" name='opt[document_status]' class='inputOut'>
-                        <option value='0' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 0 ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
-                        <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?= __('Fechado') ?></option>
+                        <option value='0' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 0 ? 'selected' : '') ?>><?php esc_html_e('Rascunho') ?></option>
+                        <option value='1' <?= (defined('DOCUMENT_STATUS') && (int)DOCUMENT_STATUS === 1 ? 'selected' : '') ?>><?php esc_html_e('Fechado') ?></option>
                     </select>
-                    <p class='description'><?= __('Obrigatório') ?></p>
+                    <p class='description'><?php esc_html_e('Obrigatório') ?></p>
                 </td>
             </tr>
 
             <!-- Criar documento de transporte -->
             <tr id="create_bill_of_lading_line">
                 <th>
-                    <label for="create_bill_of_lading"><?= __('Documento de transporte') ?></label>
+                    <label for="create_bill_of_lading"><?php esc_html_e('Documento de transporte') ?></label>
                 </th>
                 <td>
                     <?php
@@ -158,41 +158,41 @@ try {
 
                     <select id="create_bill_of_lading" name='opt[create_bill_of_lading]' class='inputOut'>
                         <option value='0' <?= ($createBillOfLading === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($createBillOfLading === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
-                    <p class='description'><?= __('Criar documento de transporte') ?></p>
+                    <p class='description'><?php esc_html_e('Criar documento de transporte') ?></p>
                 </td>
             </tr>
 
             <!-- Informação de envio -->
             <tr>
                 <th>
-                    <label for="shipping_info"><?= __('Informação de envio') ?></label>
+                    <label for="shipping_info"><?php esc_html_e('Informação de envio') ?></label>
                 </th>
                 <td>
                     <select id="shipping_info" name='opt[shipping_info]' class='inputOut'>
-                        <option value='0' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('SHIPPING_INFO') && (int)SHIPPING_INFO === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Colocar dados de transporte nos documentos') ?></p>
+                    <p class='description'><?php esc_html_e('Colocar dados de transporte nos documentos') ?></p>
                 </td>
             </tr>
 
             <!-- Morada de carga -->
             <tr id="load_address_line" style="display: none;">
                 <th>
-                    <label for="load_address"><?= __('Morada de carga') ?></label>
+                    <label for="load_address"><?php esc_html_e('Morada de carga') ?></label>
                 </th>
                 <td>
                     <select id="load_address" name='opt[load_address]' class='inputOut'>
                         <?php $activeLoadAddress = defined('LOAD_ADDRESS') ? (int)LOAD_ADDRESS : 0; ?>
 
-                        <option value='0' <?= ($activeLoadAddress === 0 ? 'selected' : '') ?>><?= __('Morada da empresa') ?></option>
-                        <option value='1' <?= ($activeLoadAddress === 1 ? 'selected' : '') ?>><?= __('Personalizada') ?></option>
+                        <option value='0' <?= ($activeLoadAddress === 0 ? 'selected' : '') ?>><?php esc_html_e('Morada da empresa') ?></option>
+                        <option value='1' <?= ($activeLoadAddress === 1 ? 'selected' : '') ?>><?php esc_html_e('Personalizada') ?></option>
                     </select>
 
                     <div class="custom-address__wrapper" id="load_address_custom_line">
@@ -223,14 +223,14 @@ try {
                         </div>
                     </div>
 
-                    <p class='description'><?= __('Morada de carga utilizada nos dados de transporte') ?></p>
+                    <p class='description'><?php esc_html_e('Morada de carga utilizada nos dados de transporte') ?></p>
                 </td>
             </tr>
 
             <!-- Notas da encomenda -->
             <tr>
                 <th>
-                    <label for="add_order_notes"><?= __('Notas da encomenda') ?></label>
+                    <label for="add_order_notes"><?php esc_html_e('Notas da encomenda') ?></label>
                 </th>
                 <td>
                     <?php
@@ -243,27 +243,27 @@ try {
 
                     <select id="add_order_notes" name='opt[add_order_notes]' class='inputOut'>
                         <option value='0' <?= ($addOrderNotes === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($addOrderNotes === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
-                    <p class='description'><?= __('Colocar notas da encomenda nas notas dos documentos.') ?></p>
+                    <p class='description'><?php esc_html_e('Colocar notas da encomenda nas notas dos documentos.') ?></p>
                 </td>
             </tr>
 
             <!-- Enviar email -->
             <tr>
                 <th>
-                    <label for="email_send"><?= __('Enviar email') ?></label>
+                    <label for="email_send"><?php esc_html_e('Enviar email') ?></label>
                 </th>
                 <td>
                     <select id="email_send" name='opt[email_send]' class='inputOut'>
-                        <option value='0' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('EMAIL_SEND') && (int)EMAIL_SEND === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('O documento só é enviado para o cliente se for inserido fechado') ?></p>
+                    <p class='description'><?php esc_html_e('O documento só é enviado para o cliente se for inserido fechado') ?></p>
                 </td>
             </tr>
 
@@ -272,21 +272,21 @@ try {
 
         <!-- Documentos - Isenções -->
         <h2 class="title">
-            <?= __('Documentos - Isenções') ?>
+            <?php esc_html_e('Documentos - Isenções') ?>
         </h2>
 
         <div class="subtitle">
-            <?= __('Vendas nacionais e intra comunitárias') ?>
-            <?= __('(dentro da união europeia)') ?>
+            <?php esc_html_e('Vendas nacionais e intra comunitárias') ?>
+            <?php esc_html_e('(dentro da união europeia)') ?>
             <a style="cursor: help;"
-               title="<?= __('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
+               title="<?php esc_html_e('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
         </div>
         <table class="form-table mb-4">
             <tbody>
             <tr>
                 <th>
                     <label for="exemption_reason">
-                        <?= __('Artigos') ?>
+                        <?php esc_html_e('Artigos') ?>
                     </label>
                 </th>
                 <td>
@@ -300,7 +300,7 @@ try {
                         ?>
 
                         <option value='' <?= $exemptionReasonProduct === '' ? 'selected' : '' ?>>
-                            <?= __('Nenhuma') ?>
+                            <?php esc_html_e('Nenhuma') ?>
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
@@ -313,7 +313,7 @@ try {
                         <?php endforeach; ?>
                     </select>
                     <p class='description'>
-                        <?= __('Será usada se os artigos não tiverem uma taxa de IVA') ?>
+                        <?php esc_html_e('Será usada se os artigos não tiverem uma taxa de IVA') ?>
                     </p>
                 </td>
             </tr>
@@ -321,7 +321,7 @@ try {
             <tr>
                 <th>
                     <label for="exemption_reason_shipping">
-                        <?= __('Portes') ?>
+                        <?php esc_html_e('Portes') ?>
                     </label>
                 </th>
                 <td>
@@ -335,7 +335,7 @@ try {
                         ?>
 
                         <option value='' <?= $exemptionReasonShipping === '' ? 'selected' : '' ?>>
-                            <?= __('Nenhuma') ?>
+                            <?php esc_html_e('Nenhuma') ?>
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
@@ -348,7 +348,7 @@ try {
                         <?php endforeach; ?>
                     </select>
                     <p class='description'>
-                        <?= __('Será usada se os portes não tiverem uma taxa de IVA') ?>
+                        <?php esc_html_e('Será usada se os portes não tiverem uma taxa de IVA') ?>
                     </p>
                 </td>
             </tr>
@@ -357,10 +357,10 @@ try {
         </table>
 
         <div class="subtitle">
-            <?= __('Vendas extra comunitárias') ?>
-            <?= __('(fora da união europeia)') ?>
+            <?php esc_html_e('Vendas extra comunitárias') ?>
+            <?php esc_html_e('(fora da união europeia)') ?>
             <a style="cursor: help;"
-               title="<?= __('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
+               title="<?php esc_html_e('Países da União Europeia') . ': ' . implode(", ", Tools::$europeanCountryCodes) ?>">(?)</a>
         </div>
         <table class="form-table mb-4">
             <tbody>
@@ -368,7 +368,7 @@ try {
             <tr>
                 <th>
                     <label for="exemption_reason_extra_community">
-                        <?= __('Artigos') ?>
+                        <?php esc_html_e('Artigos') ?>
                     </label>
                 </th>
                 <td>
@@ -383,7 +383,7 @@ try {
                         ?>
 
                         <option value='' <?= $exemptionReasonExtraCommunity === '' ? 'selected' : '' ?>>
-                            <?= __('Nenhuma') ?>
+                            <?php esc_html_e('Nenhuma') ?>
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
@@ -396,7 +396,7 @@ try {
                         <?php endforeach; ?>
                     </select>
                     <p class='description'>
-                        <?= __('Será usada se os artigos não tiverem uma taxa de IVA') ?>
+                        <?php esc_html_e('Será usada se os artigos não tiverem uma taxa de IVA') ?>
                     </p>
                 </td>
             </tr>
@@ -404,7 +404,7 @@ try {
             <tr>
                 <th>
                     <label for="exemption_reason_shipping_extra_community">
-                        <?= __('Portes') ?>
+                        <?php esc_html_e('Portes') ?>
                     </label>
                 </th>
                 <td>
@@ -420,7 +420,7 @@ try {
                         ?>
 
                         <option value='' <?= $exemptionReasonShippingExtraCommunity === '' ? 'selected' : '' ?>>
-                            <?= __('Nenhuma') ?>
+                            <?php esc_html_e('Nenhuma') ?>
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
@@ -433,7 +433,7 @@ try {
                         <?php endforeach; ?>
                     </select>
                     <p class='description'>
-                        <?= __('Será usada se os portes não tiverem uma taxa de IVA') ?>
+                        <?php esc_html_e('Será usada se os portes não tiverem uma taxa de IVA') ?>
                     </p>
                 </td>
             </tr>
@@ -443,7 +443,7 @@ try {
 
         <!-- Nota de crédito -->
         <h2 class="title">
-            <?= __('Nota de crédito') ?>
+            <?php esc_html_e('Nota de crédito') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -451,7 +451,7 @@ try {
             <!-- Criar documento de crédito -->
             <tr>
                 <th>
-                    <label for="create_credit_note"><?= __('Documento de crédito') ?></label>
+                    <label for="create_credit_note"><?php esc_html_e('Documento de crédito') ?></label>
                 </th>
                 <td>
                     <?php
@@ -464,20 +464,20 @@ try {
 
                     <select id="create_credit_note" name='opt[create_credit_note]' class='inputOut'>
                         <option value='0' <?= ($createCreditNote === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($createCreditNote === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
-                    <p class='description'><?= __('Criar automaticamente nota de crédito quando uma devolução é criada. Apenas será gerada se existir algum documento associado à encomenda.') ?></p>
+                    <p class='description'><?php esc_html_e('Criar automaticamente nota de crédito quando uma devolução é criada. Apenas será gerada se existir algum documento associado à encomenda.') ?></p>
                 </td>
             </tr>
 
             <!-- Série do documento de crédito -->
             <tr>
                 <th>
-                    <label for="credit_note_document_set_id"><?= __('Série do documento de crédito') ?></label>
+                    <label for="credit_note_document_set_id"><?php esc_html_e('Série do documento de crédito') ?></label>
                 </th>
                 <td>
                     <select id="credit_note_document_set_id" name='opt[credit_note_document_set_id]' class='inputOut'>
@@ -502,7 +502,7 @@ try {
             <!-- Estado do documento -->
             <tr>
                 <th>
-                    <label for="credit_note_document_status"><?= __('Estado do documento') ?></label>
+                    <label for="credit_note_document_status"><?php esc_html_e('Estado do documento') ?></label>
                 </th>
                 <td>
                     <?php
@@ -514,8 +514,8 @@ try {
                     ?>
 
                     <select id="credit_note_document_status" name='opt[credit_note_document_status]' class='inputOut'>
-                        <option value='0' <?= ($creditNoteDocumentStatus === DocumentStatus::DRAFT ? 'selected' : '') ?>><?= __('Rascunho') ?></option>
-                        <option value='1' <?= ($creditNoteDocumentStatus === DocumentStatus::CLOSED ? 'selected' : '') ?>><?= __('Fechado') ?></option>
+                        <option value='0' <?= ($creditNoteDocumentStatus === DocumentStatus::DRAFT ? 'selected' : '') ?>><?php esc_html_e('Rascunho') ?></option>
+                        <option value='1' <?= ($creditNoteDocumentStatus === DocumentStatus::CLOSED ? 'selected' : '') ?>><?php esc_html_e('Fechado') ?></option>
                     </select>
                 </td>
             </tr>
@@ -523,7 +523,7 @@ try {
             <!-- Enviar email -->
             <tr>
                 <th>
-                    <label for="credit_note_email_send"><?= __('Enviar email') ?></label>
+                    <label for="credit_note_email_send"><?php esc_html_e('Enviar email') ?></label>
                 </th>
                 <td>
                     <?php
@@ -536,14 +536,14 @@ try {
 
                     <select id="credit_note_email_send" name='opt[credit_note_email_send]' class='inputOut'>
                         <option value='0' <?= ($creditNoteEmailSend === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($creditNoteEmailSend === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
                     <p class='description'>
-                        <?= __('A nota de crédito só é enviada para o cliente se for inserida no estado "fechado"') ?>
+                        <?php esc_html_e('A nota de crédito só é enviada para o cliente se for inserida no estado "fechado"') ?>
                     </p>
                 </td>
             </tr>
@@ -552,7 +552,7 @@ try {
 
         <!-- Artigos -->
         <h2 class="title">
-            <?= __('Artigos') ?>
+            <?php esc_html_e('Artigos') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -561,11 +561,11 @@ try {
                 <tr>
 
                     <th>
-                        <label for="moloni_product_warehouse"><?= __('Armazém') ?></label>
+                        <label for="moloni_product_warehouse"><?php esc_html_e('Armazém') ?></label>
                     </th>
                     <td>
                         <select id="moloni_product_warehouse" name='opt[moloni_product_warehouse]' class='inputOut'>
-                            <option value='0'><?= __('Armazém pré-definido') ?></option>
+                            <option value='0'><?php esc_html_e('Armazém pré-definido') ?></option>
                             <?php foreach ($warehouses as $warehouse) : ?>
                                 <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE === (int)$warehouse['warehouse_id'] ? 'selected' : '' ?>>
                                     <?= $warehouse['title'] ?> (<?= $warehouse['code'] ?>)
@@ -573,14 +573,14 @@ try {
                             <?php endforeach; ?>
 
                         </select>
-                        <p class='description'><?= __('Obrigatório') ?></p>
+                        <p class='description'><?php esc_html_e('Obrigatório') ?></p>
                     </td>
                 </tr>
             <?php endif; ?>
 
             <tr>
                 <th>
-                    <label for="measure_unit_id"><?= __('Unidade de medida') ?></label>
+                    <label for="measure_unit_id"><?php esc_html_e('Unidade de medida') ?></label>
                 </th>
                 <td>
                     <select id="measure_unit_id" name='opt[measure_unit]' class='inputOut'>
@@ -591,36 +591,36 @@ try {
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
-                    <p class='description'><?= __('Obrigatório') ?></p>
+                    <p class='description'><?php esc_html_e('Obrigatório') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="use_moloni_product_details"><?= __('Usar dados do Moloni ') ?></label>
+                    <label for="use_moloni_product_details"><?php esc_html_e('Usar dados do Moloni ') ?></label>
                 </th>
                 <td>
                     <select id="use_moloni_product_details" name='opt[use_moloni_product_details]' class='inputOut'>
-                        <option value='0' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('USE_MOLONI_PRODUCT_DETAILS') && (int)USE_MOLONI_PRODUCT_DETAILS === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Se o artigo já existir no Moloni, será usado o Nome e o Resumo que existem no Moloni, em vez dos que estão na encomenda') ?></p>
+                    <p class='description'><?php esc_html_e('Se o artigo já existir no Moloni, será usado o Nome e o Resumo que existem no Moloni, em vez dos que estão na encomenda') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="use_name_for_moloni_reference"><?= __('Incluir nome na referência ') ?></label>
+                    <label for="use_name_for_moloni_reference"><?php esc_html_e('Incluir nome na referência ') ?></label>
                 </th>
                 <td>
                     <select id="use_name_for_moloni_reference" name='opt[use_name_for_moloni_reference]'
                             class='inputOut'>
-                        <option value='0' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
                     <p class='description'>
-                        <?= __('Caso um artigo não tenha referência é criada uma automáticamente para o mesmo.') ?><br>
-                        <?= __('Por defeito a referência é feita com base no ID do artigo, esta opção faz com que a referência automática use também o nome do artigo de forma a evitar conflitos.') ?>
+                        <?php esc_html_e('Caso um artigo não tenha referência é criada uma automáticamente para o mesmo.') ?><br>
+                        <?php esc_html_e('Por defeito a referência é feita com base no ID do artigo, esta opção faz com que a referência automática use também o nome do artigo de forma a evitar conflitos.') ?>
                     </p>
                 </td>
             </tr>
@@ -630,17 +630,17 @@ try {
 
         <!-- Clientes -->
         <h2 class="title">
-            <?= __('Clientes') ?>
+            <?php esc_html_e('Clientes') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
             <tr>
                 <th>
-                    <label for="maturity_date_id"><?= __('Prazo de Vencimento') ?></label>
+                    <label for="maturity_date_id"><?php esc_html_e('Prazo de Vencimento') ?></label>
                 </th>
                 <td>
                     <select id="maturity_date_id" name='opt[maturity_date]' class='inputOut'>
-                        <option value='0' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
+                        <option value='0' <?= defined('MATURITY_DATE') && (int)MATURITY_DATE === 0 ? 'selected' : '' ?>><?php esc_html_e('Escolha uma opção') ?></option>
                         <?php $maturityDates = Curl::simple('maturityDates/getAll', []); ?>
                         <?php if (is_array($maturityDates)): ?>
                             <?php foreach ($maturityDates as $maturityDate) : ?>
@@ -648,17 +648,17 @@ try {
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
-                    <p class='description'><?= __('Prazo de vencimento por defeito do cliente') ?></p>
+                    <p class='description'><?php esc_html_e('Prazo de vencimento por defeito do cliente') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="payment_method_id"><?= __('Método de pagamento') ?></label>
+                    <label for="payment_method_id"><?php esc_html_e('Método de pagamento') ?></label>
                 </th>
                 <td>
                     <select id="payment_method_id" name='opt[payment_method]' class='inputOut'>
-                        <option value='0' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === 0 ? 'selected' : '' ?>><?= __('Escolha uma opção') ?></option>
+                        <option value='0' <?= defined('PAYMENT_METHOD') && (int)PAYMENT_METHOD === 0 ? 'selected' : '' ?>><?php esc_html_e('Escolha uma opção') ?></option>
                         <?php $paymentMethods = Curl::simple('paymentMethods/getAll', []); ?>
                         <?php if (is_array($paymentMethods)): ?>
                             <?php foreach ($paymentMethods as $paymentMethod) : ?>
@@ -666,13 +666,13 @@ try {
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
-                    <p class='description'><?= __('Método de pagamento por defeito do cliente') ?></p>
+                    <p class='description'><?php esc_html_e('Método de pagamento por defeito do cliente') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="vat_field"><?= __('Contribuinte do cliente') ?></label>
+                    <label for="vat_field"><?php esc_html_e('Contribuinte do cliente') ?></label>
                 </th>
                 <td>
                     <?php
@@ -693,7 +693,7 @@ try {
 
                     <select id="vat_field" name='opt[vat_field]' class='inputOut'>
                         <option value='' <?= empty($vatField) ? 'selected' : '' ?>>
-                            <?= __('Escolha uma opção') ?>
+                            <?php esc_html_e('Escolha uma opção') ?>
                         </option>
 
                         <?php foreach ($customFields as $customField) : ?>
@@ -704,11 +704,11 @@ try {
                     </select>
 
                     <p class='description'>
-                        <?= __('Custom field associado ao contribuinte do cliente. Se o campo não aparecer, certifique-se que tem pelo menos uma encomenda com o campo em uso.') ?>
+                        <?php esc_html_e('Custom field associado ao contribuinte do cliente. Se o campo não aparecer, certifique-se que tem pelo menos uma encomenda com o campo em uso.') ?>
                         <br>
-                        <?= __('Para que o Custom Field apareça, deverá ter pelo menos uma encomenda com o contribuinte preenchido. O campo deverá ter um nome por exemplo <i>_billing_vat</i>.') ?>
+                        <?php esc_html_e('Para que o Custom Field apareça, deverá ter pelo menos uma encomenda com o contribuinte preenchido. O campo deverá ter um nome por exemplo <i>_billing_vat</i>.') ?>
                         <br>
-                        <?= __('Se ainda não tiver nenhum campo para o contribuinte, poderá adicionar o plugin disponível <a target="_blank" href="https://wordpress.org/plugins/contribuinte-checkout/">aqui.</a> ') ?>
+                        <?php esc_html_e('Se ainda não tiver nenhum campo para o contribuinte, poderá adicionar o plugin disponível <a target="_blank" href="https://wordpress.org/plugins/contribuinte-checkout/">aqui.</a> ') ?>
                     </p>
                 </td>
             </tr>
@@ -717,7 +717,7 @@ try {
 
         <!-- Hooks -->
         <h2 class="title">
-            <?= __('Hooks') ?>
+            <?php esc_html_e('Hooks') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -725,35 +725,35 @@ try {
             <!-- Listagem de encomendas -->
             <tr>
                 <th>
-                    <label for="moloni_show_download_column"><?= __('Listagem de encomendas WooCommerce') ?></label>
+                    <label for="moloni_show_download_column"><?php esc_html_e('Listagem de encomendas WooCommerce') ?></label>
                 </th>
                 <td>
                     <select id="moloni_show_download_column" name='opt[moloni_show_download_column]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_SHOW_DOWNLOAD_COLUMN') && (int)MOLONI_SHOW_DOWNLOAD_COLUMN === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF') ?></p>
+                    <p class='description'><?php esc_html_e('Adicionar, no WooCommerce, uma coluna na listagem de encomendas com download rápido de documentos em PDF') ?></p>
                 </td>
             </tr>
 
             <!-- Detalhes da encomenda -->
             <tr>
                 <th>
-                    <label for="moloni_show_download_my_account_order_view"><?= __('Detalhes de encomenda WooCommerce') ?></label>
+                    <label for="moloni_show_download_my_account_order_view"><?php esc_html_e('Detalhes de encomenda WooCommerce') ?></label>
                 </th>
                 <td>
                     <select id="moloni_show_download_my_account_order_view" name='opt[moloni_show_download_my_account_order_view]' class='inputOut'>
                         <?php $myAccountOrderViewShowDownload = defined('MOLONI_SHOW_DOWNLOAD_MY_ACCOUNT_ORDER_VIEW') ? (int)MOLONI_SHOW_DOWNLOAD_MY_ACCOUNT_ORDER_VIEW : Boolean::NO; ?>
 
                         <option value='0' <?= ($myAccountOrderViewShowDownload === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($myAccountOrderViewShowDownload === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
                     <p class='description'>
-                        <?= __('Adicionar, na página visualização encomenda (do cliente), uma secção com o documento gerado para descarregar em PDF') ?>
+                        <?php esc_html_e('Adicionar, na página visualização encomenda (do cliente), uma secção com o documento gerado para descarregar em PDF') ?>
                     </p>
                 </td>
             </tr>
@@ -762,7 +762,7 @@ try {
 
         <!-- Automatização -->
         <h2 class="title">
-            <?= __('Automatização') ?>
+            <?php esc_html_e('Automatização') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -770,21 +770,21 @@ try {
             <!-- Criação automática de documentos -->
             <tr>
                 <th>
-                    <label for="invoice_auto"><?= __('Criar documento automaticamente') ?></label>
+                    <label for="invoice_auto"><?php esc_html_e('Criar documento automaticamente') ?></label>
                 </th>
                 <td>
                     <select id="invoice_auto" name='opt[invoice_auto]' class='inputOut'>
-                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Criar documentos automaticamente') ?></p>
+                    <p class='description'><?php esc_html_e('Criar documentos automaticamente') ?></p>
                 </td>
             </tr>
 
             <!-- Estado das encomendas -->
             <tr id="invoice_auto_status_line" <?= (defined('INVOICE_AUTO') && (int)INVOICE_AUTO === 0 ? 'style="display: none;"' : '') ?>>
                 <th>
-                    <label for="invoice_auto_status"><?= __('Criar documentos quando a encomenda está') ?></label>
+                    <label for="invoice_auto_status"><?php esc_html_e('Criar documentos quando a encomenda está') ?></label>
                 </th>
                 <td>
                     <select id="invoice_auto_status" name='opt[invoice_auto_status]' class='inputOut'>
@@ -808,13 +808,13 @@ try {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class='description'><?= __('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
+                    <p class='description'><?php esc_html_e('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="alert_email"><?= __('Alerta de erros via e-mail') ?></label>
+                    <label for="alert_email"><?php esc_html_e('Alerta de erros via e-mail') ?></label>
                 </th>
                 <td>
                     <input value="<?= (defined('ALERT_EMAIL') ? ALERT_EMAIL : '') ?>"
@@ -823,21 +823,21 @@ try {
                            type="text"
                            style="width: 330px;"
                            placeholder="mail@example.com">
-                    <p class='description'><?= __('E-mail usado para envio de notificações em caso de erro') ?></p>
+                    <p class='description'><?php esc_html_e('E-mail usado para envio de notificações em caso de erro') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="moloni_stock_sync"><?= __('Sincronizar stocks automaticamente') ?></label>
+                    <label for="moloni_stock_sync"><?php esc_html_e('Sincronizar stocks automaticamente') ?></label>
                 </th>
                 <td>
                     <select id="moloni_stock_sync" name='opt[moloni_stock_sync]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim, de todos os armazéns') ?></option>
+                        <option value='0' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim, de todos os armazéns') ?></option>
 
                         <?php if (is_array($warehouses)): ?>
-                            <optgroup label="<?= __('Sim, apenas do armazém:') ?>">
+                            <optgroup label="<?php esc_html_e('Sim, apenas do armazém:') ?>">
 
                                 <?php foreach ($warehouses as $warehouse) : ?>
                                     <option value='<?= $warehouse['warehouse_id'] ?>' <?= defined('MOLONI_STOCK_SYNC') && (int)MOLONI_STOCK_SYNC === $warehouse['warehouse_id'] ? 'selected' : '' ?>>
@@ -849,33 +849,33 @@ try {
                         <?php endif; ?>
 
                     </select>
-                    <p class='description'><?= __('Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)') ?></p>
+                    <p class='description'><?php esc_html_e('Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="moloni_product_sync"><?= __('Criar artigos') ?></label>
+                    <label for="moloni_product_sync"><?php esc_html_e('Criar artigos') ?></label>
                 </th>
                 <td>
                     <select id="moloni_product_sync" name='opt[moloni_product_sync]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC') && (int)MOLONI_PRODUCT_SYNC === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
+                    <p class='description'><?php esc_html_e('Ao guardar um artigo no WooCommerce, o plugin vai criar automaticamente o artigo no Moloni') ?></p>
                 </td>
             </tr>
 
             <tr>
                 <th>
-                    <label for="moloni_product_sync_update"><?= __('Actualizar artigos') ?></label>
+                    <label for="moloni_product_sync_update"><?php esc_html_e('Actualizar artigos') ?></label>
                 </th>
                 <td>
                     <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
-                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?= __('Não') ?></option>
-                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?= __('Sim') ?></option>
+                        <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
+                        <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?= __('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
+                    <p class='description'><?php esc_html_e('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
                 </td>
             </tr>
             </tbody>
@@ -883,7 +883,7 @@ try {
 
         <!-- Avançado -->
         <h2 class="title">
-            <?= __('Avançado') ?>
+            <?php esc_html_e('Avançado') ?>
         </h2>
         <table class="form-table mb-4">
             <tbody>
@@ -891,7 +891,7 @@ try {
             <!-- Limitar encomendas por data -->
             <tr>
                 <th>
-                    <label for="order_created_at_max"><?= __('Apresentar encomendas desde a seguinte data') ?></label>
+                    <label for="order_created_at_max"><?php esc_html_e('Apresentar encomendas desde a seguinte data') ?></label>
                 </th>
                 <td>
                     <?php
@@ -910,7 +910,7 @@ try {
                            placeholder="">
 
                     <p class='description'>
-                        <?= __('Data usada para limitar a pesquisa de encomendas pendentes') ?>
+                        <?php esc_html_e('Data usada para limitar a pesquisa de encomendas pendentes') ?>
                     </p>
                 </td>
             </tr>
@@ -918,7 +918,7 @@ try {
             <!-- Ativar modo debug -->
             <tr>
                 <th>
-                    <label for="moloni_debug_mode"><?= __('Ativar modo DEBUG') ?></label>
+                    <label for="moloni_debug_mode"><?php esc_html_e('Ativar modo DEBUG') ?></label>
                 </th>
                 <td>
                     <?php
@@ -931,13 +931,13 @@ try {
 
                     <select id="moloni_debug_mode" name='opt[moloni_debug_mode]' class='inputOut'>
                         <option value='0' <?= ($moloniDebugMode === Boolean::NO ? 'selected' : '') ?>>
-                            <?= __('Não') ?>
+                            <?php esc_html_e('Não') ?>
                         </option>
                         <option value='1' <?= ($moloniDebugMode === Boolean::YES ? 'selected' : '') ?>>
-                            <?= __('Sim') ?>
+                            <?php esc_html_e('Sim') ?>
                         </option>
                     </select>
-                    <p class='description'><?= __('Ativar funcionalidades DEV e aumentar logs') ?></p>
+                    <p class='description'><?php esc_html_e('Ativar funcionalidades DEV e aumentar logs') ?></p>
                 </td>
             </tr>
 
@@ -945,7 +945,7 @@ try {
                 <th></th>
                 <td>
                     <input type="submit" name="submit" id="submit" class="button button-primary"
-                           value="<?= __('Guardar alterações') ?>">
+                           value="<?php esc_html_e('Guardar alterações') ?>">
                 </td>
             </tr>
             </tbody>

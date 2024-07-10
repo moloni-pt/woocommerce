@@ -33,24 +33,24 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
 ?>
 
 <h3>
-    <?= __('Listagem de produtos Moloni') ?>
+    <?php esc_html_e('Listagem de produtos Moloni') ?>
 </h3>
 
 <h4>
-    <?= __('Nesta listagem serão apresentados todos os produtos Moloni da empresa atual e indicados erros/alertas que possam existir.') ?>
-    <?= __('Todas as ações nesta página serão na direção Moloni -> WooCommerce.') ?>
+    <?php esc_html_e('Nesta listagem serão apresentados todos os produtos Moloni da empresa atual e indicados erros/alertas que possam existir.') ?>
+    <?php esc_html_e('Todas as ações nesta página serão na direção Moloni -> WooCommerce.') ?>
 </h4>
 
 <div class="notice notice-warning m-0">
     <p>
-        <?= __('Valores do stock Moloni baseados em:') ?>
+        <?php esc_html_e('Valores do stock Moloni baseados em:') ?>
     </p>
     <p>
         <?php
         $warehouseId = $service->getWarehouseId();
 
         if ($warehouseId === 0) {
-            echo '- ' . __('Stock acumulado de todos os armazéns.');
+            echo '- ' . esc_html__('Stock acumulado de todos os armazéns.');
         } else {
             try {
                 $warehouse = MoloniWarehouse::getWarehouseById($warehouseId);
@@ -59,29 +59,29 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
                 return;
             }
 
-            echo '- ' . __('Armazém');
-            echo ': ' . $warehouse['title'] . ' (' . $warehouse['code'] . ')';
+            echo '- ' . esc_html__('Armazém');
+            echo ': ' . esc_html($warehouse['title'] . ' (' . $warehouse['code'] . ')');
         }
         ?>
     </p>
 </div>
 
-<form method="get" action='<?= $currentAction ?>' class="list_form">
+<form method="get" action='<?= esc_url($currentAction) ?>' class="list_form">
     <input type="hidden" name="page" value="moloni">
-    <input type="hidden" name="paged" value="<?= $page ?>">
+    <input type="hidden" name="paged" value="<?= esc_html($page) ?>">
     <input type="hidden" name="tab" value="moloniProductsList">
 
     <div class="tablenav top">
-        <a href='<?= $backAction ?>' class="button button-large">
-            <?= __('Voltar') ?>
+        <a href='<?= esc_url($backAction) ?>' class="button button-large">
+            <?php esc_html_e('Voltar') ?>
         </a>
 
         <button type="button" class="button button-large button-primary button-start-imports" disabled>
-            <?= __('Correr importações') ?>
+            <?php esc_html_e('Correr importações') ?>
         </button>
 
         <div class="tablenav-pages">
-            <?= $paginator ?>
+            <?= wp_kses_post($paginator) ?>
         </div>
     </div>
 
@@ -89,23 +89,23 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         <thead>
         <tr>
             <th>
-                <a><?= __('Nome') ?></a>
+                <a><?php esc_html_e('Nome') ?></a>
             </th>
             <th>
-                <a><?= __('Referência') ?></a>
+                <a><?php esc_html_e('Referência') ?></a>
             </th>
             <th>
-                <a><?= __('Tipo') ?></a>
+                <a><?php esc_html_e('Tipo') ?></a>
             </th>
             <th>
-                <a><?= __('Alertas') ?></a>
+                <a><?php esc_html_e('Alertas') ?></a>
             </th>
             <th></th>
             <th class="w-12 text-center">
-                <a><?= __('Importar produto') ?></a>
+                <a><?php esc_html_e('Importar produto') ?></a>
             </th>
             <th class="w-12 text-center">
-                <a><?= __('Importar Stock') ?></a>
+                <a><?php esc_html_e('Importar Stock') ?></a>
             </th>
         </tr>
         <tr>
@@ -128,11 +128,11 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
             <th></th>
             <th class="flex flex-row gap-2">
                 <button type="button" class="search_button button button-primary">
-                    <?= __('Pesquisar') ?>
+                    <?php esc_html_e('Pesquisar') ?>
                 </button>
 
-                <a href='<?= $currentAction ?>' class="button">
-                    <?= __('Limpar') ?>
+                <a href='<?= esc_url($currentAction) ?>' class="button">
+                    <?php esc_html_e('Limpar') ?>
                 </a>
             </th>
             <th>
@@ -151,12 +151,12 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         <tbody>
         <?php if (!empty($rows) && is_array($rows)) : ?>
             <?php foreach ($rows as $row) : ?>
-                <?= $row ?>
+                <?= wp_kses_post($row) ?>
             <?php endforeach; ?>
         <?php else : ?>
             <tr class="text-center">
                 <td colspan="100%">
-                    <?= __('Não foram encontados produtos Moloni!') ?>
+                    <?php esc_html_e('Não foram encontados produtos Moloni!') ?>
                 </td>
             </tr>
         <?php endif; ?>
@@ -165,39 +165,39 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         <tfoot>
         <tr>
             <th>
-                <a><?= __('Nome') ?></a>
+                <a><?php esc_html_e('Nome') ?></a>
             </th>
             <th>
-                <a><?= __('Referência') ?></a>
+                <a><?php esc_html_e('Referência') ?></a>
             </th>
             <th>
-                <a><?= __('Tipo') ?></a>
+                <a><?php esc_html_e('Tipo') ?></a>
             </th>
             <th>
-                <a><?= __('Alertas') ?></a>
+                <a><?php esc_html_e('Alertas') ?></a>
             </th>
             <th></th>
             <th class="w-12 text-center">
-                <a><?= __('Importar produto') ?></a>
+                <a><?php esc_html_e('Importar produto') ?></a>
             </th>
             <th class="w-12 text-center">
-                <a><?= __('Importar Stock') ?></a>
+                <a><?php esc_html_e('Importar Stock') ?></a>
             </th>
         </tr>
         </tfoot>
     </table>
 
     <div class="tablenav bottom">
-        <a href='<?= $backAction ?>' class="button button-large">
-            <?= __('Voltar') ?>
+        <a href='<?= esc_url($backAction) ?>' class="button button-large">
+            <?php esc_html_e('Voltar') ?>
         </a>
 
         <button type="button" class="button button-large button-primary button-start-imports" disabled>
-            <?= __('Correr importações') ?>
+            <?php esc_html_e('Correr importações') ?>
         </button>
 
         <div class="tablenav-pages">
-            <?= $paginator ?>
+            <?= wp_kses_post($paginator) ?>
         </div>
     </div>
 </form>

@@ -55,7 +55,7 @@ class OrderView
         <select id="moloni_document_type" style="float:right">
             <?php foreach (DocumentTypes::getDocumentTypeForRender() as $id => $name) : ?>
                 <option value='<?= $id ?>' <?= ($documentType === $id ? 'selected' : '') ?>>
-                    <?= __($name) ?>
+                    <?php esc_html_e($name) ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -69,10 +69,10 @@ class OrderView
         <a type="button"
            class="button button-primary"
            target="_BLANK"
-           href="<?= admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId) ?>"
+           href="<?= esc_url(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId)) ?>"
            style="margin-top: 10px; margin-left: 10px; float:right;"
         >
-            <?= __('Ver documento') ?>
+            <?php esc_html_e('Ver documento') ?>
         </a>
 
         <?php
@@ -91,12 +91,12 @@ class OrderView
             echo '<div style="display: none"><pre>' . print_r($order->get_taxes(), true) . '</pre></div>';
 
             if ($documentId > 0) {
-                echo __('O documento já foi gerado no moloni');
+                echo esc_html__('O documento já foi gerado no moloni');
 
                 $this->seeDocument($documentId);
                 $this->reCreateDocument($order);
             } elseif ($documentId === -1) {
-                echo __('O documento foi marcado como gerado.');
+                echo esc_html__('O documento foi marcado como gerado.');
                 echo '<br><br>';
 
                 $this->getDocumentTypeSelect();
@@ -110,7 +110,7 @@ class OrderView
 
             echo '<div style="clear:both"></div>';
         } else {
-            echo __('A encomenda tem que ser dada como paga para poder ser gerada.');
+            echo esc_html__('A encomenda tem que ser dada como paga para poder ser gerada.');
         }
     }
 
@@ -120,10 +120,10 @@ class OrderView
         <a type="button"
            class="button"
            target="_BLANK"
-           href="<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>"
+           href="<?= esc_url(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id())) ?>"
            style="margin-top: 10px; float:right;"
         >
-            <?= __('Gerar novamente') ?>
+            <?php esc_html_e('Gerar novamente') ?>
         </a>
         <?php
     }
@@ -137,12 +137,12 @@ class OrderView
            onclick="createMoloniDocument()"
            style="margin-left: 5px; float:right;"
         >
-            <?= $text ?>
+            <?= esc_html($text) ?>
         </a>
 
         <script>
             function createMoloniDocument() {
-                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>";
+                var redirectUrl = "<?= esc_url(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id())) ?>";
 
                 if (document.getElementById('moloni_document_type')) {
                     redirectUrl += '&document_type=' + document.getElementById('moloni_document_type').value;
