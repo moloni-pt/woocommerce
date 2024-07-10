@@ -13,21 +13,21 @@ if (!defined('ABSPATH')) {
 
     <?php if (!empty($errorData)): ?>
         <pre style="display: none;" id="curl_error_data">
-            <?= print_r($errorData, true) ?>
+            <?= esc_html(print_r($errorData, true)) ?>
         </pre>
     <?php endif; ?>
 
     <div class="login login__wrapper">
-        <form class="login-form" method='POST' action='<?= admin_url('admin.php?page=moloni') ?>'>
+        <form class="login-form" method='POST' action='<?= esc_url(admin_url('admin.php?page=moloni')) ?>'>
             <div class="login__card">
                 <div class="login__image">
-                    <a href="<?= Domains::HOMEPAGE ?>" target="_blank">
-                        <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width="186px" height="32px" alt="Logo">
+                    <a href="<?= esc_url(Domains::HOMEPAGE) ?>" target="_blank">
+                        <img src="<?= esc_url(MOLONI_IMAGES_URL) ?>logo.svg" width="186px" height="32px" alt="Logo">
                     </a>
                 </div>
 
                 <div class="login__title">
-                    <?= __("Inicie sessão na sua conta") ?> <span>Moloni</span>
+                    <?php esc_html_e("Inicie sessão na sua conta") ?> <span>Moloni</span>
                 </div>
 
                 <div class="login__error">
@@ -37,7 +37,7 @@ if (!defined('ABSPATH')) {
                                 <use xlink:href="#ic_notices_important_warning"></use>
                             </svg>
 
-                            <?= $error ?>
+                            <?= esc_html($error) ?>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -45,28 +45,28 @@ if (!defined('ABSPATH')) {
                 <div class="login__inputs">
                     <div class="ml-input-text <?= isset($error) && $error ? 'ml-input-text--with-error' : '' ?>">
                         <label for='username'>
-                            <?= __("E-mail") ?>
+                            <?php esc_html_e("E-mail") ?>
                         </label>
                         <input id="username" type='text' name='user'>
                     </div>
 
                     <div class="ml-input-text <?= isset($error) && $error ? 'ml-input-text--with-error' : '' ?>">
                         <label for='password'>
-                            <?= __("Palavra-passe") ?>
+                            <?php esc_html_e("Palavra-passe") ?>
                         </label>
                         <input id="password" type='password' name='pass'>
                     </div>
                 </div>
 
                 <div class="login__help">
-                    <a href="<?= Domains::LANDINGPAGE ?>" target="_blank">
-                        <?= __("Guia de instalação.") ?>
+                    <a href="<?= esc_url(Domains::LANDINGPAGE) ?>" target="_blank">
+                        <?php esc_html_e("Guia de instalação.") ?>
                     </a>
                 </div>
 
                 <div class="login__button">
                     <button class="ml-button ml-button--primary w-full" id="login_button" type="submit" disabled>
-                        <?= __("Iniciar sessão") ?>
+                        <?php esc_html_e("Iniciar sessão") ?>
                     </button>
                 </div>
             </div>

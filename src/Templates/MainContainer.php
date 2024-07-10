@@ -9,30 +9,30 @@ if (!defined('ABSPATH')) {
 
 <section id="moloni" class="moloni">
     <div class="header">
-        <img src="<?= MOLONI_IMAGES_URL ?>logo.svg" width='300px' alt="Moloni">
+        <img src="<?= esc_url(MOLONI_IMAGES_URL) ?>logo.svg" width='300px' alt="Moloni">
     </div>
 
     <?php settings_errors(); ?>
 
     <nav class="nav-tab-wrapper woo-nav-tab-wrapper">
-        <a href="<?= admin_url('admin.php?page=moloni') ?>"
+        <a href="<?= esc_url(admin_url('admin.php?page=moloni')) ?>"
            class="nav-tab <?= $this->activeTab === '' ? 'nav-tab-active' : '' ?>">
-            <?= __('Encomendas') ?>
+            <?php esc_html_e('Encomendas') ?>
         </a>
 
-        <a href="<?= admin_url('admin.php?page=moloni&tab=settings') ?>"
+        <a href="<?= esc_url(admin_url('admin.php?page=moloni&tab=settings')) ?>"
            class="nav-tab <?= $this->activeTab === 'settings' ? 'nav-tab-active' : '' ?>">
-            <?= __('Configurações') ?>
+            <?php esc_html_e('Configurações') ?>
         </a>
 
-        <a href="<?= admin_url('admin.php?page=moloni&tab=logs') ?>"
+        <a href="<?= esc_url(admin_url('admin.php?page=moloni&tab=logs')) ?>"
            class="nav-tab <?= $this->activeTab === 'logs' ? 'nav-tab-active' : '' ?>">
-            <?= __('Registos') ?>
+            <?php esc_html_e('Registos') ?>
         </a>
 
-        <a href="<?= admin_url('admin.php?page=moloni&tab=tools') ?>"
+        <a href="<?= esc_url(admin_url('admin.php?page=moloni&tab=tools')) ?>"
            class="nav-tab <?= in_array($this->activeTab, ['tools', 'wcProductsList', 'moloniProductsList']) ? 'nav-tab-active' : '' ?>">
-            <?= __('Ferramentas') ?>
+            <?php esc_html_e('Ferramentas') ?>
         </a>
     </nav>
 

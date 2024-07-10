@@ -106,9 +106,9 @@ class OrderList
             if ($documentId > 0) {
                 $redirectUrl = admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId);
 
-                echo '<a class="button" target="_blank" onclick="window.open(\'' . $redirectUrl . '\', \'_blank\')">' . __('Descarregar') . '</a>';
+                echo '<a class="button" target="_blank" onclick="window.open(\'' . esc_url($redirectUrl) . '\', \'_blank\')">' . esc_html__('Descarregar') . '</a>';
             } else {
-                echo '<div>' . _('Sem documento associado') . '</div>';
+                echo '<div>' . esc_html__('Sem documento associado') . '</div>';
             }
         }
     }

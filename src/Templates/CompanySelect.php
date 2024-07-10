@@ -13,7 +13,7 @@ $hasValidCompany = false;
     <div class="companies">
         <?php if (!empty($companies) && is_array($companies)) : ?>
             <div class="companies__title">
-                <?= __("Selecione a empresa que pretende conectar com o WooCommerce") ?>
+                <?php esc_html_e("Selecione a empresa que pretende conectar com o WooCommerce") ?>
             </div>
 
             <div class="companies__list">

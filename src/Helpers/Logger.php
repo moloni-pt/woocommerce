@@ -136,7 +136,7 @@ class Logger
             $level,
             Storage::$MOLONI_COMPANY_ID ?? 0,
             $message,
-            json_encode($context),
+            wp_json_encode($context),
             date('Y-m-d H:i:s')
         );
 

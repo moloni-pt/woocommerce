@@ -141,7 +141,7 @@ class CheckProduct
 
     private function createMoloniLink(array &$row)
     {
-        $row['moloni_product_link'] = Domains::HOMEPAGE . '/';
+        $row['moloni_product_link'] = Domains::HOMEPAGE;
 
         if (defined('COMPANY_SLUG')) {
             $row['moloni_product_link'] .= COMPANY_SLUG;

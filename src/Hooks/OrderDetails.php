@@ -148,13 +148,13 @@ class OrderDetails
         ?>
         <section id="invoice_document">
             <h2>
-                <?= __('Documento de faturação') ?>
+                <?php esc_html_e('Documento de faturação') ?>
             </h2>
             <ul>
                 <?php foreach ($this->documents as $document) : ?>
                     <li>
-                        <a href="<?= $document['href'] ?>" target="_blank">
-                            <?= $document['label'] ?>
+                        <a href="<?= esc_url($document['href']) ?>" target="_blank">
+                            <?= esc_html($document['label']) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>

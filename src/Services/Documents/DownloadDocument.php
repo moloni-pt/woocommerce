@@ -31,17 +31,17 @@ class DownloadDocument
 
                 header('Location: ' . $downloadUrl);
             } else {
-                $this->showError(_('Documento não existe'));
+                $this->showError(__('Documento não existe'));
             }
         } catch (APIExeption $e) {
-            $this->showError(_('Erro a obter documento'));
+            $this->showError(__('Erro a obter documento'));
         }
     }
 
     private function showError($message): void
     {
         echo "<script>";
-        echo "  alert('" . $message . "');";
+        echo "  alert('" . esc_js($message) . "');";
         echo "  window.close();";
         echo "</script>";
     }

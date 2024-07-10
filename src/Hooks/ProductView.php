@@ -61,17 +61,21 @@ class ProductView
 
                 try {
                     if (!$this->moloniProduct->loadByReference()) {
-                        echo sprintf(__('Artigo com a referência %s não encontrado'), $this->moloniProduct->reference);
+                        echo esc_html(
+                            sprintf(__('Artigo com a referência %s não encontrado'), $this->moloniProduct->reference)
+                        );
+
                         return null;
                     }
 
                     $this->showProductDetails();
                 } catch (MoloniException $e) {
-                    echo __('Erro ao obter artigo');
+                    esc_html_e('Erro ao obter artigo');
+
                     return null;
                 }
             } else {
-                echo __('Login Moloni inválido');
+                esc_html_e('Login Moloni inválido');
             }
         } catch (Exception $exception) {
 
@@ -83,31 +87,34 @@ class ProductView
         ?>
         <div>
             <p>
-                <b><?= __('Referência: ') ?></b> <?= $this->moloniProduct->reference ?><br>
-                <b><?= __('Preço: ') ?></b> <?= $this->moloniProduct->price ?>€<br>
+                <b><?php esc_html_e('Referência') ?>: </b> <?= esc_html($this->moloniProduct->reference) ?>
+                <br>
+                <b><?php esc_html_e('Preço') ?>: </b> <?= esc_html($this->moloniProduct->price) ?>€
+                <br>
+
                 <?php if ($this->moloniProduct->has_stock == 1) : ?>
-                    <b><?= __('Stock: ') ?></b> <?= $this->moloniProduct->stock ?>
+                    <b><?php esc_html_e('Stock') ?>: </b> <?= esc_html($this->moloniProduct->stock) ?>
                 <?php endif; ?>
 
                 <?php if (defined('COMPANY_SLUG')) : ?>
-                <a type="button"
-                   class="button button-primary"
-                   target="_BLANK"
-                   href="https://moloni.pt/<?= COMPANY_SLUG ?>/Artigos/showUpdate/<?= $this->moloniProduct->product_id ?>/<?= $this->moloniProduct->category_id ?>"
-                   style="margin-top: 10px; float:right; clear: both"
-                > Ver Artigo </a>
-            <?php endif; ?>
+                    <a type="button"
+                       class="button button-primary"
+                       target="_BLANK"
+                       href="https://moloni.pt/<?= esc_html(COMPANY_SLUG) ?>/Artigos/showUpdate/<?= esc_html($this->moloniProduct->product_id) ?>/<?= esc_html($this->moloniProduct->category_id) ?>"
+                       style="margin-top: 10px; float:right; clear: both"
+                    >
+                        <?php esc_html_e('Ver Artigo'); ?>
+                    </a>
+                <?php endif; ?>
 
-            <?php
-
-            echo "<pre style='display: none'>";
-            print_r($this->product->get_meta_data());
-            print_r($this->product->get_default_attributes());
-            print_r($this->product->get_attributes());
-            print_r($this->product->get_data());
-            echo '</pre>';
-
-            ?>
+            <pre style='display: none'>
+                <?php
+                print_r($this->product->get_meta_data());
+                print_r($this->product->get_default_attributes());
+                print_r($this->product->get_attributes());
+                print_r($this->product->get_data());
+                ?>
+                </pre>
             </p>
             <div style="clear: both"></div>
         </div>

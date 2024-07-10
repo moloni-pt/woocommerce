@@ -9,23 +9,23 @@ if (!defined('ABSPATH')) {
         <p>
             <?=
             /** @var string $message */
-                $message ?? ''
+                wp_kses_post($message ?? '');
             ?>
         </p>
 
         <a onclick="showMoloniErrors()" style="cursor: pointer;">
-            <p><?= __("Clique aqui para mais informações") ?></p>
+            <p><?php esc_html_e("Clique aqui para mais informações") ?></p>
         </a>
 
         <div class="MoloniConsoleLogError" style="display: none;">
-            <b><?= __("Dados") ?>: </b>
+            <b><?php esc_html_e("Dados") ?>: </b>
 
             <br>
 
             <pre>
                 <?=
                     /** @var array $data */
-                    json_encode($data ?? [], JSON_PRETTY_PRINT)
+                    wp_json_encode($data ?? [], JSON_PRETTY_PRINT)
                 ?>
             </pre>
         </div>

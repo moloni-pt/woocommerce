@@ -6,25 +6,33 @@ if (!defined('ABSPATH')) {
 
 <div>
     <div id="message" class="updated error is-dismissible">
-        <p><?= $message ?></p>
+        <p>
+            <?= wp_kses_post($message ?? ''); ?>
+        </p>
         <a onclick="showMoloniErrors()" style="cursor: pointer;">
-            <p><?= __("Clique aqui para mais informações") ?></p>
+            <p><?php esc_html_e("Clique aqui para mais informações") ?></p>
         </a>
 
         <div class="MoloniConsoleLogError" style="display: none;">
-            <b><?= __("Endpoint") ?>: </b> <?= $url ?>
+            <b><?php esc_html_e("Endpoint") ?>: </b> <?= esc_html($url ?? '') ?>
             <br>
 
-            <b><?= __("Resposta recebida: ") ?></b>
+            <b><?php esc_html_e("Resposta recebida") ?>: </b>
             <br/>
-            <pre><?= /** @var array $received */
-                print_r($received, true) ?>
+            <pre>
+                <?=
+                    /** @var array $received */
+                    esc_html(print_r($received, true))
+                ?>
             </pre>
 
-            <b><?= __("Dados enviados: ") ?></b>
+            <b><?php esc_html_e("Dados enviados") ?>: </b>
             <br/>
-            <pre><?= /** @var array $sent */
-                print_r($sent, true) ?>
+            <pre>
+                <?=
+                    /** @var array $sent */
+                    esc_html(print_r($sent, true))
+                ?>
             </pre>
         </div>
     </div>
