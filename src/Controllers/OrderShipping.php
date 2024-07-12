@@ -243,7 +243,7 @@ class OrderShipping
         if (!$this->hasIVA) {
             $exemptionReason = '';
 
-            if (isset(Tools::$europeanCountryCodes[$this->fiscalData['code']])) {
+            if ($this->isCountryIntraCommunity()) {
                 $exemptionReason = defined('EXEMPTION_REASON_SHIPPING') ? EXEMPTION_REASON_SHIPPING : '';
             } else {
                 if (defined('EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY')) {
@@ -347,5 +347,23 @@ class OrderShipping
         }
 
         return $values;
+    }
+
+    /**
+     * Check if country is intra community
+     *
+     * @return bool
+     */
+    private function isCountryIntraCommunity(): bool
+    {
+        if (!isset(Tools::$europeanCountryCodes[$this->fiscalData['code']])) {
+            return false;
+        }
+
+        if ($this->fiscalData['code'] === 'ES' && in_array($this->fiscalData['state'], ['TF', 'GC'])) {
+            return false;
+        }
+
+        return true;
     }
 }
