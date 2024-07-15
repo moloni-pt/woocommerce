@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.5.5  
 **WC tested up to**    9.0.2  
-**Stable tag:**        4.8.0  
+**Stable tag:**        4.8.1  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.8.1
+* FIX: Melhorias de segurança
+
 ### 4.8.0
 * FIX: Melhorias de segurança
 
