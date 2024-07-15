@@ -34,13 +34,11 @@ class Install
                 $prefix = $wpdb->get_blog_prefix($site->blog_id);
 
                 self::createTables($prefix);
-                self::insertSettings($prefix);
             }
         } else {
             $prefix = $wpdb->get_blog_prefix();
 
             self::createTables($prefix);
-            self::insertSettings($prefix);
         }
     }
 
@@ -51,7 +49,6 @@ class Install
         $prefix = $wpdb->get_blog_prefix($site->blog_id);
 
         self::createTables($prefix);
-        self::insertSettings($prefix);
     }
 
     /**
@@ -103,34 +100,5 @@ class Install
                 created_at TIMESTAMP default CURRENT_TIMESTAMP
             ) DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;"
         );
-    }
-
-    /**
-     * Create Moloni account settings
-     */
-    private static function insertSettings(string $prefix): void
-    {
-        global $wpdb;
-
-        $wpdb->query("INSERT INTO `" . $prefix . "moloni_api_config`(config, description) 
-                        VALUES('document_set_id', 'Escolha uma Série de Documentos para melhor organização'),
-                        ('exemption_reason', 'Escolha uma Isenção de Impostos para os produtos que não têm impostos'),
-                        ('exemption_reason_shipping', 'Escolha uma Isenção de Impostos para os portes que não têmimpostos'),
-                        ('payment_method', 'Escolha um metodo de pagamento por defeito'),
-                        ('measure_unit', 'Escolha a unidade de medida a usar'),
-                        ('maturity_date', 'Prazo de Pagamento'),
-                        ('document_status', 'Escolha o estado do documento (fechado ou em rascunho)'),
-                        ('document_type', 'Escolha o tipo de documentos que deseja emitir'),
-                        ('client_prefix', 'Prefixo da referência do cliente'),
-                        ('product_prefix', 'Prefixo da referência do produto'),
-                        ('use_moloni_product_details', 'Usar os detalhes do artigo já existente no Moloni'),
-                        ('update_final_consumer', 'Actualizar consumidor final'),
-                        ('shipping_info', 'Informação de envio'),
-                        ('vat_field', 'Número de contribuinte'),
-                        ('email_send', 'Enviar email'),
-                        ('moloni_stock_sync', 'Sincronizar Stocks'),
-                        ('moloni_product_sync', 'Inserir Artigos'),
-                        ('moloni_product_sync_update', 'Actualizar Artigos')
-                        ");
     }
 }

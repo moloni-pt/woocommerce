@@ -33,16 +33,14 @@ class Updater
                 foreach ($sites as $site) {
                     $prefix = $wpdb->get_blog_prefix($site->id);
 
-                    $this
-                        ->runModification('moloni_api', $prefix . 'moloni_api')
-                        ->runModification('moloni_api_config', $prefix . 'moloni_api_config');
+                    $wpdb->query("RENAME TABLE moloni_api TO {$prefix}moloni_api");
+                    $wpdb->query("RENAME TABLE moloni_api_config TO {$prefix}moloni_api_config");
                 }
             } else {
                 $prefix = $wpdb->get_blog_prefix();
 
-                $this
-                    ->runModification('moloni_api', $prefix . 'moloni_api')
-                    ->runModification('moloni_api_config', $prefix . 'moloni_api_config');
+                $wpdb->query("RENAME TABLE moloni_api TO {$prefix}moloni_api");
+                $wpdb->query("RENAME TABLE moloni_api_config TO {$prefix}moloni_api_config");
             }
         }
     }
@@ -90,23 +88,6 @@ class Updater
     }
 
     //          Auxiliary          //
-
-    /**
-     * Alters old table name
-     *
-     * @param string $oldName Old table name
-     * @param string $newName New table name
-     *
-     * @return Updater
-     */
-    private function runModification(string $oldName, string $newName): Updater
-    {
-        global $wpdb;
-
-        $wpdb->query(sprintf('RENAME TABLE %s TO %s ;', $oldName, $newName));
-
-        return $this;
-    }
 
     /**
      * Create log table, if missing
