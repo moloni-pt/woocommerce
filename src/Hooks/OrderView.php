@@ -142,7 +142,7 @@ class OrderView
 
         <script>
             function createMoloniDocument() {
-                var redirectUrl = "<?= esc_url(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id())) ?>";
+                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>";
 
                 if (document.getElementById('moloni_document_type')) {
                     redirectUrl += '&document_type=' + document.getElementById('moloni_document_type').value;
