@@ -1,5 +1,5 @@
 {
-  "name": "moloni-pt/woocommerce",
+  "name": "moloni-pt/moloni-woocommerce",
   "description": "Plugin for WooCommerce integration with Moloni",
   "license": "GPL-3.0",
   "type": "wordpress-plugin",
