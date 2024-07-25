@@ -54,7 +54,7 @@ class Curl
      *
      * @return array|bool
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function simple($action, $values = false, $retry = 0)
     {
@@ -121,7 +121,7 @@ class Curl
             return $parsed;
         }
 
-        throw new APIExeption(__('Ups, foi encontrado um erro...'), $log);
+        throw new APIException(__('Ups, foi encontrado um erro...'), $log);
     }
 
     /**
@@ -155,7 +155,7 @@ class Curl
      * @param $pass
      * @return array|bool|mixed|object
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function login($user, $pass)
     {
@@ -168,7 +168,7 @@ class Curl
         $response = wp_remote_get($url);
 
         if (is_wp_error($response)) {
-            throw new APIExeption($response->get_error_message(), [
+            throw new APIException($response->get_error_message(), [
                 'code' => $response->get_error_code(),
                 'data' => $response->get_error_data(),
                 'message' => $response->get_error_message(),
@@ -189,7 +189,7 @@ class Curl
             'received' => $parsed
         ];
 
-        throw new APIExeption(__('O seu e-mail ou palavra-passe estão errados.'), $log);
+        throw new APIException(__('O seu e-mail ou palavra-passe estão errados.'), $log);
     }
 
     /**

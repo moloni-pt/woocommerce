@@ -33,7 +33,7 @@ class DownloadDocument
             } else {
                 $this->showError(__('Documento não existe'));
             }
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             $this->showError(__('Erro a obter documento'));
         }
     }

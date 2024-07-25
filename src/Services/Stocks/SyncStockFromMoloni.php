@@ -212,7 +212,7 @@ class SyncStockFromMoloni
 
             try {
                 $fetched = Curl::simple('products/getModifiedSince', $values);
-            } catch (APIExeption $e) {
+            } catch (APIException $e) {
                 $fetched = [];
 
                 Storage::$LOGGER->error(__('Atenção, erro ao obter todos os artigos via API'), [

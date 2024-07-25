@@ -73,7 +73,7 @@ class OrderShipping
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create()
@@ -131,7 +131,7 @@ class OrderShipping
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setProductId()
@@ -165,7 +165,7 @@ class OrderShipping
     /**
      * @return OrderShipping
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setCategory()
@@ -221,7 +221,7 @@ class OrderShipping
      *
      * @return OrderShipping
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTaxes()
     {
@@ -264,7 +264,7 @@ class OrderShipping
      *
      * @return array
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTax($taxRate)
     {

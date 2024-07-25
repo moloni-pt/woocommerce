@@ -94,7 +94,7 @@ class Tools
      *
      * @return array
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getTaxFromRate($taxRate, $countryCode = 'PT')
     {
@@ -154,7 +154,7 @@ class Tools
      *
      * @return array|bool
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function createTax($taxRate, $countryCode = 'PT')
     {
@@ -177,7 +177,7 @@ class Tools
      * @param $countryCode
      * @return string
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getCountryIdFromCode($countryCode)
     {
@@ -199,7 +199,7 @@ class Tools
      * @param int $to
      * @return float
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getCurrencyExchangeRate($from, $to)
     {
@@ -220,7 +220,7 @@ class Tools
      * @param string $currencyCode
      * @return int
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getCurrencyIdFromCode(string $currencyCode): int
     {

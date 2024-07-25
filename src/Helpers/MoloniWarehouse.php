@@ -10,7 +10,7 @@ class MoloniWarehouse
     /**
      * Get Moloni warehouse by ID
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getWarehouseById(int $targetId): array
     {

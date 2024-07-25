@@ -28,7 +28,7 @@ class FetchAndCheckProducts
      *
      * @return void
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function run()
     {
@@ -132,7 +132,7 @@ class FetchAndCheckProducts
     /**
      * Fetch products from Moloni
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function fetchProducts()
     {

@@ -85,7 +85,7 @@ class ProductUpdate
      *
      * @param WC_Product $product
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function updateOrInsertProduct(WC_Product $product): void

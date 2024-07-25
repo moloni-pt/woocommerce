@@ -40,7 +40,7 @@ class MoloniProduct
             if ((int)MOLONI_PRODUCT_WAREHOUSE === 0) {
                 try {
                     $defaultWarehouse = Curl::simple('warehouses/getDefaultWarehouse', []);
-                } catch (APIExeption $e) {
+                } catch (APIException $e) {
                     $defaultWarehouse = [];
                 }
 

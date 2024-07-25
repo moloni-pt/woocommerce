@@ -51,7 +51,7 @@ class Start
 
                     Model::setTokens($login['access_token'], $login['refresh_token']);
                 }
-            } catch (APIExeption $e) {
+            } catch (APIException $e) {
                 $errorMessage = $e->getMessage();
                 $errorBag = $e->getData();
             }
@@ -133,7 +133,7 @@ class Start
 
         try {
             $companies = Curl::simple('companies/getAll', []);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             $companies = [];
         }
 

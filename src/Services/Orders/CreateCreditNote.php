@@ -99,7 +99,7 @@ class CreateCreditNote
 
         try {
             $this->originalDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError('Error fetching document', [
                 'request' => $e->getData()
             ]);
@@ -109,7 +109,7 @@ class CreateCreditNote
 
         try {
             $this->originalUnrelatedProducts = $this->unrelatedProducts = Curl::simple('documents/getUnrelatedProducts', ['document_id' => $documentId]);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError('Error fetching unrelated products', [
                 'request' => $e->getData()
             ]);
@@ -132,7 +132,7 @@ class CreateCreditNote
 
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError('Error creating document', [
                 'request' => $e->getData()
             ]);
@@ -171,7 +171,7 @@ class CreateCreditNote
     {
         try {
             $insertedDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentWarning('Error fetching created credit note', ['request' => $e->getData()]);
         }
 
@@ -228,7 +228,7 @@ class CreateCreditNote
 
         try {
             $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/update', $closeProps);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentWarning('Error closing credit note', ['request' => $e->getData()]);
         }
 
@@ -321,7 +321,7 @@ class CreateCreditNote
             $wcProduct = $refundedItem->get_product();
 
             if (empty($wcProduct)) {
-                throw new DocumentError('Refunded product does not exist in Wordpress', [
+                throw new DocumentError('Refunded product does not exist in WordPress', [
                     'name' => $refundedItem->get_name(),
                     'qty' => $refundedQty,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,

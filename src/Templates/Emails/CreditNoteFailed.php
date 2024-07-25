@@ -56,7 +56,7 @@ if (!defined('ABSPATH')) {
                                         A criação de nota de crédito automática falhou.
                                     </p>
                                     <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
-                                        Para mais informações consulte os registos no plugin Moloni para Wordpress.
+                                        Para mais informações consulte os registos no plugin Moloni para WordPress.
                                     </p>
                                     <br>
                                     <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">

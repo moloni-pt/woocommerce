@@ -49,7 +49,7 @@ class OrderCustomer
     /**
      * @return mixed
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create($retry = 0)
@@ -215,7 +215,7 @@ class OrderCustomer
     /**
      * Get the customer next available number for incremental inserts
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public static function getCustomerNextNumber()
     {
@@ -231,7 +231,7 @@ class OrderCustomer
     /**
      * Get the country_id based on a ISO value
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function getCustomerCountryId()
     {
@@ -257,7 +257,7 @@ class OrderCustomer
      *
      * @return bool|array
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function searchForCustomer($forField = false)
     {

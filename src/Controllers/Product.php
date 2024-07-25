@@ -64,7 +64,7 @@ class Product
     /**
      * Loads a product
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function loadByReference()
     {
@@ -97,7 +97,7 @@ class Product
      * Create a product based on a WooCommerce Product
      * @return Product
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create()
@@ -131,7 +131,7 @@ class Product
      *
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function update(): Product
@@ -194,7 +194,7 @@ class Product
     //          Privates          //
 
     /**
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setProduct()
@@ -231,7 +231,7 @@ class Product
     /**
      * @return Product
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setCategory()
@@ -370,7 +370,7 @@ class Product
     /**
      * Sets the taxes of a product or its exemption reason
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTaxes()
     {

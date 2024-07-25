@@ -31,7 +31,7 @@ class ProductCategory
     /**
      * This method SHOULD be replaced by a productCategories/getBySearch
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function loadByName()
     {
@@ -59,7 +59,7 @@ class ProductCategory
     {
         try {
             $insert = Curl::simple('productCategories/insert', $this->mapPropsToValues());
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new GenericException(__('Erro ao inserir a categoria') . ' ' . $this->name, $e->getData());
         }
 

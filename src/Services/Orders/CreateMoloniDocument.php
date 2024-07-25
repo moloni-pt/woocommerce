@@ -53,7 +53,7 @@ class CreateMoloniDocument
 
         try {
             $company = Curl::simple('companies/getOne', []);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError(__('Erro a obter empresa'), $e->getData());
         }
 
