@@ -625,7 +625,7 @@ try {
                         <option value='1' <?= (defined('USE_NAME_FOR_MOLONI_REFERENCE') && (int)USE_NAME_FOR_MOLONI_REFERENCE === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
                     <p class='description'>
-                        <?php esc_html_e('Caso um artigo não tenha referência é criada uma automáticamente para o mesmo.') ?><br>
+                        <?php esc_html_e('Caso um artigo não tenha referência é criada uma automaticamente para o mesmo.') ?><br>
                         <?php esc_html_e('Por defeito a referência é feita com base no ID do artigo, esta opção faz com que a referência automática use também o nome do artigo de forma a evitar conflitos.') ?>
                     </p>
                 </td>
@@ -816,7 +816,7 @@ try {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class='description'><?php esc_html_e('Os documentos vão ser criados automaticamente assim que estiverem no estado seleccionado') ?></p>
+                    <p class='description'><?php esc_html_e('Os documentos vão ser criados automaticamente assim que estiverem no estado selecionado') ?></p>
                 </td>
             </tr>
 
@@ -857,7 +857,7 @@ try {
                         <?php endif; ?>
 
                     </select>
-                    <p class='description'><?php esc_html_e('Sincronização de stocks automática (corre a cada 5 minutos e actualiza o stock dos artigos com base no Moloni)') ?></p>
+                    <p class='description'><?php esc_html_e('Sincronização de stocks automática (corre a cada 5 minutos e atualiza o stock dos artigos com base no Moloni)') ?></p>
                 </td>
             </tr>
 
@@ -876,14 +876,14 @@ try {
 
             <tr>
                 <th>
-                    <label for="moloni_product_sync_update"><?php esc_html_e('Actualizar artigos') ?></label>
+                    <label for="moloni_product_sync_update"><?php esc_html_e('Atualizar artigos') ?></label>
                 </th>
                 <td>
                     <select id="moloni_product_sync_update" name='opt[moloni_product_sync_update]' class='inputOut'>
                         <option value='0' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 0 ? 'selected' : '') ?>><?php esc_html_e('Não') ?></option>
                         <option value='1' <?= (defined('MOLONI_PRODUCT_SYNC_UPDATE') && (int)MOLONI_PRODUCT_SYNC_UPDATE === 1 ? 'selected' : '') ?>><?php esc_html_e('Sim') ?></option>
                     </select>
-                    <p class='description'><?php esc_html_e('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai actualizar os dados do artigo') ?></p>
+                    <p class='description'><?php esc_html_e('Ao guardar um artigo no WooCommerce, se o artigo já existir no Moloni vai atualizar os dados do artigo') ?></p>
                 </td>
             </tr>
             </tbody>

@@ -304,7 +304,7 @@ class Plugin
             $service->run();
 
             if ($service->countUpdated() > 0) {
-                $message = sprintf(__('Foram actualizados %d artigos.'), $service->countUpdated());
+                $message = sprintf(__('Foram atualizados %d artigos.'), $service->countUpdated());
 
                 add_settings_error('moloni', 'moloni-sync-stocks-updated', $message, 'updated');
             }

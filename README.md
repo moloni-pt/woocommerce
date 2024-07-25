@@ -31,9 +31,9 @@ Certificado com o n.º 2860 da Autoridade Tributária, o Moloni está sempre atu
 ## Através do plugin é possível:
 * Sincronizar artigos e stocks entre as duas plataformas
 * Emissão automática ou manual de documentos
-* Seleccionar o estado dos documentos emitidos
-* Seleccionar de uma grande variedade de tipos de documentos
-* Seleccionar o armazém de saída dos artigos
+* Selecionar o estado dos documentos emitidos
+* Selecionar de uma grande variedade de tipos de documentos
+* Selecionar o armazém de saída dos artigos
 * Envio automático do documento para o cliente
 * Criação automática de clientes e artigos
 * Personalizar os seus detalhes de faturação
@@ -55,7 +55,7 @@ Para qualquer duvida ou sugestão pode entrar em contacto connosco através do e
 ### Os documentos estão a ser emitidos sem contribuinte
 Por defeito, o WooCommerce não tem um campo de contribuinte, como tal, o que se costuma fazer é adicionar um plugin para adicionar o contribuinte ao cliente.
 Estes plugins criam um custom_field associado à morada de facturação do cliente, como por exemplo `_billing_nif`.
-Depois de ter um plugin para o contribuinte instalado, basta seleccionar nas configurações do plugin Moloni qual o `custom_field` que corresponde ao contribuinte do cliente.
+Depois de ter um plugin para o contribuinte instalado, basta selecionar nas configurações do plugin Moloni qual o `custom_field` que corresponde ao contribuinte do cliente.
 
 
 ## Instalação
@@ -272,10 +272,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * MINOR: Testado até à versão 5.9.0 do WooCommerce
 
 ### 3.0.64
-* FIX: Correcção da verificação da zona fiscal
+* FIX: Correção da verificação da zona fiscal
 
 ### 3.0.63
-* FIX: Correcção da verificação da zona fiscal
+* FIX: Correção da verificação da zona fiscal
 
 ### 3.0.62
 * CHANGE: Alteração na definição da zona fiscal
@@ -283,10 +283,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 ### 3.0.61
 * CHANGE: Alteração das tabelas da base de dados para usarem o prefixo definido no WooCommerce
-* FIX: Correcção de impostos de taxas com valor reduzido
+* FIX: Correção de impostos de taxas com valor reduzido
 
 ### 3.0.60
-* FIX: Correcção de impostos de taxas com valor reduzido
+* FIX: Correção de impostos de taxas com valor reduzido
 
 ### 3.0.59
 * FEATURE: Acrescentada, caso seja ativado nas definições do plugin, uma coluna na listagem de encomendas WooCommerce para descarregamento rápido de documentos.
@@ -359,7 +359,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 ### 3.0.40
 * CHANGE: Na criação de um artigo, se não tiver referência, passou a ser usado o ID do artigo como base da referência
-* FIX: Na actualização de artigos, passamos a limpar as taxas antes de actualizar, de forma a evitar taxas duplicadas
+* FIX: Na atualização de artigos, passamos a limpar as taxas antes de atualizar, de forma a evitar taxas duplicadas
 
 ### 3.0.37
 * FEATURE: Adicionada possibilidade de emissão de faturas pró-forma
@@ -391,11 +391,11 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 * FIX: Remover as tags do nome do artigo
 
 ### 3.0.28
-* CHANGE: Permitir sincronização de artigos com variações. Os artigos "Filhos" são criados individualmente no Moloni e com os dados correctos
+* CHANGE: Permitir sincronização de artigos com variações. Os artigos "Filhos" são criados individualmente no Moloni e com os dados corretos
 
 ### 3.0.27
 * FEATURE: Adição de hook para a alteração do resumo do artigo
-* FEATURE: A funcionalidade de inserir/atualizar artigos foi dividida em duas, uma própria para inserir, outra para actualizar
+* FEATURE: A funcionalidade de inserir/atualizar artigos foi dividida em duas, uma própria para inserir, outra para atualizar
 * FEATURE: Adicionada nova opção para usar os dados dos artigos que estão no Moloni (nome e resumo), caso já existam
 * CHANGE: O campo EAN passou a não ser atualizado caso esteja vazio
 * CHANGE: Validação correta das taxas/isenções
