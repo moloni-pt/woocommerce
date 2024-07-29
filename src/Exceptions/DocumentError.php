@@ -60,7 +60,7 @@ class DocumentError extends MoloniException
     {
         switch ($message) {
             case 'Field \'exemption_reason\' is required':
-                $message = __('Um dos artigos não tem uma taxa de IVA associada e como tal, tem que seleccionar uma razão de isenção');
+                $message = __('Um dos artigos não tem uma taxa de IVA associada e como tal, tem que selecionar uma razão de isenção');
                 break;
             case "Field 'category_id' must be integer, greater than 0":
                 $message = __('Verifique por favor se o artigo tem uma categoria associada');

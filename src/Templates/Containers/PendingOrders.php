@@ -21,7 +21,7 @@ $pagination = PendingOrders::getPagination();
 <div class="tablenav top">
     <div class="alignleft actions bulkactions">
         <label for="bulk-action-selector-top" class="screen-reader-text">
-            <?php esc_html_e('Seleccionar acção por lotes') ?>
+            <?php esc_html_e('Selecionar ação por lotes') ?>
         </label>
         <select name="action" id="bulk-action-selector-top">
             <option value="-1"><?php esc_html_e('Ações por lotes') ?></option>
@@ -152,7 +152,7 @@ $pagination = PendingOrders::getPagination();
     <?php else : ?>
         <tr>
             <td colspan="8">
-                <?php esc_html_e('Não foram encontadas encomendas por gerar!') ?>
+                <?php esc_html_e('Não foram encontradas encomendas por gerar!') ?>
             </td>
         </tr>
     <?php endif; ?>

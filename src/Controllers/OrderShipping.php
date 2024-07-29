@@ -55,19 +55,19 @@ class OrderShipping
     /** @var bool */
     private $hasIVA = false;
 
-    /** @var bool */
-    private $fiscalZone;
+    /** @var array */
+    private $fiscalData;
 
     /**
      * OrderProduct constructor.
      * @param WC_Order $order
      * @param int $index
      */
-    public function __construct($order, $index = 0, $fiscalZone = 'PT')
+    public function __construct($order, $index = 0, $fiscalData = [])
     {
         $this->order = $order;
         $this->index = $index;
-        $this->fiscalZone = $fiscalZone;
+        $this->fiscalData = $fiscalData;
     }
 
     /**
@@ -243,7 +243,7 @@ class OrderShipping
         if (!$this->hasIVA) {
             $exemptionReason = '';
 
-            if (isset(Tools::$europeanCountryCodes[$this->fiscalZone])) {
+            if ($this->isCountryIntraCommunity()) {
                 $exemptionReason = defined('EXEMPTION_REASON_SHIPPING') ? EXEMPTION_REASON_SHIPPING : '';
             } else {
                 if (defined('EXEMPTION_REASON_SHIPPING_EXTRA_COMMUNITY')) {
@@ -268,7 +268,7 @@ class OrderShipping
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalZone);
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalData['code']);
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
@@ -347,5 +347,23 @@ class OrderShipping
         }
 
         return $values;
+    }
+
+    /**
+     * Check if country is intra community
+     *
+     * @return bool
+     */
+    private function isCountryIntraCommunity(): bool
+    {
+        if (!isset(Tools::$europeanCountryCodes[$this->fiscalData['code']])) {
+            return false;
+        }
+
+        if ($this->fiscalData['code'] === 'ES' && in_array($this->fiscalData['state'], ['TF', 'GC'])) {
+            return false;
+        }
+
+        return true;
     }
 }
