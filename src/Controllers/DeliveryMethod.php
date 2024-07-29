@@ -35,7 +35,7 @@ class DeliveryMethod
     }
 
     /**
-     * @throws APIExeption
+     * @throws APIException
      */
     public function loadByName()
     {
@@ -61,7 +61,7 @@ class DeliveryMethod
      * @return DeliveryMethod
      *
      * @throws GenericException
-     * @throws APIExeption
+     * @throws APIException
      */
     public function create(): DeliveryMethod
     {

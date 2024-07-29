@@ -73,7 +73,7 @@ class OrderFees
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create()
@@ -105,7 +105,7 @@ class OrderFees
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setProductId()
@@ -139,7 +139,7 @@ class OrderFees
     /**
      * @return OrderFees
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setCategory()
@@ -196,7 +196,7 @@ class OrderFees
      *
      * @return OrderFees
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTaxes()
     {
@@ -240,7 +240,7 @@ class OrderFees
      *
      * @return array
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTax($taxRate)
     {

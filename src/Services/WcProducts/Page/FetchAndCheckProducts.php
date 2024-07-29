@@ -29,7 +29,7 @@ class FetchAndCheckProducts
      *
      * @return void
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function run()
     {

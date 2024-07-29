@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 <?php
 
 use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Helpers\Context;
 use Moloni\Model;
 use Moloni\Enums\Boolean;
@@ -30,7 +30,7 @@ try {
     if (!is_array($exemptionReasons)) {
         $exemptionReasons = [];
     }
-} catch (APIExeption $e) {
+} catch (APIException $e) {
     $e->showError();
     return;
 }

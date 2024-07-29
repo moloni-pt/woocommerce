@@ -136,7 +136,7 @@ class CreateProduct extends ImportService
                 'product_id' => $this->moloniProduct['product_id'],
                 'with_invisible' => true
             ]);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             $moloniCategoryTree = [];
         }
 

@@ -95,7 +95,7 @@ class Plugin
 
     /**
      * Main function
-     * This will run when accessing the page "moloni" and the routing shoud be done here with and $_GET['action']
+     * This will run when accessing the page "moloni" and the routing should be done here with and $_GET['action']
      */
     public function run(): void
     {
@@ -291,7 +291,7 @@ class Plugin
     }
 
     /**
-     * Force stock syncronization
+     * Force stock synchronization
      *
      * @return void
      */

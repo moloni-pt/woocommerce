@@ -20,7 +20,7 @@ $service->setFilters($filters);
 
 try {
     $service->run();
-} catch (APIExeption $e) {
+} catch (APIException $e) {
     $e->showError();
     return;
 }
@@ -54,7 +54,7 @@ $backAction = admin_url('admin.php?page=moloni&tab=tools');
         } else {
             try {
                 $warehouse = MoloniWarehouse::getWarehouseById($warehouseId);
-            } catch (APIExeption $e) {
+            } catch (APIException $e) {
                 $e->showError();
                 return;
             }

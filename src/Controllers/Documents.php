@@ -87,11 +87,11 @@ class Documents
     private $documentTotal = 0;
 
     /**
-     * Moloni document exchage total total
+     * Moloni document exchange total total
      *
      * @var float
      */
-    private $documentExchageTotal = 0;
+    private $documentExchangeTotal = 0;
 
     /**
      * CAE ID
@@ -164,7 +164,7 @@ class Documents
     public $salesman_id = 0;
 
     /**
-     * Document salesman comission
+     * Document salesman commission
      *
      * @var int
      */
@@ -228,13 +228,13 @@ class Documents
         $this->document_id = 0;
 
         $this->documentTotal = 0;
-        $this->documentExchageTotal = 0;
+        $this->documentExchangeTotal = 0;
 
         $this->associatedDocuments = [];
     }
 
     /**
-     * Associate a document wiht the current one
+     * Associate a document with the current one
      *
      * @param int $documentId Document id to associate
      * @param float $value Total value to associate
@@ -272,7 +272,7 @@ class Documents
 
         try {
             $insertedDocument = Curl::simple($this->documentType . '/insert', $this->mapPropsToValues());
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
 
@@ -286,12 +286,12 @@ class Documents
 
         try {
             $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
 
         $this->documentTotal = (float)$this->document['net_value'];
-        $this->documentExchageTotal = (float)$this->document['exchange_total_value'] > 0 ? (float)$this->document['exchange_total_value'] : $this->documentTotal;
+        $this->documentExchangeTotal = (float)$this->document['exchange_total_value'] > 0 ? (float)$this->document['exchange_total_value'] : $this->documentTotal;
 
         apply_filters('moloni_after_insert_document', $this);
 
@@ -320,7 +320,7 @@ class Documents
         // Validate if the document totals match can be closed
         $orderTotal = ((float)$this->order->get_total() - (float)$this->order->get_total_refunded());
 
-        if ($orderTotal !== $this->getDocumentExchageTotal()) {
+        if ($orderTotal !== $this->getDocumentExchangeTotal()) {
             $note = __('Documento inserido como rascunho no Moloni');
             $note .= " (" . $this->documentTypeName . ")";
 
@@ -358,7 +358,7 @@ class Documents
 
         try {
             Curl::simple($this->documentType . '/update', $closeDocument);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentWarning($e->getMessage(), $e->getData());
         }
 
@@ -520,11 +520,11 @@ class Documents
 
             if (!empty($associatedDocument['products'])) {
                 // Associate products from both documents
-                // We assume that the order of the documents is the same (beware if tring to do custom stuff)
+                // We assume that the order of the documents is the same (beware if trying to do custom stuff)
                 foreach ($associatedDocument['products'] as $associatedProduct) {
                     $currentProductIndex++;
 
-                    // To avoid errors, check lenght
+                    // To avoid errors, check length
                     if (!isset($props['products'][$currentProductIndex])) {
                         continue;
                     }
@@ -544,7 +544,7 @@ class Documents
                         $props['products'][$currentProductIndex]['related_id'] = (int)$associatedProduct['document_product_id'];
                     } else {
                         foreach ($associatedProduct['child_products'] as $childIndex => $childProduct) {
-                            // To avoid errors, check lenght
+                            // To avoid errors, check length
                             if (!isset($props['products'][$currentProductIndex]['child_products'][$childIndex])) {
                                 continue;
                             }
@@ -600,9 +600,9 @@ class Documents
      *
      * @return float|int
      */
-    public function getDocumentExchageTotal()
+    public function getDocumentExchangeTotal()
     {
-        return $this->documentExchageTotal;
+        return $this->documentExchangeTotal;
     }
 
     //          SETS          //
@@ -763,7 +763,7 @@ class Documents
     {
         try {
             $this->customer_id = (new OrderCustomer($this->order))->create();
-        } catch (APIExeption|GenericException $e) {
+        } catch (APIException|GenericException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
 
@@ -854,7 +854,7 @@ class Documents
 
             try {
                 $newOrderProduct->create();
-            } catch (APIExeption|GenericException $e) {
+            } catch (APIException|GenericException $e) {
                 throw new DocumentError($e->getMessage(), $e->getData());
             }
 
@@ -880,7 +880,7 @@ class Documents
 
             try {
                 $newOrderShipping->create();
-            } catch (APIExeption|GenericException $e) {
+            } catch (APIException|GenericException $e) {
                 throw new DocumentError($e->getMessage(), $e->getData());
             }
 
@@ -910,7 +910,7 @@ class Documents
 
                 try {
                     $this->products[] = $newOrderFee->create()->mapPropsToValues();
-                } catch (APIExeption|GenericException $e) {
+                } catch (APIException|GenericException $e) {
                     throw new DocumentError($e->getMessage(), $e->getData());
                 }
             }
@@ -920,7 +920,7 @@ class Documents
     }
 
     /**
-     * Set exchage rate
+     * Set exchange rate
      *
      * @return $this
      *
@@ -933,7 +933,7 @@ class Documents
             try {
                 $this->exchange_currency_id = Tools::getCurrencyIdFromCode($this->order->get_currency());
                 $this->exchange_rate = Tools::getCurrencyExchangeRate($this->company['currency']['currency_id'], $this->exchange_currency_id);
-            } catch (APIExeption $e) {
+            } catch (APIException $e) {
                 throw new DocumentError($e->getMessage(), $e->getData());
             }
 
@@ -971,7 +971,7 @@ class Documents
                 if (!$paymentMethod->loadByName()) {
                     $paymentMethod->create();
                 }
-            } catch (APIExeption|GenericException $e) {
+            } catch (APIException|GenericException $e) {
                 throw new DocumentError($e->getMessage(), $e->getData());
             }
 
@@ -1046,7 +1046,7 @@ class Documents
             if (!$deliveryMethod->loadByName()) {
                 $deliveryMethod->create();
             }
-        } catch (APIExeption|GenericException $e) {
+        } catch (APIException|GenericException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
 
@@ -1078,7 +1078,7 @@ class Documents
 
         try {
             $this->delivery_destination_country = Tools::getCountryIdFromCode($this->order->get_shipping_country());
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
 

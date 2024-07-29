@@ -83,7 +83,7 @@ class OrderProduct
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create()
@@ -242,7 +242,7 @@ class OrderProduct
      *
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     private function setProductId()
@@ -301,7 +301,7 @@ class OrderProduct
      *
      * @return OrderProduct
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTaxes()
     {
@@ -342,7 +342,7 @@ class OrderProduct
     /**
      * @param float $taxRate Tax Rate in percentage
      * @return array
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setTax($taxRate)
     {
@@ -383,7 +383,7 @@ class OrderProduct
     /**
      * @return $this
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     private function setChildProducts()
     {

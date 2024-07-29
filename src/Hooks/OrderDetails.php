@@ -114,7 +114,7 @@ class OrderDetails
             if (isset($result['url'])) {
                 return $result['url'];
             }
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
         }
 
         return '';
@@ -128,7 +128,7 @@ class OrderDetails
             if (isset($invoice['document_id'])) {
                 return $invoice;
             }
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
         }
 
         return [];

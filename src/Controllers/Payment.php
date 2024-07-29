@@ -37,7 +37,7 @@ class Payment
     /**
      * This method SHOULD be replaced by a productCategories/getBySearch
      *
-     * @throws APIExeption
+     * @throws APIException
      */
     public function loadByName()
     {
@@ -62,7 +62,7 @@ class Payment
      *
      * @return Payment
      *
-     * @throws APIExeption
+     * @throws APIException
      * @throws GenericException
      */
     public function create()

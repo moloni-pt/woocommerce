@@ -74,7 +74,7 @@ class UpdateProductStock extends ExportService
 
         try {
             $request = Curl::simple('stockMovements/insert', $params);
-        } catch (APIExeption $e) {
+        } catch (APIException $e) {
             throw new StockException($e->getMessage(), $e->getData());
         }
 
