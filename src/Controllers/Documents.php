@@ -33,9 +33,9 @@ class Documents
     /**
      * Document fiscal zone
      *
-     * @var string
+     * @var array
      */
-    private $fiscalZone;
+    private $fiscalData;
 
     /**
      * Associated documents
@@ -391,7 +391,7 @@ class Documents
             ->setDocumentType()
             ->setDocumentSetId()
             ->setSendEmail()
-            ->setFiscalZone()
+            ->setFiscalData()
             ->setProducts()
             ->setShipping()
             ->setFees()
@@ -789,34 +789,45 @@ class Documents
     }
 
     /**
-     * Set fiscal zone
+     * Set fiscal data
      *
      * @return $this
      */
-    public function setFiscalZone(): Documents
+    public function setFiscalData(): Documents
     {
-        $fiscalZone = null;
-
         switch (get_option('woocommerce_tax_based_on')) {
             case 'billing':
-                $fiscalZone = $this->order->get_billing_country();
+                $fiscalData = [
+                    'code' => strtoupper($this->order->get_billing_country()),
+                    'state' => $this->order->get_billing_state(),
+                    'country' => 0,
+                ];
 
                 break;
             case 'shipping':
-                $fiscalZone = $this->order->get_shipping_country();
+                $fiscalData = [
+                    'code' => strtoupper($this->order->get_shipping_country()),
+                    'state' => $this->order->get_shipping_state(),
+                    'country' => 0,
+                ];
 
                 break;
+            default:
             case 'base':
-                $fiscalZone = $this->company['country']['iso_3166_1'];
+                $fiscalData = [
+                    'code' => strtoupper($this->company['country']['iso_3166_1']),
+                    'state' => $this->company['city'],
+                    'country' => $this->company['country_id'],
+                ];
 
                 break;
         }
 
-        if (empty($fiscalZone)) {
-            $fiscalZone = $this->company['country']['iso_3166_1'];
+        if (empty($fiscalData['code'])) {
+            $fiscalData['code'] = strtoupper($this->company['country']['iso_3166_1']);
         }
 
-        $this->fiscalZone = strtoupper($fiscalZone);
+        $this->fiscalData = $fiscalData;
 
         return $this;
     }
@@ -839,7 +850,7 @@ class Documents
             /**
              * @var $orderProduct WC_Order_Item_Product
              */
-            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalZone);
+            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalData);
 
             try {
                 $newOrderProduct->create();
@@ -865,7 +876,7 @@ class Documents
     public function setShipping(): Documents
     {
         if ($this->order->get_shipping_method() && (float)$this->order->get_shipping_total() > 0) {
-            $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalZone);
+            $newOrderShipping = new OrderShipping($this->order, count($this->products), $this->fiscalData);
 
             try {
                 $newOrderShipping->create();
@@ -895,7 +906,7 @@ class Documents
             $feePrice = abs($item['line_total']);
 
             if ($feePrice > 0) {
-                $newOrderFee = new OrderFees($item, count($this->products), $this->fiscalZone);
+                $newOrderFee = new OrderFees($item, count($this->products), $this->fiscalData);
 
                 try {
                     $this->products[] = $newOrderFee->create()->mapPropsToValues();

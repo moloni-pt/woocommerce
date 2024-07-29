@@ -57,8 +57,8 @@ class OrderProduct
     /** @var bool */
     private $hasIVA = false;
 
-    /** @var bool */
-    private $fiscalZone;
+    /** @var array */
+    private $fiscalData;
 
     /** @var int */
     public $composition_type = 0;
@@ -72,12 +72,12 @@ class OrderProduct
      * @param WC_Order $wcOrder
      * @param int $order
      */
-    public function __construct($product, $wcOrder, $order = 0, $fiscalZone = 'PT')
+    public function __construct($product, $wcOrder, $order = 0, $fiscalData = [])
     {
         $this->product = $product;
         $this->wc_order = $wcOrder;
         $this->order = $order;
-        $this->fiscalZone = $fiscalZone;
+        $this->fiscalData = $fiscalData;
     }
 
     /**
@@ -256,7 +256,7 @@ class OrderProduct
         $this->moloniProduct = new Product($wcProduct);
 
         if (!$this->moloniProduct->loadByReference()) {
-            $this->moloniProduct->fiscalZone = $this->fiscalZone;
+            $this->moloniProduct->fiscalZone = $this->fiscalData['code'];
             $this->moloniProduct->create();
         } elseif (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS) {
             $this->name = $this->moloniProduct->name;
@@ -319,7 +319,7 @@ class OrderProduct
         if (!$this->hasIVA) {
             $exemptionReason = '';
 
-            if (isset(Tools::$europeanCountryCodes[$this->fiscalZone])) {
+            if ($this->isCountryIntraCommunity()) {
                 $exemptionReason = defined('EXEMPTION_REASON') ? EXEMPTION_REASON : '';
             } else {
                 if (defined('EXEMPTION_REASON_EXTRA_COMMUNITY')) {
@@ -346,7 +346,7 @@ class OrderProduct
      */
     private function setTax($taxRate)
     {
-        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalZone);
+        $moloniTax = Tools::getTaxFromRate((float)$taxRate, $this->fiscalData['code']);
 
         $tax = [];
         $tax['tax_id'] = $moloniTax['tax_id'];
@@ -452,5 +452,23 @@ class OrderProduct
         $values['child_products'] = $this->child_products;
 
         return $values;
+    }
+
+    /**
+     * Check if country is intra community
+     *
+     * @return bool
+     */
+    private function isCountryIntraCommunity(): bool
+    {
+        if (!isset(Tools::$europeanCountryCodes[$this->fiscalData['code']])) {
+            return false;
+        }
+
+        if ($this->fiscalData['code'] === 'ES' && in_array($this->fiscalData['state'], ['TF', 'GC'])) {
+            return false;
+        }
+
+        return true;
     }
 }
