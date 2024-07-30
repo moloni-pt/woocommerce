@@ -3,7 +3,7 @@
 namespace Moloni\Helpers;
 
 use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 class MoloniWarehouse
 {

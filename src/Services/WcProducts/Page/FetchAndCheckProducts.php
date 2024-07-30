@@ -2,11 +2,8 @@
 
 namespace Moloni\Services\WcProducts\Page;
 
-use WC_Product;
-use Moloni\Curl;
 use Moloni\Helpers\MoloniProduct;
-use Moloni\Enums\Domains;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 class FetchAndCheckProducts
 {

@@ -2,7 +2,7 @@
 
 namespace Moloni\Controllers;
 
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Exceptions\GenericException;

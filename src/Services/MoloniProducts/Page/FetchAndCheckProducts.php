@@ -3,9 +3,8 @@
 namespace Moloni\Services\MoloniProducts\Page;
 
 use Moloni\Curl;
-use Moloni\Enums\Domains;
 use Moloni\Helpers\MoloniProduct;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 class FetchAndCheckProducts
 {

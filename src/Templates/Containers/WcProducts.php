@@ -1,6 +1,6 @@
 <?php
 
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Helpers\MoloniWarehouse;
 use Moloni\Services\WcProducts\Page\FetchAndCheckProducts;
 

@@ -16,7 +16,7 @@ namespace Moloni\Controllers;
 
 
 use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\GenericException;
 
 class DeliveryMethod

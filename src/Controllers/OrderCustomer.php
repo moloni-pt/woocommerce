@@ -5,7 +5,7 @@ namespace Moloni\Controllers;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Tools;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\GenericException;
 
 class OrderCustomer

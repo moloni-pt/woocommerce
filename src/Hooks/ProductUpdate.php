@@ -3,7 +3,7 @@
 namespace Moloni\Hooks;
 
 use Exception;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\Core\MoloniException;
 use Moloni\Exceptions\GenericException;
 use Moloni\Storage;

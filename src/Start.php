@@ -4,13 +4,13 @@ namespace Moloni;
 
 use Moloni\Enums\Boolean;
 use Moloni\Helpers\Debug;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 /**
  * Class Start
  * This is one of the main classes of the module
  * Every call should pass here before
- * This will render the login form or the company form or it will return a bol
+ * This will render the login form or the company form, or it will return a bool
  * This will also handle the tokens
  * @package Moloni
  */

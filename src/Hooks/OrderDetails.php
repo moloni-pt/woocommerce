@@ -2,7 +2,7 @@
 
 namespace Moloni\Hooks;
 
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Start;

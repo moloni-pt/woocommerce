@@ -4,7 +4,7 @@ namespace Moloni;
 
 use Moloni\Enums\SaftType;
 use Moloni\Enums\TaxType;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 /**
  * Multiple tools for handling recurring tasks

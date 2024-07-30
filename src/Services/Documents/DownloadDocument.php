@@ -3,7 +3,7 @@
 namespace Moloni\Services\Documents;
 
 use Moloni\Curl;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 class DownloadDocument
 {

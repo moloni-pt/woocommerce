@@ -4,7 +4,7 @@ namespace Moloni\Services\Stocks;
 
 use Moloni\Curl;
 use Moloni\Storage;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\Stocks\StockLockedException;
 use Moloni\Exceptions\Stocks\StockMatchingException;
 use Moloni\Services\WcProducts\UpdateProductStock;

@@ -3,7 +3,7 @@
 namespace Moloni;
 
 use Moloni\Enums\Boolean;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 class Curl
 {

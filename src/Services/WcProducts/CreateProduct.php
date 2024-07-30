@@ -10,7 +10,7 @@ use Moloni\Enums\Boolean;
 use Moloni\Enums\TaxType;
 use Moloni\Enums\SaftType;
 use Moloni\Helpers\MoloniProduct;
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 
 
 class CreateProduct extends ImportService

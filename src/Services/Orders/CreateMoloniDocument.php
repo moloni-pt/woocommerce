@@ -2,7 +2,7 @@
 
 namespace Moloni\Services\Orders;
 
-use Moloni\Exceptions\APIExeption;
+use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use WC_Order;
