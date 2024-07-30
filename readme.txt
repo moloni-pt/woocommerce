@@ -73,6 +73,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.8.3 =
+* FIX: Correção na razão de isenção usada para as Canárias e Tenerife
+* MINOR: Pequenas alterações e correções
+
 = 4.8.2 =
 * FIX: Correção na ligação para criação de documentos
 
