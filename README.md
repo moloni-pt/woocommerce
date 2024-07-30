@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.5.5  
 **WC tested up to**    9.0.2  
-**Stable tag:**        4.8.3  
+**Stable tag:**        4.8.4  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,7 +78,7 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
-### 4.8.3
+### 4.8.4
 * FIX: Correção na razão de isenção usada para as Canárias e Tenerife
 * MINOR: Pequenas alterações e correções
 
