@@ -201,12 +201,12 @@ class OrderFees
     private function setTaxes()
     {
         $taxedArray = $this->fee->get_taxes();
-        $taxedValue = 0;
+        $taxedValue = 0.0;
         $taxRate = 0;
 
         if (isset($taxedArray['total']) && count($taxedArray['total']) > 0) {
             foreach ($taxedArray['total'] as $value) {
-                $taxedValue += $value;
+                $taxedValue += (float)$value;
             }
 
             $taxRate = round(($taxedValue * 100) / $this->price);
