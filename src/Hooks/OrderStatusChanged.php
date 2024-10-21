@@ -47,8 +47,11 @@ class OrderStatusChanged
                 return;
             }
 
+            $validStatus = [INVOICE_AUTO_STATUS];
+            $validStatus = apply_filters('moloni_before_order_status_changed', $validStatus, $orderId, $previousStatus, $nextStatus);
+
             /** Check if next status was the chosen one */
-            if (INVOICE_AUTO_STATUS !== $nextStatus) {
+            if (!in_array($nextStatus, $validStatus, true)) {
                 return;
             }
 

@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.5.5
-Stable tag: 4.8.5
+Stable tag: 4.9.0
 Requires PHP: 7.2
 WC tested up to: 9.0.2
 License: GPLv2 or later
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.9.0 =
+* FEATURE: Adicionados filtros à criação automática de documentos
+
 = 4.8.5 =
 * FIX: Correção de erros de "cast"
 
