@@ -392,6 +392,8 @@ class OrderProduct
                 $priceChangePercent = $this->price / $this->moloniProduct->price;
                 $this->price = 0;
 
+                $this->child_products = [];
+
                 foreach ($this->moloniProduct->child_products as $index => $childProduct) {
                     $moloniChildProduct = Curl::simple('products/getOne', ['product_id' => $childProduct['product_child_id']]);
 
