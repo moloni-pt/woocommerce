@@ -285,7 +285,7 @@ class Documents
         $this->saveRecord();
 
         try {
-            $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id']]);
+            $this->document = Curl::simple('documents/getOne', ['document_id' => $insertedDocument['document_id'], 'with_bundle_products' => true]);
         } catch (APIException $e) {
             throw new DocumentError($e->getMessage(), $e->getData());
         }
@@ -497,7 +497,7 @@ class Documents
      *
      * @return void
      */
-    private function associateDocuments(array &$props, $skipProducts = false): void
+    private function associateDocuments(array &$props, ?bool $skipProducts = false): void
     {
         // If multiple documents are associated, the need a global product counter
         // Starts in -1 because the first thing we do is to increment its value
