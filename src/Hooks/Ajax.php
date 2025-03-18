@@ -159,6 +159,8 @@ class Ajax
             $response['message'] = $e->getMessage();
         }
 
+        sleep(1);
+
         $this->sendJson($response);
     }
 
@@ -222,6 +224,8 @@ class Ajax
             $response['message'] = $e->getMessage();
         }
 
+        sleep(1);
+
         $this->sendJson($response);
     }
 
@@ -272,6 +276,8 @@ class Ajax
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();
         }
+
+        sleep(1);
 
         $this->sendJson($response);
     }
@@ -331,6 +337,8 @@ class Ajax
             $response['valid'] = 0;
             $response['message'] = $e->getMessage();
         }
+
+        sleep(1);
 
         $this->sendJson($response);
     }
