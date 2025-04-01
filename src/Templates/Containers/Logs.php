@@ -28,6 +28,7 @@ $logsContext = [];
             <th><a><?php esc_html_e('Nível') ?></a></th>
             <th><a><?php esc_html_e('Mensagem') ?></a></th>
             <th><a><?php esc_html_e('Contexto') ?></a></th>
+            <th></th>
         </tr>
         <tr>
             <th>
@@ -67,6 +68,14 @@ $logsContext = [];
                 >
             </th>
             <th>
+                <input
+                        type="text"
+                        class="ml-0"
+                        name="filter_context"
+                        value="<?= esc_html($_GET['filter_context'] ?? $_POST['filter_context'] ?? '') ?>"
+                >
+            </th>
+            <th>
                 <button type="submit" name="submit" id="submit" class="button button-primary">
                     <?php esc_html_e('Pesquisar') ?>
                 </button>
@@ -92,7 +101,7 @@ $logsContext = [];
                     <td>
                         <?= esc_html($log['message']) ?>
                     </td>
-                    <td>
+                    <td colspan="2">
                         <?php $showOverlayButton = true ?>
 
                         <?php if ($logLevel === LogLevel::DEBUG) : ?>
