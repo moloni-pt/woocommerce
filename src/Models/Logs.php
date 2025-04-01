@@ -13,6 +13,7 @@ class Logs
     private static $filterDate = '';
     private static $filterMessage = '';
     private static $filterLevel = '';
+    private static $filterContext = '';
 
     public static function getAllAvailable(): array
     {
@@ -21,6 +22,7 @@ class Logs
         self::$filterDate = sanitize_text_field($_GET['filter_date'] ?? $_POST['filter_date'] ?? '');
         self::$filterMessage = sanitize_text_field($_GET['filter_message'] ?? $_POST['filter_message'] ?? '');
         self::$filterLevel = sanitize_text_field($_GET['filter_level'] ?? $_POST['filter_level'] ?? '');
+        self::$filterContext = sanitize_text_field($_GET['filter_context'] ?? $_POST['filter_context'] ?? '');
 
         return self::getAll();
     }
@@ -137,6 +139,11 @@ class Logs
         if (!empty(self::$filterDate)) {
             $sql .= ' AND created_at LIKE %s';
             $arguments[] = self::$filterDate . '%';
+        }
+
+        if (!empty(self::$filterContext)) {
+            $sql .= ' AND context LIKE %s';
+            $arguments[] = '%' . self::$filterContext . '%';
         }
     }
 }
