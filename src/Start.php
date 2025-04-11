@@ -32,7 +32,7 @@ class Start
 
         $action = isset($_REQUEST['action']) ? sanitize_text_field(trim($_REQUEST['action'])) : '';
         $username = isset($_POST['user']) ? sanitize_email(trim($_POST['user'])) : '';
-        $password = isset($_POST['pass']) ? stripslashes(sanitize_text_field(trim($_POST['pass']))) : '';
+        $password = isset($_POST['pass']) ? stripslashes(trim($_POST['pass'])) : '';
 
         if ($ajax) {
             self::$ajax = true;
