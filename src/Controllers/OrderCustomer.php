@@ -79,7 +79,7 @@ class OrderCustomer
 
         if (!$customerExists) {
             $values['vat'] = $this->vat;
-            $values['number'] = self::getCustomerNextNumber();
+            $values['number'] = $this->nextNumberCreator();
 
             $result = Curl::simple('customers/insert', $values);
         } else {
@@ -310,6 +310,39 @@ class OrderCustomer
     }
 
     //                 Auxiliary                 //
+
+    private function nextNumberCreator()
+    {
+        // Normal way
+
+        if (!defined('CUSTOMER_NUMBER_PREFIX') || empty(CUSTOMER_NUMBER_PREFIX)) {
+            $results = Curl::simple('customers/getNextNumber', []);
+
+            if (!empty($results['number'])) {
+                return ($results['number']);
+            }
+
+            return (mt_rand(10000000000, 100000000000));
+        }
+
+        // Find by prefix
+
+        $results = Curl::simple('customers/getByNumber', [
+            'number' => CUSTOMER_NUMBER_PREFIX . "%",
+            'order_by_field' => 'customer_id',
+            'order_by_ordering' => 'desc',
+            'qty' => 1,
+            'exact' => 1,
+        ]);
+
+        if (!isset($results[0]['number'])) {
+            return CUSTOMER_NUMBER_PREFIX . '1';
+        }
+
+        $number = substr($results[0]['number'], strlen(CUSTOMER_NUMBER_PREFIX));
+
+        return CUSTOMER_NUMBER_PREFIX . ((int)$number + 1);
+    }
 
     private function shouldRetryInsert($result): bool
     {

@@ -641,6 +641,31 @@ try {
         <table class="form-table mb-4">
             <tbody>
             <tr>
+                <?php
+                $customerNumberPrefix = '';
+
+                if (defined('CUSTOMER_NUMBER_PREFIX')) {
+                    $customerNumberPrefix = esc_html(CUSTOMER_NUMBER_PREFIX);
+                }
+                ?>
+
+                <th>
+                    <label for="customer_number_prefix"><?php esc_html_e('Prefixo cliente') ?></label>
+                </th>
+                <td>
+                    <input value="<?= $customerNumberPrefix ?>"
+                           id="customer_number_prefix"
+                           name='opt[customer_number_prefix]'
+                           type="text"
+                           style="width: 330px;"
+                           placeholder="">
+                    <p class='description'>
+                        <?php esc_html_e('Prefixo adicionado aos clientes criados através do plugin') ?>
+                    </p>
+                </td>
+            </tr>
+
+            <tr>
                 <th>
                     <label for="maturity_date_id"><?php esc_html_e('Prazo de Vencimento') ?></label>
                 </th>
