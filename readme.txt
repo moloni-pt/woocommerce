@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.7.1
-Stable tag: 4.9.4
+Stable tag: 4.9.5
 Requires PHP: 7.2
 WC tested up to: 9.6.0
 License: GPLv2 or later
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.9.5 =
+* FEATURE: Possibilidade de usar prefixo no número dos clientes
+
 = 4.9.4 =
 * FEATURE: Adicionada pesquisa por payload na listagem de registos
 
