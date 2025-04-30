@@ -36,6 +36,7 @@ class Product
     private $unit_id;
     public $has_stock;
     public $stock;
+    private $warehouse_id = 0;
     private $at_product_category = 'M';
     private $exemption_reason;
     public $taxes;
@@ -203,6 +204,7 @@ class Product
             ->setReference()
             ->setCategory()
             ->setType()
+            ->setWarehouse()
             ->setName()
             ->setPrice()
             ->setEan()
@@ -422,6 +424,20 @@ class Product
         return $this;
     }
 
+    /**
+     * Set default warehouse
+     *
+     * @return $this
+     */
+    private function setWarehouse()
+    {
+        if (defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
+            $this->warehouse_id = (int)MOLONI_PRODUCT_WAREHOUSE;
+        }
+
+        return $this;
+    }
+
     //          Auxiliary          //
 
     /**
@@ -430,9 +446,9 @@ class Product
      */
     private function mapPropsToValues()
     {
-        $values = [];
+        $isNewProduct = empty($this->product_id);
 
-        $values['product_id'] = $this->product_id;
+        $values = [];
         $values['category_id'] = $this->category_id;
         $values['type'] = $this->type;
         $values['reference'] = $this->reference;
@@ -444,10 +460,6 @@ class Product
             $values['ean'] = $this->ean;
         }
 
-        if (empty($this->product_id)) {
-            $values['at_product_category'] = $this->at_product_category;
-        }
-
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;
@@ -455,6 +467,13 @@ class Product
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
+
+        if ($isNewProduct) {
+            $values['at_product_category'] = $this->at_product_category;
+            $values['warehouse_id'] = $this->warehouse_id;
+        } else {
+            $values['product_id'] = $this->product_id;
+        }
 
         return $values;
     }
