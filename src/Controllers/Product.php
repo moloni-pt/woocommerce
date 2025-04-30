@@ -463,16 +463,24 @@ class Product
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;
-        $values['stock'] = $this->stock;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
 
         if ($isNewProduct) {
             $values['at_product_category'] = $this->at_product_category;
-            $values['warehouse_id'] = $this->warehouse_id;
         } else {
             $values['product_id'] = $this->product_id;
+        }
+
+        if ($this->warehouse_id > 0) {
+            $values['warehouse_id'] = $this->warehouse_id;
+            $values['warehouses'][] = [
+                'warehouse_id' => $this->warehouse_id,
+                'stock' => $this->stock,
+            ];
+        } else {
+            $values['stock'] = $this->stock;
         }
 
         return $values;
