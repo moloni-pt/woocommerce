@@ -82,6 +82,7 @@ class Product
             $this->category_id = $this->moloniProduct['category_id'];
             $this->has_stock = $this->moloniProduct['has_stock'];
             $this->stock = $this->moloniProduct['stock'];
+            $this->warehouse_id = $this->moloniProduct['warehouse_id'];
             $this->price = $this->moloniProduct['price'];
             $this->child_products = $this->moloniProduct['child_products'];
             $this->composition_type = $this->moloniProduct['composition_type'];
@@ -431,6 +432,10 @@ class Product
      */
     private function setWarehouse()
     {
+        if ($this->warehouse_id > 0) {
+            return $this;
+        }
+
         if (defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
             $this->warehouse_id = (int)MOLONI_PRODUCT_WAREHOUSE;
         }
@@ -466,6 +471,7 @@ class Product
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
+        $values['warehouse_id'] = $this->warehouse_id;
 
         if ($isNewProduct) {
             $values['at_product_category'] = $this->at_product_category;
@@ -474,7 +480,6 @@ class Product
         }
 
         if ($this->warehouse_id > 0) {
-            $values['warehouse_id'] = $this->warehouse_id;
             $values['warehouses'][] = [
                 'warehouse_id' => $this->warehouse_id,
                 'stock' => $this->stock,
