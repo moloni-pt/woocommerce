@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.7.1
-Stable tag: 4.9.5
+Stable tag: 4.9.6
 Requires PHP: 7.2
 WC tested up to: 9.6.0
 License: GPLv2 or later
@@ -73,6 +73,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.9.6 =
+* FIX: Correção no cálculo dos impostos dos portes de envio
+* FIX: Correção na criação de produtos no Moloni, em que o armazém predefinido não era seccionado
+
 = 4.9.5 =
 * FEATURE: Possibilidade de usar prefixo no número dos clientes
 
