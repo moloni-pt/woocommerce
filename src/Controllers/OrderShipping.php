@@ -234,7 +234,7 @@ class OrderShipping
             }
         }
 
-        $taxRate = round(($shippingTotal * 100) / $this->order->get_shipping_total());
+        $taxRate = round(($shippingTotal * 100) / $this->order->get_shipping_total(), 1);
 
         if ((float)$taxRate > 0) {
             $this->taxes[] = $this->setTax($taxRate);
