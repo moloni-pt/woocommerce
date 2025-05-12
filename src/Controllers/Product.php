@@ -36,6 +36,7 @@ class Product
     private $unit_id;
     public $has_stock;
     public $stock;
+    private $warehouse_id = 0;
     private $at_product_category = 'M';
     private $exemption_reason;
     public $taxes;
@@ -81,6 +82,7 @@ class Product
             $this->category_id = $this->moloniProduct['category_id'];
             $this->has_stock = $this->moloniProduct['has_stock'];
             $this->stock = $this->moloniProduct['stock'];
+            $this->warehouse_id = $this->moloniProduct['warehouse_id'];
             $this->price = $this->moloniProduct['price'];
             $this->child_products = $this->moloniProduct['child_products'];
             $this->composition_type = $this->moloniProduct['composition_type'];
@@ -203,6 +205,7 @@ class Product
             ->setReference()
             ->setCategory()
             ->setType()
+            ->setWarehouse()
             ->setName()
             ->setPrice()
             ->setEan()
@@ -422,6 +425,24 @@ class Product
         return $this;
     }
 
+    /**
+     * Set default warehouse
+     *
+     * @return $this
+     */
+    private function setWarehouse()
+    {
+        if ($this->warehouse_id > 0) {
+            return $this;
+        }
+
+        if (defined('MOLONI_PRODUCT_WAREHOUSE') && (int)MOLONI_PRODUCT_WAREHOUSE > 0) {
+            $this->warehouse_id = (int)MOLONI_PRODUCT_WAREHOUSE;
+        }
+
+        return $this;
+    }
+
     //          Auxiliary          //
 
     /**
@@ -430,9 +451,9 @@ class Product
      */
     private function mapPropsToValues()
     {
-        $values = [];
+        $isNewProduct = empty($this->product_id);
 
-        $values['product_id'] = $this->product_id;
+        $values = [];
         $values['category_id'] = $this->category_id;
         $values['type'] = $this->type;
         $values['reference'] = $this->reference;
@@ -444,17 +465,28 @@ class Product
             $values['ean'] = $this->ean;
         }
 
-        if (empty($this->product_id)) {
-            $values['at_product_category'] = $this->at_product_category;
-        }
-
         $values['price'] = $this->price;
         $values['unit_id'] = $this->unit_id;
         $values['has_stock'] = $this->has_stock;
-        $values['stock'] = $this->stock;
         $values['exemption_reason'] = $this->exemption_reason;
         $values['taxes'] = $this->taxes;
         $values['visibility_id'] = $this->visibility_id;
+        $values['warehouse_id'] = $this->warehouse_id;
+
+        if ($isNewProduct) {
+            $values['at_product_category'] = $this->at_product_category;
+        } else {
+            $values['product_id'] = $this->product_id;
+        }
+
+        if ($this->warehouse_id > 0) {
+            $values['warehouses'][] = [
+                'warehouse_id' => $this->warehouse_id,
+                'stock' => $this->stock,
+            ];
+        } else {
+            $values['stock'] = $this->stock;
+        }
 
         return $values;
     }
