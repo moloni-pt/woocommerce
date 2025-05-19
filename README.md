@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.7.1  
 **WC tested up to**    9.6.0  
-**Stable tag:**        4.9.6  
+**Stable tag:**        4.9.7  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -78,6 +78,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 4.9.7
+* MINOR: Atualização do serviço de criação de notas de crédito para potenciar o uso dos filtros/hooks
+* FEATURE: Adicionada sincronização do EAN com base no "_global_unique_id" (barcode)
+
 ### 4.9.6
 * FIX: Correção no cálculo dos impostos dos portes de envio
 * FIX: Correção na criação de produtos no Moloni, em que o armazém predefinido não era seccionado
