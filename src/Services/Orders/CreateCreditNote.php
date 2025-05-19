@@ -66,6 +66,8 @@ class CreateCreditNote
     private $unrelatedProducts = [];
 
 
+    public $creditNoteProps = [];
+
     public function __construct(int $refundId, bool $restockItems = true)
     {
         $this->refund = new WC_Order_Refund($refundId);
@@ -117,12 +119,10 @@ class CreateCreditNote
 
         $this->validateUnrelatedProducts();
 
-        $creditNoteProps = [];
-
-        $this->setBasics($creditNoteProps);
-        $this->setProducts($creditNoteProps);
-        $this->setShipping($creditNoteProps);
-        $this->setFees($creditNoteProps);
+        $this->setBasics();
+        $this->setProducts();
+        $this->setShipping();
+        $this->setFees();
 
         apply_filters('moloni_before_insert_credit_note', $this);
 
@@ -131,7 +131,7 @@ class CreateCreditNote
         }
 
         try {
-            $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $creditNoteProps);
+            $mutation = Curl::simple(DocumentTypes::CREDIT_NOTES . '/insert', $this->creditNoteProps);
         } catch (APIException $e) {
             throw new DocumentError('Error creating document', [
                 'request' => $e->getData()
@@ -140,7 +140,7 @@ class CreateCreditNote
 
         if (empty($mutation) || !isset($mutation['document_id'])) {
             throw new DocumentError('Error creating document', [
-                'props' => $creditNoteProps,
+                'props' => $this->creditNoteProps,
                 'mutation' => $mutation
             ]);
         }
@@ -158,7 +158,7 @@ class CreateCreditNote
         apply_filters('moloni_after_insert_credit_note', $this);
 
         if ($this->shouldCloseDocument()) {
-            $this->closeDocument((int)$mutation['document_id'], $creditNoteProps);
+            $this->closeDocument((int)$mutation['document_id']);
         }
     }
 
@@ -167,7 +167,7 @@ class CreateCreditNote
      *
      * @throws DocumentWarning
      */
-    public function closeDocument(int $documentId, array $documentProps)
+    public function closeDocument(int $documentId)
     {
         try {
             $insertedDocument = Curl::simple('documents/getOne', ['document_id' => $documentId]);
@@ -201,8 +201,8 @@ class CreateCreditNote
             'document_id' => $documentId,
             'status' => DocumentStatus::CLOSED,
             'send_email' => [],
-            'net_value' => $documentProps['net_value'],
-            'associated_documents' => $documentProps['associated_documents'],
+            'net_value' => $this->creditNoteProps['net_value'],
+            'associated_documents' => $this->creditNoteProps['associated_documents'],
         ];
 
         if ($this->shouldSendByEmail()) {
@@ -270,11 +270,11 @@ class CreateCreditNote
     /**
      * Set basic props
      */
-    private function setBasics(array &$creditNoteProps): void
+    private function setBasics(): void
     {
         $refundedTotal = abs($this->refund->get_total());
 
-        $creditNoteProps = [
+        $this->creditNoteProps = [
             'date' => date('Y-m-d'),
             'customer_id' => (int)$this->originalDocument['customer_id'],
             'our_reference' => $this->originalDocument['our_reference'],
@@ -288,13 +288,13 @@ class CreateCreditNote
         if (!empty($this->originalDocument['exchange_currency_id']) && !empty($this->originalDocument['exchange_rate'])) {
             $refundedTotal /= $this->originalDocument['exchange_rate'];
 
-            $creditNoteProps['exchange_rate'] = $this->originalDocument['exchange_rate'];
-            $creditNoteProps['exchange_currency_id'] = $this->originalDocument['exchange_currency_id'];
+            $this->creditNoteProps['exchange_rate'] = $this->originalDocument['exchange_rate'];
+            $this->creditNoteProps['exchange_currency_id'] = $this->originalDocument['exchange_currency_id'];
         }
 
-        $creditNoteProps['net_value'] = $refundedTotal;
+        $this->creditNoteProps['net_value'] = $refundedTotal;
 
-        $creditNoteProps['associated_documents'][] = [
+        $this->creditNoteProps['associated_documents'][] = [
             'associated_id' => $this->originalDocument['document_id'],
             'value' => DocumentTypes::isSelfPaid($this->originalDocumentType) ? 0 : $refundedTotal
         ];
@@ -305,7 +305,7 @@ class CreateCreditNote
      *
      * @throws DocumentError
      */
-    private function setProducts(array &$creditNoteProps): void
+    private function setProducts(): void
     {
         $refundedItems = $this->refund->get_items();
 
@@ -376,7 +376,7 @@ class CreateCreditNote
                 'discount' => $matchedDocumentProduct['discount'],
             ];
 
-            $creditNoteProps['products'][] = $newProduct;
+            $this->creditNoteProps['products'][] = $newProduct;
         }
     }
 
@@ -385,7 +385,7 @@ class CreateCreditNote
      *
      * @throws DocumentError
      */
-    private function setShipping(array &$creditNoteProps): void
+    private function setShipping(): void
     {
         $refundedShippingValue = abs($this->refund->get_shipping_total());
 
@@ -394,7 +394,7 @@ class CreateCreditNote
 
             if (empty($matchedDocumentShipping)) {
                 throw new DocumentError('Shipping product not found in document', [
-                    'creditNoteProps' => $creditNoteProps,
+                    'creditNoteProps' => $this->creditNoteProps,
                     'unrelatedProducts' => $this->originalUnrelatedProducts,
                 ]);
             }
@@ -414,7 +414,7 @@ class CreateCreditNote
                 ]);
             }
 
-            $creditNoteProps['products'][] = array(
+            $this->creditNoteProps['products'][] = array(
                 'product_id' => $matchedDocumentShipping['product_id'],
                 'name' => $matchedDocumentShipping['name'],
                 'summary' => $matchedDocumentShipping['summary'],
@@ -435,7 +435,7 @@ class CreateCreditNote
      *
      * @throws DocumentError
      */
-    private function setFees(array &$creditNoteProps)
+    private function setFees()
     {
         /** @var WC_Order_Item_Fee[] $fees */
         $fees = $this->refund->get_fees();
@@ -503,7 +503,7 @@ class CreateCreditNote
                 'discount' => $matchedDocumentFee['discount'],
             ];
 
-            $creditNoteProps['products'][] = $newProduct;
+            $this->creditNoteProps['products'][] = $newProduct;
         }
     }
 
@@ -528,6 +528,11 @@ class CreateCreditNote
         }
 
         return $this->order->get_id();
+    }
+
+    public function getRefund()
+    {
+        return $this->refund ?? null;
     }
 
     public function getOrderNumber()
