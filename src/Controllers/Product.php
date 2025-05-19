@@ -339,15 +339,17 @@ class Product
      */
     private function setEan()
     {
-        $metaBarcode = $this->product->get_meta('barcode', true);
-        if (!empty($metaBarcode)) {
-            $this->ean = $metaBarcode;
-            return $this;
-        }
+        $metaKeys = ['barcode', '_ywbc_barcode_display_value', '_global_unique_id'];
 
-        $metaBarcode = $this->product->get_meta('_ywbc_barcode_display_value', true);
-        if (!empty($metaBarcode)) {
+        foreach ($metaKeys as $key) {
+            $metaBarcode = $this->product->get_meta($key, true);
+
+            if (empty($metaBarcode)) {
+                continue;
+            }
+
             $this->ean = $metaBarcode;
+
             return $this;
         }
 
