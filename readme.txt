@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.7.1
-Stable tag: 4.9.7
+Stable tag: 4.9.8
 Requires PHP: 7.2
 WC tested up to: 9.6.0
 License: GPLv2 or later
@@ -73,6 +73,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 4.9.8 =
+* FIX: Adicionada verificação do pedido no fecho de documentos
+
 = 4.9.7 =
 * MINOR: Atualização do serviço de criação de notas de crédito para potenciar o uso dos filtros/hooks
 * FEATURE: Adicionada sincronização do EAN com base no "_global_unique_id" (barcode)

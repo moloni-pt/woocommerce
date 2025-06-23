@@ -295,7 +295,7 @@ class Documents
 
         apply_filters('moloni_after_insert_document', $this);
 
-        // If the documents is going to be inserted as closed
+        // If the documents are going to be inserted as closed
         if ($this->shouldCloseDocument()) {
             $this->closeDocument();
         } else {
@@ -314,6 +314,7 @@ class Documents
      * Close Moloni document
      *
      * @throws DocumentWarning
+     * @throws DocumentError
      */
     public function closeDocument(): void
     {
@@ -357,9 +358,20 @@ class Documents
         }
 
         try {
-            Curl::simple($this->documentType . '/update', $closeDocument);
+            $mutation = Curl::simple($this->documentType . '/update', $closeDocument);
         } catch (APIException $e) {
             throw new DocumentWarning($e->getMessage(), $e->getData());
+        }
+
+        if (!isset($mutation['document_id'])) {
+            if (str_starts_with($mutation[0]['code'] ?? '', '2 net_value')) {
+                $this->removeRecord();
+            }
+
+            throw new DocumentError(
+                sprintf(__('Atenção, houve um erro ao fechar o documento %s'), $this->order->get_order_number()),
+                $mutation
+            );
         }
 
         apply_filters('moloni_after_close_document', $this);
@@ -429,6 +441,17 @@ class Documents
     private function saveRecord(): void
     {
         $this->order->add_meta_data('_moloni_sent', $this->document_id);
+        $this->order->save();
+    }
+
+    /**
+     * Remove document id from order meta
+     *
+     * @return void
+     */
+    private function removeRecord(): void
+    {
+        $this->order->delete_meta_data_value('_moloni_sent', $this->document_id);
         $this->order->save();
     }
 
