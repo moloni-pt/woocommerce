@@ -1028,20 +1028,27 @@ class Documents
             return $this;
         }
 
-        $notes = $this->order->get_customer_order_notes();
+        $notes = '';
 
-        if (!empty($notes)) {
-            foreach ($notes as $index => $note) {
-                $this->notes .= $note->comment_content;
-                if ($index !== count($notes) - 1) {
-                    $this->notes .= '<br>';
+        $orderNotes = $this->order->get_customer_order_notes();
+
+        if (!empty($orderNotes)) {
+            $lastOrderNoteIndex = count($orderNotes) - 1;
+
+            foreach ($orderNotes as $index => $note) {
+                $notes .= $note->comment_content;
+
+                if ($index !== $lastOrderNoteIndex) {
+                    $notes .= '<br>';
                 }
             }
         }
 
-        if (empty($this->notes)) {
-            $this->notes = $this->order->get_customer_note() ?? '';
+        if (empty($notes)) {
+            $notes = $this->order->get_customer_note() ?? '';
         }
+
+        $this->notes = $notes;
 
         return $this;
     }
