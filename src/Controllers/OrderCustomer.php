@@ -253,6 +253,8 @@ class OrderCustomer
             'exact' => 1,
         ];
 
+        $values['vat'] = $values['vat'] ?? '';
+
         if ($values['vat'] !== '999999990') {
             $search['vat'] = $values['vat'];
 
@@ -273,7 +275,7 @@ class OrderCustomer
 
                 return $customer;
             }
-        } else if (!empty($values['email'])) {
+        } elseif (!empty($values['email'])) {
             $search['email'] = $values['email'];
 
             $searchResult = Curl::simple('customers/getByEmail', $search);
