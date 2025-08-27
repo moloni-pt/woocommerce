@@ -252,7 +252,7 @@ class OrderCustomer
             'exact' => 1,
         ];
 
-        $values['vat'] = $values['vat'] ?? '';
+        $values['vat'] = $values['vat'] ?? '999999990';
 
         if ($values['vat'] !== '999999990') {
             $search['vat'] = $values['vat'];
