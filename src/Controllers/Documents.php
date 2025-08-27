@@ -1018,7 +1018,13 @@ class Documents
     }
 
     /**
-     * Set the document customer notes
+     * Populate the document's customer notes from the WooCommerce order.
+     *
+     * If the ADD_ORDER_NOTES constant is defined and set to Boolean::NO, this method is a no-op.
+     * Otherwise it builds a single string from the order's customer order notes joined with
+     * '<br>' between entries. If no customer order notes exist, it falls back to
+     * the order's single customer note (or an empty string). The resulting text is stored
+     * on $this->notes.
      *
      * @return $this
      */
