@@ -164,11 +164,11 @@ class OrderCustomer
      */
     public function getCustomerBillingAddress(): string
     {
-        $billingAddress = trim($this->order->get_billing_address_1());
-        $billingAddress2 = $this->order->get_billing_address_2();
+        $billingAddress = trim($this->order->get_billing_address_1() ?? '');
+        $billingAddress2 = trim($this->order->get_billing_address_2() ?? '');
 
         if (!empty($billingAddress2)) {
-            $billingAddress .= ' ' . trim($billingAddress2);
+            $billingAddress .= ' ' . $billingAddress2;
         }
 
         return empty($billingAddress) ? 'Desconhecida' : $billingAddress;
@@ -180,7 +180,7 @@ class OrderCustomer
      */
     public function getCustomerBillingCity(): string
     {
-        $city = $this->order->get_billing_city();
+        $city = trim($this->order->get_billing_city() ?? '');
 
         return empty($city) ? 'Desconhecida' : $city;
     }
@@ -192,7 +192,7 @@ class OrderCustomer
      */
     public function getCustomerZip(): string
     {
-        $zipCode = $this->order->get_billing_postcode();
+        $zipCode = $this->order->get_billing_postcode() ?? '';
 
         if ($this->order->get_billing_country() === 'PT') {
             $zipCode = Tools::zipCheck($zipCode);
