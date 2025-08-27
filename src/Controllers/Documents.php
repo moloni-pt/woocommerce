@@ -1039,6 +1039,10 @@ class Documents
             }
         }
 
+        if (empty($this->notes)) {
+            $this->notes = $this->order->get_customer_note() ?? '';
+        }
+
         return $this;
     }
 
