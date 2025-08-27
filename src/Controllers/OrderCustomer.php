@@ -137,16 +137,15 @@ class OrderCustomer
      */
     public function getCustomerName(): array
     {
-        $billingName = $this->order->get_billing_first_name();
-        $billingLastName = $this->order->get_billing_last_name();
+        $billingName = trim($this->order->get_billing_first_name() ?? '');
+        $billingLastName = trim($this->order->get_billing_last_name() ?? '');
+        $billingCompany = trim($this->order->get_billing_company() ?? '');
 
         if (!empty($billingLastName)) {
-            $billingName .= ' ' . $this->order->get_billing_last_name();
+            $billingName .= ' ' . $billingLastName;
         }
 
-        $billingCompany = trim($this->order->get_billing_company());
-
-        $name = '';
+        $name = 'Cliente';
         $contactName = '';
 
         if (!empty($billingCompany)) {
