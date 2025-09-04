@@ -15,18 +15,6 @@ class OrderCustomer
      */
     private $order;
 
-    private $customer_id = false;
-    private $vat = '999999990';
-    private $email = '';
-    private $name = 'Cliente';
-    private $contactName = '';
-    private $zipCode = '1000-100';
-    private $address = 'Desconhecida';
-    private $city = 'Desconhecida';
-    private $languageId = 1;
-    private $countryId = 1;
-
-
     /**
      * List of some invalid vat numbers
      * @var array
@@ -54,31 +42,39 @@ class OrderCustomer
      */
     public function create($retry = 0)
     {
-        $this->vat = $this->getVatNumber();
-        $this->email = $this->order->get_billing_email();
+        $nameData = $this->getCustomerName();
 
-        $values['name'] = $this->getCustomerName();
-        $values['address'] = $this->getCustomerBillingAddress();
-        $values['zip_code'] = $this->getCustomerZip();
-        $values['city'] = $this->getCustomerBillingCity();
-        $values['country_id'] = $this->getCustomerCountryId();
-        $values['language_id'] = $this->getCustomerLanguageId();
-        $values['email'] = $this->order->get_billing_email();
-        $values['phone'] = $this->order->get_billing_phone();
-        $values['contact_name'] = $this->contactName;
-        $values['maturity_date_id'] = defined('MATURITY_DATE') ? MATURITY_DATE : '';
-        $values['payment_method_id'] = defined('PAYMENT_METHOD') ? PAYMENT_METHOD : '';
-        $values['salesman_id'] = '';
-        $values['payment_day'] = '';
-        $values['discount'] = '';
-        $values['credit_limit'] = '';
-        $values['delivery_method_id'] = '';
-        $values['field_notes'] = '';
+        $values = [
+            'vat' => $this->getVatNumber(),
+            'name' => $nameData['name'],
+            'contact_name' => $nameData['contact_name'],
+            'address' => $this->getCustomerBillingAddress(),
+            'zip_code' => $this->getCustomerZip(),
+            'city' => $this->getCustomerBillingCity(),
+            'country_id' => $this->getCustomerCountryId(),
+            'email' => $this->order->get_billing_email(),
+            'phone' => $this->order->get_billing_phone(),
+            'maturity_date_id' => defined('MATURITY_DATE') ? MATURITY_DATE : '',
+            'payment_method_id' => defined('PAYMENT_METHOD') ? PAYMENT_METHOD : '',
+            'salesman_id' => '',
+            'payment_day' => '',
+            'discount' => '',
+            'credit_limit' => '',
+            'delivery_method_id' => '',
+            'field_notes' => '',
+        ];
 
-        $customerExists = $this->searchForCustomer();
+        $values['language_id'] = $this->getCustomerLanguageId($values['country_id']);
+
+        $values = apply_filters('moloni_before_search_customer', $values);
+
+        if (!empty($values['customer_id'])) {
+            return (int)$values['customer_id'];
+        }
+
+        $customerExists = $this->searchForCustomer($values);
 
         if (!$customerExists) {
-            $values['vat'] = $this->vat;
             $values['number'] = $this->nextNumberCreator();
 
             $result = Curl::simple('customers/insert', $values);
@@ -95,9 +91,7 @@ class OrderCustomer
             throw new GenericException(__('Atenção, houve um erro ao inserir o cliente.'));
         }
 
-        $this->customer_id = $result['customer_id'];
-
-        return $this->customer_id;
+        return (int)$result['customer_id'];
     }
 
     /**
@@ -105,7 +99,7 @@ class OrderCustomer
      * Get it from a custom field and validate if Portuguese
      * @return string
      */
-    public function getVatNumber()
+    public function getVatNumber(): string
     {
         $vat = '999999990';
 
@@ -131,68 +125,64 @@ class OrderCustomer
             }
         }
 
-        $this->vat = $vat;
-        return $this->vat;
+        return $vat;
     }
 
     /**
      * Checks if the company name is set
      * If the order has a company we issue the document to the company
      * And add the name of the person to the contact name
-     * @return string
+     *
+     * @return array
      */
-    public function getCustomerName()
+    public function getCustomerName(): array
     {
-        $billingName = $this->order->get_billing_first_name();
-        $billingLastName = $this->order->get_billing_last_name();
+        $billingName = trim($this->order->get_billing_first_name() ?? '');
+        $billingLastName = trim($this->order->get_billing_last_name() ?? '');
+        $billingCompany = trim($this->order->get_billing_company() ?? '');
 
         if (!empty($billingLastName)) {
-            $billingName .= ' ' . $this->order->get_billing_last_name();
+            $billingName .= ' ' . $billingLastName;
         }
 
-        $billingCompany = trim($this->order->get_billing_company());
+        $name = 'Cliente';
+        $contactName = '';
 
         if (!empty($billingCompany)) {
-            $this->name = $billingCompany;
-            $this->contactName = $billingName;
+            $name = $billingCompany;
+            $contactName = $billingName;
         } elseif (!empty($billingName)) {
-            $this->name = $billingName;
+            $name = $billingName;
         }
 
-        return $this->name;
+        return ['name' => $name, 'contact_name' => $contactName];
     }
 
     /**
      * Create a customer billing a address
      * @return string
      */
-    public function getCustomerBillingAddress()
+    public function getCustomerBillingAddress(): string
     {
-        $billingAddress = trim($this->order->get_billing_address_1());
-        $billingAddress2 = $this->order->get_billing_address_2();
+        $billingAddress = trim($this->order->get_billing_address_1() ?? '');
+        $billingAddress2 = trim($this->order->get_billing_address_2() ?? '');
+
         if (!empty($billingAddress2)) {
-            $billingAddress .= ' ' . trim($billingAddress2);
+            $billingAddress .= ' ' . $billingAddress2;
         }
 
-        if (!empty($billingAddress)) {
-            $this->address = $billingAddress;
-        }
-
-        return $this->address;
+        return empty($billingAddress) ? 'Desconhecida' : $billingAddress;
     }
 
     /**
      * Create a customer billing City
      * @return string
      */
-    public function getCustomerBillingCity()
+    public function getCustomerBillingCity(): string
     {
-        $billingCity = trim($this->order->get_billing_city());
-        if (!empty($billingCity)) {
-            $this->city = $billingCity;
-        }
+        $city = trim($this->order->get_billing_city() ?? '');
 
-        return $this->city;
+        return empty($city) ? 'Desconhecida' : $city;
     }
 
     /**
@@ -200,16 +190,15 @@ class OrderCustomer
      * If the customer is Portuguese validate the Vat Number
      * @return string
      */
-    public function getCustomerZip()
+    public function getCustomerZip(): string
     {
-        $zipCode = $this->order->get_billing_postcode();
+        $zipCode = $this->order->get_billing_postcode() ?? '';
 
         if ($this->order->get_billing_country() === 'PT') {
             $zipCode = Tools::zipCheck($zipCode);
         }
 
-        $this->zipCode = $zipCode;
-        return $this->zipCode;
+        return empty($zipCode ?? '') ? '1000-100' : $zipCode;
     }
 
     /**
@@ -233,41 +222,41 @@ class OrderCustomer
      *
      * @throws APIException
      */
-    public function getCustomerCountryId()
+    public function getCustomerCountryId(): string
     {
         $countryCode = $this->order->get_billing_country();
-        $this->countryId = Tools::getCountryIdFromCode($countryCode);
 
-        return $this->countryId;
+        return Tools::getCountryIdFromCode($countryCode);
     }
 
     /**
      * If the country of the customer is one of the available we set it to Portuguese
      */
-    public function getCustomerLanguageId()
+    public function getCustomerLanguageId($countryId): int
     {
-        $this->languageId = in_array($this->countryId, [1]) ? 1 : 2;
-        return $this->languageId;
+        return (int)$countryId === 1 ? 1 : 2;
     }
 
     /**
-     * Search for a customer based on $this->vat or $this->email
+     * Search for a customer based on vat or email
      *
-     * @param string|bool $forField
+     * @param array $values
      *
      * @return bool|array
      *
      * @throws APIException
      */
-    public function searchForCustomer($forField = false)
+    public function searchForCustomer(array $values = [])
     {
-        $search = [];
-        $search['exact'] = 1;
+        $search = [
+            'exact' => 1,
+        ];
 
-        if ($forField && in_array($forField, ['vat', 'email'])) {
-            //@todo not important for this plugin
-        } else if ($this->vat !== '999999990') {
-            $search['vat'] = $this->vat;
+        $values['vat'] = $values['vat'] ?? '999999990';
+
+        if ($values['vat'] !== '999999990') {
+            $search['vat'] = $values['vat'];
+
             $searchResult = Curl::simple('customers/getByVat', $search);
 
             if (empty($searchResult) || !is_array($searchResult)) {
@@ -279,14 +268,15 @@ class OrderCustomer
                     continue;
                 }
 
-                if ((string)$customer['vat'] !== (string)$this->vat) {
+                if ((string)$customer['vat'] !== (string)$values['vat']) {
                     continue;
                 }
 
                 return $customer;
             }
-        } else if (!empty($this->email)) {
-            $search['email'] = $this->email;
+        } elseif (!empty($values['email'])) {
+            $search['email'] = $values['email'];
+
             $searchResult = Curl::simple('customers/getByEmail', $search);
 
             if (empty($searchResult) || !is_array($searchResult)) {
