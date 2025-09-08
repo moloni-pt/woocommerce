@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 6.7.1
-Stable tag: 4.9.8
+Stable tag: 5.0.00
 Requires PHP: 7.2
 WC tested up to: 9.6.0
 License: GPLv2 or later
@@ -63,6 +63,9 @@ Via FTP
 3. Ferramentas de sincronização e consulta
 
 == Upgrade Notice ==
+= 5.0.00 =
+Released plugin version 5.
+
 = 4.0.0 =
 Released plugin version 4.
 New logging system.
@@ -73,6 +76,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.00 =
+* FEATURE: Adicionados Hooks moloni_before_search_customer para alterar a pesquisa de clientes
+* MINOR: Melhorias na captação das notas da encomenda
+
 = 4.9.8 =
 * FIX: Adicionada verificação do pedido no fecho de documentos
 

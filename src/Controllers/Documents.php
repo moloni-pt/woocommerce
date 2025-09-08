@@ -1018,7 +1018,13 @@ class Documents
     }
 
     /**
-     * Set the document customer notes
+     * Populate the document's customer notes from the WooCommerce order.
+     *
+     * If the ADD_ORDER_NOTES constant is defined and set to Boolean::NO, this method is a no-op.
+     * Otherwise it builds a single string from the order's customer order notes joined with
+     * '<br>' between entries. If no customer order notes exist, it falls back to
+     * the order's single customer note (or an empty string). The resulting text is stored
+     * on $this->notes.
      *
      * @return $this
      */
@@ -1028,16 +1034,27 @@ class Documents
             return $this;
         }
 
-        $notes = $this->order->get_customer_order_notes();
+        $notes = '';
 
-        if (!empty($notes)) {
-            foreach ($notes as $index => $note) {
-                $this->notes .= $note->comment_content;
-                if ($index !== count($notes) - 1) {
-                    $this->notes .= '<br>';
+        $orderNotes = $this->order->get_customer_order_notes();
+
+        if (!empty($orderNotes)) {
+            $lastOrderNoteIndex = count($orderNotes) - 1;
+
+            foreach ($orderNotes as $index => $note) {
+                $notes .= $note->comment_content;
+
+                if ($index !== $lastOrderNoteIndex) {
+                    $notes .= '<br>';
                 }
             }
         }
+
+        if (empty($notes)) {
+            $notes = $this->order->get_customer_note() ?? '';
+        }
+
+        $this->notes = $notes;
 
         return $this;
     }

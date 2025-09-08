@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.7.1  
 **WC tested up to**    9.6.0  
-**Stable tag:**        4.9.8  
+**Stable tag:**        5.0.00  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -67,6 +67,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Upgrade Notice
+### 5.0.00
+* Released plugin version 5.
+
 ### 4.0.0
 * Released plugin version 4.
 * New logging system.
@@ -78,6 +81,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.00
+* FEATURE: Adicionados Hooks moloni_before_search_customer para alterar a pesquisa de clientes
+* MINOR: Melhorias na captação das notas da encomenda
+
 ### 4.9.8
 * FIX: Adicionada verificação do pedido no fecho de documentos
 
