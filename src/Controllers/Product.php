@@ -339,18 +339,27 @@ class Product
      */
     private function setEan()
     {
-        $metaKeys = ['barcode', '_ywbc_barcode_display_value', '_global_unique_id'];
+        $metaKeys = ['barcode', '_ywbc_barcode_display_value'];
+
+        if (method_exists($this->product, 'get_global_unique_id')) {
+            $metaBarcode = $this->product->get_global_unique_id();
+
+            if (!empty($metaBarcode)) {
+                $this->ean = $metaBarcode;
+                return $this;
+            }
+        } else {
+            // Fallback for older WC versions that don’t have get_global_unique_id
+            $metaKeys[] = '_global_unique_id';
+        }
 
         foreach ($metaKeys as $key) {
             $metaBarcode = $this->product->get_meta($key, true);
 
-            if (empty($metaBarcode)) {
-                continue;
+            if (!empty($metaBarcode)) {
+                $this->ean = $metaBarcode;
+                return $this;
             }
-
-            $this->ean = $metaBarcode;
-
-            return $this;
         }
 
         return $this;
