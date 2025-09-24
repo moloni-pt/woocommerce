@@ -313,7 +313,7 @@ try {
                                     title="<?= esc_html($exemptionReason['description']) ?>"
                                     value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonProduct === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
+                                <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -348,7 +348,7 @@ try {
                                     title="<?= esc_html($exemptionReason['description']) ?>"
                                     value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShipping === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
+                                <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -396,7 +396,7 @@ try {
                                     title="<?= esc_html($exemptionReason['description']) ?>"
                                     value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
+                                <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -433,7 +433,7 @@ try {
                                     title="<?= esc_html($exemptionReason['description']) ?>"
                                     value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShippingExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
                             >
-                                <?= esc_html($exemptionReason['code'] . ' - ' . $exemptionReason['name']) ?>
+                                <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
