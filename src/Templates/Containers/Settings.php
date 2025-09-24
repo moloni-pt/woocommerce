@@ -309,9 +309,11 @@ try {
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <?= $selected = in_array($exemptionReasonProduct, [$exemptionReason['code'], $exemptionReason['at_code']], true) ?>
+
                             <option
                                     title="<?= esc_html($exemptionReason['description']) ?>"
-                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonProduct === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $selected ? 'selected' : '' ?>
                             >
                                 <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
@@ -344,9 +346,11 @@ try {
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <?= $selected = in_array($exemptionReasonShipping, [$exemptionReason['code'], $exemptionReason['at_code']], true) ?>
+
                             <option
                                     title="<?= esc_html($exemptionReason['description']) ?>"
-                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShipping === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $selected ? 'selected' : '' ?>
                             >
                                 <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
@@ -392,9 +396,11 @@ try {
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <?= $selected = in_array($exemptionReasonExtraCommunity, [$exemptionReason['code'], $exemptionReason['at_code']], true) ?>
+
                             <option
                                     title="<?= esc_html($exemptionReason['description']) ?>"
-                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $selected ? 'selected' : '' ?>
                             >
                                 <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
@@ -429,9 +435,11 @@ try {
                         </option>
 
                         <?php foreach ($exemptionReasons as $exemptionReason) : ?>
+                            <?= $selected = in_array($exemptionReasonShippingExtraCommunity, [$exemptionReason['code'], $exemptionReason['at_code']], true) ?>
+
                             <option
                                     title="<?= esc_html($exemptionReason['description']) ?>"
-                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $exemptionReasonShippingExtraCommunity === $exemptionReason['code'] ? 'selected' : '' ?>
+                                    value='<?= esc_html($exemptionReason['code']) ?>' <?= $selected ? 'selected' : '' ?>
                             >
                                 <?= esc_html($exemptionReason['at_code'] . ' - ' . $exemptionReason['name']) ?>
                             </option>
