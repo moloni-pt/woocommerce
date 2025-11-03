@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.7.1  
 **WC tested up to**    9.6.0  
-**Stable tag:**        5.0.02  
+**Stable tag:**        5.0.03  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.03
+* FIX: Foram escapados elementos HTML do nome dos métodos de pagamento
+
 ### 5.0.02
 * MINOR: Alteração na apresentação das isenções
 
