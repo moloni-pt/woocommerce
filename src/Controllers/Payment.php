@@ -31,7 +31,7 @@ class Payment
      */
     public function __construct($name)
     {
-        $this->name = trim($name);
+        $this->name = strip_tags(trim($name));
     }
 
     /**
