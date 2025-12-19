@@ -69,7 +69,6 @@ Moloni.OrdersBulkAction = (function() {
                 url: ajaxurl,
                 data,
                 success: HandleGenInvoiceSuccess,
-                async: false
             });
         }, DelayTime)
     }
@@ -139,7 +138,6 @@ Moloni.OrdersBulkAction = (function() {
                 url: ajaxurl,
                 data,
                 success: HandleDiscardInvoiceSuccess,
-                async: false
             });
         }, DelayTime)
     }
