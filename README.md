@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      6.7.1  
 **WC tested up to**    9.6.0  
-**Stable tag:**        5.0.04  
+**Stable tag:**        5.0.05  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.05
+* FIX: Melhorias na prevenção de criação de documentos repetidos
+
 ### 5.0.04
 * FIX: Correção na criação de documentos em massa
  

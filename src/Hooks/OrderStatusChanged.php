@@ -15,6 +15,9 @@ use Moloni\Services\Orders\CreateMoloniDocument;
 
 class OrderStatusChanged
 {
+    private const ORDER_LOCK_PREFIX = '_moloni_document_in_progress_';
+    private const ORDER_LOCK_TTL = 900;
+
     public $parent;
 
     /**
@@ -95,13 +98,13 @@ class OrderStatusChanged
                     ]
                 );
             }
-
-            $this->removeOrderFromDocumentsInProgress($orderId);
         } catch (Exception $ex) {
             Storage::$LOGGER->critical(__('Erro fatal'), [
                 'action' => "automatic:document:create:$nextStatus",
                 'exception' => $ex->getMessage()
             ]);
+        } finally {
+            $this->removeOrderFromDocumentsInProgress($orderId);
         }
     }
 
@@ -121,31 +124,28 @@ class OrderStatusChanged
 
     private function addOrderToDocumentsInProgress($orderId): bool
     {
-        $moloniDocuments = get_option('_moloni_documents_in_progress');
+        $lockKey = $this->getOrderLockKey($orderId);
+        $currentLock = (int)get_option($lockKey, 0);
 
-        if ($moloniDocuments !== false && isset($moloniDocuments[$orderId])) {
+        if ($currentLock > 0 && ($currentLock + self::ORDER_LOCK_TTL) >= time()) {
             return false;
         }
 
-        if ($moloniDocuments === false) {
-            add_option('_moloni_documents_in_progress', [$orderId => true]);
-        } else {
-            $moloniDocuments[$orderId] = true;
-            update_option('_moloni_documents_in_progress', $moloniDocuments);
+        if ($currentLock > 0) {
+            delete_option($lockKey);
         }
 
-        return true;
+        return add_option($lockKey, (string)time(), '', 'no');
     }
 
     private function removeOrderFromDocumentsInProgress($orderId): void
     {
-        $moloniDocuments = get_option('_moloni_documents_in_progress');
+        delete_option($this->getOrderLockKey($orderId));
+    }
 
-        if (is_array($moloniDocuments)) {
-            unset($moloniDocuments[$orderId]);
-
-            update_option('_moloni_documents_in_progress', $moloniDocuments);
-        }
+    private function getOrderLockKey($orderId): string
+    {
+        return self::ORDER_LOCK_PREFIX . (int)$orderId;
     }
 
     private function throwMessages(CreateMoloniDocument $service): void
