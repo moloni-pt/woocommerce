@@ -3,8 +3,8 @@
 ![WordPress Plugin Required PHP Version](https://img.shields.io/badge/php-%3E%3D7.2-blue)
 ![WordPress Plugin: Tested PHP Version](https://img.shields.io/badge/php-8.1%20tested-blue)
 ![WordPress Plugin: Required WP Version](https://img.shields.io/badge/WordPress-%3E%3D%205.0-orange)
-![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-6.7.1%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
-![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-9.6.0%20tested-orange)
+![WordPress Plugin: Tested WP Version](https://img.shields.io/badge/WordPress-7.0%20tested-orange)![WooCommerce: Required Version](https://img.shields.io/badge/WooCommerce-%3E%3D%203.0.0-orange)
+![WooCommerce: Tested Version](https://img.shields.io/badge/WooCommerce-10.9.4%20tested-orange)
 
 ![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/moloni)
 ![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/moloni)
@@ -15,9 +15,9 @@
 **Homepage:**          [https://plugins.moloni.com/woocommerce/](https://plugins.moloni.com/woocommerce/)  
 **Tags:**              Invoicing, Orders  
 **Requires PHP:**      7.2  
-**Tested up to:**      6.7.1  
-**WC tested up to**    9.6.0  
-**Stable tag:**        5.0.05  
+**Tested up to:**      7.0  
+**WC tested up to**    10.9.4  
+**Stable tag:**        5.0.06  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,10 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.06
+* MINOR: Testado até à versão 7.0 do Wordpress
+* MINOR: Testado até à versão 10.9.4 do WooCommerce
+
 ### 5.0.05
 * FIX: Melhorias na prevenção de criação de documentos repetidos
 
