@@ -3,10 +3,10 @@ Contributors: molonidevteam
 Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
-Tested up to: 6.7.1
-Stable tag: 5.0.05
+Tested up to: 7.0
+Stable tag: 5.0.06
 Requires PHP: 7.2
-WC tested up to: 9.6.0
+WC tested up to: 10.9.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.06 =
+* MINOR: Testado até à versão 7.0 do Wordpress
+* MINOR: Testado até à versão 10.9.4 do WooCommerce
+
 = 5.0.05 =
 * FIX: Melhorias na prevenção de criação de documentos repetidos
 
