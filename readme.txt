@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 7.0
-Stable tag: 5.0.06
+Stable tag: 5.0.07
 Requires PHP: 7.2
 WC tested up to: 10.9.4
 License: GPLv2 or later
@@ -76,6 +76,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.07 =
+* FEATURE: Adicionados Hooks moloni_after_order_payment_setName para alterar o nome do pagamento
+
 = 5.0.06 =
 * MINOR: Testado até à versão 7.0 do Wordpress
 * MINOR: Testado até à versão 10.9.4 do WooCommerce

@@ -316,6 +316,7 @@ class Product
     private function setName()
     {
         $this->name = strip_tags($this->product->get_name());
+
         return $this;
     }
 
