@@ -986,6 +986,7 @@ class Documents
     public function setPaymentMethod(): Documents
     {
         $paymentMethodName = $this->order->get_payment_method_title();
+        $paymentMethodName = apply_filters('moloni_after_order_payment_setName', $paymentMethodName, $this->order);
 
         if (!empty($paymentMethodName)) {
             $paymentMethod = new Payment($paymentMethodName);

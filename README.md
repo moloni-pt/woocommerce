@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      7.0  
 **WC tested up to**    10.9.4  
-**Stable tag:**        5.0.06  
+**Stable tag:**        5.0.07  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.07
+* FEATURE: Adicionados Hooks moloni_after_order_payment_setName para alterar o nome do pagamento
+
 ### 5.0.06
 * MINOR: Testado até à versão 7.0 do Wordpress
 * MINOR: Testado até à versão 10.9.4 do WooCommerce
