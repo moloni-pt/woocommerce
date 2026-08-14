@@ -37,8 +37,8 @@ class Product
     public $has_stock;
     public $stock;
     private $warehouse_id = 0;
-    private $at_product_category = 'M';
-    private $exemption_reason;
+    protected $at_product_category = 'M';
+    protected $exemption_reason;
     public $taxes;
     public $visibility_id = 1;
     public $fiscalZone;
@@ -383,7 +383,7 @@ class Product
      *
      * @throws APIException
      */
-    private function setTaxes()
+    protected function setTaxes()
     {
         $hasIVA = false;
         $this->taxes = [];

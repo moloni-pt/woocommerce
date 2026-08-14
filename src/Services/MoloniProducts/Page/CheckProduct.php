@@ -3,6 +3,7 @@
 namespace Moloni\Services\MoloniProducts\Page;
 
 use Moloni\Enums\Domains;
+use Moloni\Enums\Sdr;
 use Moloni\Helpers\MoloniProduct;
 
 class CheckProduct
@@ -34,7 +35,10 @@ class CheckProduct
 
         $this->createMoloniLink();
 
-        if (in_array(strtolower($this->product['reference']), ['portes', 'envio', 'shipping'])) {
+        if (
+            Sdr::isReference($this->product['reference']) ||
+            in_array(strtolower($this->product['reference']), ['portes', 'envio', 'shipping'])
+        ) {
             $this->row['tool_alert_message'] = __('Produto bloqueado');
             return;
         }
