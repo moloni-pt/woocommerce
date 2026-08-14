@@ -14,6 +14,9 @@ class Sdr
     /** Reference that identifies an SDR "Volta" product */
     public const REFERENCE = 'SDR-VOLTA';
 
+    /** Fixed name used when creating the SDR product in Moloni */
+    public const NAME = 'SDR Volta';
+
     /** Exemption reason applied to SDR products (M99 - Não sujeito ou não tributado) */
     public const EXEMPTION_REASON = 'M99';
 

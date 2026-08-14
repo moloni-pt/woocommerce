@@ -18,6 +18,18 @@ class SdrProduct extends Product
     protected $at_product_category = Sdr::AT_PRODUCT_CATEGORY;
 
     /**
+     * Always create the SDR product with a fixed name
+     *
+     * @return SdrProduct
+     */
+    protected function setName()
+    {
+        $this->name = Sdr::NAME;
+
+        return $this;
+    }
+
+    /**
      * Force the SDR tax treatment on the product
      *
      * @return SdrProduct

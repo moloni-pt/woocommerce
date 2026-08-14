@@ -313,7 +313,7 @@ class Product
      * Set the name of the product
      * @return $this
      */
-    private function setName()
+    protected function setName()
     {
         $this->name = strip_tags($this->product->get_name());
 
