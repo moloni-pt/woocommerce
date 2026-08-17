@@ -27,7 +27,7 @@ class Product
 
     public $product_id;
     public $category_id;
-    private $type;
+    protected $type;
     public $reference;
     public $name;
     public $summary = '';
@@ -37,7 +37,7 @@ class Product
     public $has_stock;
     public $stock;
     private $warehouse_id = 0;
-    protected $at_product_category = 'M';
+    private $at_product_category = 'M';
     protected $exemption_reason;
     public $taxes;
     public $visibility_id = 1;
@@ -292,9 +292,10 @@ class Product
      * 1 Product
      * 2 Service
      * 3 Other
+     * 4 Tax (imposto)
      * @return $this
      */
-    private function setType()
+    protected function setType()
     {
         // If the product is virtual or downloadable then its a service
         if ($this->product->is_virtual() || $this->product->is_downloadable()) {
