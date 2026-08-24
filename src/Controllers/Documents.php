@@ -9,12 +9,14 @@ use Moloni\Exceptions\GenericException;
 use WC_Order;
 use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
+use WC_Product;
 use Moloni\Curl;
 use Moloni\Tools;
 use Moloni\Storage;
 use Moloni\Enums\Boolean;
 use Moloni\Enums\DocumentTypes;
 use Moloni\Enums\DocumentStatus;
+use Moloni\Enums\Sdr;
 
 /**
  * Class Documents
@@ -873,7 +875,11 @@ class Documents
             /**
              * @var $orderProduct WC_Order_Item_Product
              */
-            $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalData);
+            if ($this->isSdrItem($orderProduct)) {
+                $newOrderProduct = new OrderSdr($orderProduct, $this->order, count($this->products), $this->fiscalData);
+            } else {
+                $newOrderProduct = new OrderProduct($orderProduct, $this->order, count($this->products), $this->fiscalData);
+            }
 
             try {
                 $newOrderProduct->create();
@@ -887,6 +893,24 @@ class Documents
         }
 
         return $this;
+    }
+
+    /**
+     * Check if an order item is an SDR ("Sistema de Depósito e Reembolso") article
+     *
+     * @param WC_Order_Item_Product $orderProduct
+     *
+     * @return bool
+     */
+    private function isSdrItem($orderProduct): bool
+    {
+        $wcProduct = $orderProduct->get_product();
+
+        if (!($wcProduct instanceof WC_Product)) {
+            return false;
+        }
+
+        return Sdr::isReference($wcProduct->get_sku());
     }
 
     /**

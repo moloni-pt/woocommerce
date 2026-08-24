@@ -27,7 +27,7 @@ class Product
 
     public $product_id;
     public $category_id;
-    private $type;
+    protected $type;
     public $reference;
     public $name;
     public $summary = '';
@@ -38,7 +38,7 @@ class Product
     public $stock;
     private $warehouse_id = 0;
     private $at_product_category = 'M';
-    private $exemption_reason;
+    protected $exemption_reason;
     public $taxes;
     public $visibility_id = 1;
     public $fiscalZone;
@@ -292,9 +292,10 @@ class Product
      * 1 Product
      * 2 Service
      * 3 Other
+     * 4 Tax (imposto)
      * @return $this
      */
-    private function setType()
+    protected function setType()
     {
         // If the product is virtual or downloadable then its a service
         if ($this->product->is_virtual() || $this->product->is_downloadable()) {
@@ -313,7 +314,7 @@ class Product
      * Set the name of the product
      * @return $this
      */
-    private function setName()
+    protected function setName()
     {
         $this->name = strip_tags($this->product->get_name());
 
@@ -383,7 +384,7 @@ class Product
      *
      * @throws APIException
      */
-    private function setTaxes()
+    protected function setTaxes()
     {
         $hasIVA = false;
         $this->taxes = [];

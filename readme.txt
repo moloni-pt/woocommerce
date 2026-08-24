@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 7.0
-Stable tag: 5.0.07
+Stable tag: 5.0.08
 Requires PHP: 7.2
 WC tested up to: 10.9.4
 License: GPLv2 or later
@@ -76,6 +76,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.08 =
+* FEATURE: Adicionado suporte ao SDR Volta
+
 = 5.0.07 =
 * FEATURE: Adicionados Hooks moloni_after_order_payment_setName para alterar o nome do pagamento
 
