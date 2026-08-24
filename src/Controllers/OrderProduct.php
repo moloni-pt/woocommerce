@@ -31,7 +31,7 @@ class OrderProduct
     private $wc_order;
 
     /** @var array */
-    private $taxes = [];
+    protected $taxes = [];
 
     /** @var float */
     public $qty;
@@ -40,7 +40,7 @@ class OrderProduct
     public $price;
 
     /** @var string */
-    private $exemption_reason;
+    protected $exemption_reason;
 
     /** @var string */
     private $name;
@@ -253,7 +253,7 @@ class OrderProduct
             throw new GenericException(__('Artigo da encomenda já não existe: ') . $this->name);
         }
 
-        $this->moloniProduct = new Product($wcProduct);
+        $this->moloniProduct = $this->makeMoloniProduct($wcProduct);
 
         if (!$this->moloniProduct->loadByReference()) {
             $this->moloniProduct->fiscalZone = $this->fiscalData['code'];
@@ -271,6 +271,21 @@ class OrderProduct
         $this->product_id = $this->moloniProduct->getProductId();
 
         return $this;
+    }
+
+    /**
+     * Build the Moloni product controller for this order line.
+     *
+     * Overridden by specialized lines (e.g. {@see OrderSdr}) to create a
+     * specialized product.
+     *
+     * @param WC_Product $wcProduct
+     *
+     * @return Product
+     */
+    protected function makeMoloniProduct($wcProduct): Product
+    {
+        return new Product($wcProduct);
     }
 
     /**
@@ -303,7 +318,7 @@ class OrderProduct
      *
      * @throws APIException
      */
-    private function setTaxes()
+    protected function setTaxes()
     {
         $taxes = $this->product->get_taxes();
         foreach ($taxes['subtotal'] as $taxId => $value) {
