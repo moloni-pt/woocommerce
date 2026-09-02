@@ -114,7 +114,7 @@ class OrderShipping
             $price = 0;
         }
 
-        $this->price = $price;
+        $this->price = (float)apply_filters('moloni_after_order_shipping_setPrice', $price, $this->order);
 
         return $this;
     }
