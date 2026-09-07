@@ -32,25 +32,41 @@ class ProductUpdate
     public function __construct(Plugin $parent)
     {
         $this->parent = $parent;
-        add_action('woocommerce_update_product', [$this, 'productCreateUpdate']);
-        add_action('woocommerce_update_product_variation', [$this, 'productCreateUpdate']);
+        add_action('woocommerce_update_product', [$this, 'productCreateUpdate'], 10, 2);
+        add_action('woocommerce_update_product_variation', [$this, 'productCreateUpdate'], 10, 2);
     }
 
     /**
      * Public hook
      *
-     * @param $productId
+     * @param int $productId
+     * @param WC_Product|null $product Product object passed by the hook (already holds the saved values)
      *
      * @return void
      */
-    public function productCreateUpdate($productId)
+    public function productCreateUpdate($productId, $product = null)
     {
         if (!$this->shouldRunHook($productId)) {
             return;
         }
 
         try {
-            $product = wc_get_product($productId);
+            /**
+             * Use the object provided by the hook instead of re-fetching it.
+             * During WooCommerce's scheduled sales cron (woocommerce_scheduled_sales),
+             * a fresh wc_get_product() returns the pre-transition price from the runtime
+             * cache, causing the old (sale) price to be synced to Moloni. The object
+             * passed by the hook always holds the just-saved values.
+             *
+             * Exception: variable products. Their price is aggregated from the
+             * variations, and the object passed during the variation-sync cascade can
+             * still hold the stale (pre-transition) price range. For those, the parent
+             * price is already recalculated in the database, so re-fetching returns the
+             * correct value.
+             */
+            if (!($product instanceof WC_Product) || $product->is_type('variable')) {
+                $product = wc_get_product($productId);
+            }
 
             try {
                 if ($this->shouldProcessProduct($product)) {
