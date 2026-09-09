@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      7.0  
 **WC tested up to**    10.9.4  
-**Stable tag:**        5.0.09  
+**Stable tag:**        5.0.10  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.10
+* FIX: Corrigida a sincronização do preço em promoções agendadas que enviava o preço antigo para o Moloni
+
 ### 5.0.09
 * FEATURE: Adicionado Hook moloni_after_order_shipping_setPrice para alterar o preço dos portes
 
