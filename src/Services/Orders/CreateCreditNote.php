@@ -315,7 +315,23 @@ class CreateCreditNote
 
         foreach ($refundedItems as $refundedItem) {
             $refundedQty = abs($refundedItem->get_quantity());
-            $refundedPrice = abs($refundedItem->get_subtotal()) / $refundedQty;
+            $refundedSubtotal = abs($refundedItem->get_subtotal());
+
+            if ($refundedQty > 0) {
+                $refundedPrice = $refundedSubtotal / $refundedQty;
+            } elseif ($refundedSubtotal > 0) {
+                /**
+                 * Amount-only refund: money was refunded on this line without returning any
+                 * units (WooCommerce allows a refund amount with quantity 0). Dividing by the
+                 * zero quantity would throw a DivisionByZeroError; credit the full refunded
+                 * amount as a single unit instead.
+                 */
+                $refundedQty = 1;
+                $refundedPrice = $refundedSubtotal;
+            } else {
+                /** Nothing refunded on this line (no quantity and no amount) — skip it. */
+                continue;
+            }
 
             /** @var WC_Product|bool $wcProduct */
             $wcProduct = $refundedItem->get_product();
