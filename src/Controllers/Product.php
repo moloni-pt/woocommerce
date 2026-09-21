@@ -88,6 +88,7 @@ class Product
             $this->composition_type = $this->moloniProduct['composition_type'];
             $this->taxes = $this->moloniProduct['taxes'];
             $this->visibility_id = $this->moloniProduct['visibility_id'];
+            $this->unit_id = $this->moloniProduct['unit_id'];
 
             return $this;
         }
@@ -370,6 +371,12 @@ class Product
      */
     private function setUnitId(): Product
     {
+        // Product already exists in Moloni (loaded via loadByReference): keep its
+        // current measurement unit instead of forcing the one from the settings.
+        if (!empty($this->unit_id)) {
+            return $this;
+        }
+
         if (defined('MEASURE_UNIT')) {
             $this->unit_id = MEASURE_UNIT;
         } else {
