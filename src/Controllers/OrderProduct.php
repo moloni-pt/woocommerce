@@ -256,7 +256,6 @@ class OrderProduct
         $this->moloniProduct = $this->makeMoloniProduct($wcProduct);
 
         if (!$this->moloniProduct->loadByReference()) {
-            $this->moloniProduct->fiscalZone = $this->fiscalData['code'];
             $this->moloniProduct->create();
         } elseif (defined('USE_MOLONI_PRODUCT_DETAILS') && USE_MOLONI_PRODUCT_DETAILS) {
             $this->name = $this->moloniProduct->name;

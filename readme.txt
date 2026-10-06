@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 7.0
-Stable tag: 5.0.12
+Stable tag: 5.0.13
 Requires PHP: 7.2
 WC tested up to: 10.9.4
 License: GPLv2 or later
@@ -76,6 +76,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.13 =
+* FIX: Ao criar um artigo durante a emissão de um documento para outro país, a taxa do artigo passa a usar o país da loja (deixa de ser criada uma taxa inválida, ex.: "DE 23%")
+
 = 5.0.12 =
 * FIX: Ao atualizar um produto, a unidade de medida deixa de ser substituída pela definida nas configurações (mantém a que o produto já tem no Moloni)
 
