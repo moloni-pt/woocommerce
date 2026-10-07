@@ -4,6 +4,7 @@ namespace Moloni\Hooks;
 
 use Exception;
 use Moloni\Exceptions\Core\MoloniException;
+use Moloni\Helpers\Security;
 use Moloni\Exceptions\DocumentWarning as DocumentWarningException;
 use Moloni\Start;
 use Moloni\Notice;
@@ -151,7 +152,7 @@ class OrderStatusChanged
     private function throwMessages(CreateMoloniDocument $service): void
     {
         if ($service->getDocumentId() && is_admin()) {
-            $adminUrl = esc_url(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId()));
+            $adminUrl = esc_url(Security::getNonceUrl(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId())));
             $html = ' <a href="' . $adminUrl . '" target="_BLANK">Ver documento</a>';
 
             add_settings_error('moloni', 'moloni-document-created-success', __('O documento foi gerado!') . $html, 'updated');

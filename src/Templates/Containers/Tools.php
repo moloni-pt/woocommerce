@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
             </p>
         </th>
         <td class="run-tool p-8 text-right">
-            <a href='<?= esc_url(admin_url('admin.php?page=moloni&tab=tools&action=syncStocks&since=' . gmdate('Y-m-d', strtotime("-1 week")))) ?>'
+            <a href='<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&tab=tools&action=syncStocks&since=' . gmdate('Y-m-d', strtotime("-1 week"))))) ?>'
                class="button button-large"
             >
                 <?php esc_html_e('Forçar sincronização de stocks') ?>
@@ -71,7 +71,7 @@ if (!defined('ABSPATH')) {
             </p>
         </th>
         <td class="run-tool p-8 text-right">
-            <a href='<?= esc_url(admin_url('admin.php?page=moloni&tab=tools&action=remInvoiceAll')) ?>'
+            <a href='<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&tab=tools&action=remInvoiceAll'))) ?>'
                class="button button-large"
             >
                 <?php esc_html_e('Limpar encomendas pendentes') ?>
@@ -89,7 +89,7 @@ if (!defined('ABSPATH')) {
             </p>
         </th>
         <td class="run-tool p-8 text-right">
-            <a href='<?= esc_url(admin_url('admin.php?page=moloni&tab=tools&action=logout')) ?>'
+            <a href='<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&tab=tools&action=logout'))) ?>'
                class="button button-large button-primary"
             >
                 <?php esc_html_e('Sair da empresa') ?>

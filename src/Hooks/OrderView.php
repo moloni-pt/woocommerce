@@ -69,7 +69,7 @@ class OrderView
         <a type="button"
            class="button button-primary"
            target="_BLANK"
-           href="<?= esc_url(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId)) ?>"
+           href="<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $documentId))) ?>"
            style="margin-top: 10px; margin-left: 10px; float:right;"
         >
             <?php esc_html_e('Ver documento') ?>
@@ -120,7 +120,7 @@ class OrderView
         <a type="button"
            class="button"
            target="_BLANK"
-           href="<?= esc_url(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id())) ?>"
+           href="<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()))) ?>"
            style="margin-top: 10px; float:right;"
         >
             <?php esc_html_e('Gerar novamente') ?>
@@ -142,7 +142,7 @@ class OrderView
 
         <script>
             function createMoloniDocument() {
-                var redirectUrl = "<?= admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()) ?>";
+                var redirectUrl = "<?= esc_js(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&action=genInvoice&id=' . $order->get_id()))) ?>";
 
                 if (document.getElementById('moloni_document_type')) {
                     redirectUrl += '&document_type=' + document.getElementById('moloni_document_type').value;

@@ -5,6 +5,7 @@ namespace Moloni\Services\Orders;
 use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
+use Moloni\Helpers\Security;
 use WC_Order;
 use Moloni\Curl;
 use Moloni\Enums\Boolean;
@@ -148,6 +149,8 @@ class CreateMoloniDocument
             if (!empty($this->documentType)) {
                 $forceUrl .= '&document_type=' . sanitize_text_field($this->documentType);
             }
+
+            $forceUrl = esc_url(Security::getNonceUrl(admin_url($forceUrl)));
 
             throw new DocumentError(
                 __('O documento da encomenda ' . $this->order->get_order_number() . ' já foi gerado anteriormente!') .

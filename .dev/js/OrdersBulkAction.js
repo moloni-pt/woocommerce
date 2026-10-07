@@ -61,6 +61,7 @@ Moloni.OrdersBulkAction = (function() {
 
             var data = {
                 'action': 'genInvoice',
+                '_wpnonce': moloniAjax.nonce,
                 'id': OrderId
             };
 
@@ -130,6 +131,7 @@ Moloni.OrdersBulkAction = (function() {
 
             var data = {
                 'action': 'discardOrder',
+                '_wpnonce': moloniAjax.nonce,
                 'id': OrderId
             };
 
