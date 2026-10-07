@@ -38,6 +38,7 @@ try {
 
 <form method='POST' action='<?= esc_url(admin_url('admin.php?page=moloni&tab=settings')) ?>' id='formOpcoes'>
     <input type='hidden' value='save' name='action'>
+    <?php wp_nonce_field(\Moloni\Helpers\Security::FORM_NONCE) ?>
     <div>
         <!-- Documento -->
         <h2 class="title">

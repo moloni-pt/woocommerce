@@ -117,6 +117,7 @@ $pagination = PendingOrders::getPagination();
                     <form action="<?= esc_url(admin_url('admin.php')) ?>">
                         <input type="hidden" name="page" value="moloni">
                         <input type="hidden" name="action" value="genInvoice">
+                        <?php wp_nonce_field(\Moloni\Helpers\Security::FORM_NONCE, '_wpnonce', false) ?>
                         <input type="hidden" name="id" value="<?= esc_html($order->get_id()) ?>">
 
                         <?php
@@ -141,7 +142,7 @@ $pagination = PendingOrders::getPagination();
                                value="<?php esc_html_e('Gerar') ?>">
 
                         <a class="wp-core-ui button-secondary" style="width: 80px; text-align: center"
-                           href="<?= esc_url(admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id())) ?>">
+                           href="<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&action=remInvoice&id=' . $order->get_id()))) ?>">
                             <?php esc_html_e('Descartar') ?>
                         </a>
                     </form>

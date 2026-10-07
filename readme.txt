@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 7.0
-Stable tag: 5.0.13
+Stable tag: 5.0.14
 Requires PHP: 7.2
 WC tested up to: 10.9.4
 License: GPLv2 or later
@@ -76,6 +76,10 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.14 =
+* FIX: Reforçada a segurança das ações administrativas do plugin (pedidos AJAX, ligações e formulários passam a validar as permissões do utilizador e um token de segurança). Agradecimentos a Seongwon LEE
+* FIX: O tipo de documento e a opção de emitir novamente passam a ser aceites apenas na emissão manual pelo administrador
+
 = 5.0.13 =
 * FIX: Ao criar um artigo durante a emissão de um documento para outro país, a taxa do artigo passa a usar o país da loja (deixa de ser criada uma taxa inválida, ex.: "DE 23%")
 

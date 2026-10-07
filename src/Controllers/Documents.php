@@ -6,6 +6,7 @@ use Moloni\Exceptions\APIException;
 use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Exceptions\GenericException;
+use Moloni\Helpers\Security;
 use WC_Order;
 use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
@@ -329,7 +330,7 @@ class Documents
 
             $this->order->add_order_note($note);
 
-            $viewUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id);
+            $viewUrl = Security::getNonceUrl(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $this->document_id));
 
             throw new DocumentWarning(
                 __('O documento foi inserido mas os totais não correspondem.') .
