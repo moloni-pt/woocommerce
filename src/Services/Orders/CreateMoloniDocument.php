@@ -36,10 +36,26 @@ class CreateMoloniDocument
      */
     private $documentType;
 
-    public function __construct($orderId)
+    /**
+     * Create the document even if the order already has one
+     *
+     * @var bool
+     */
+    private $force;
+
+    /**
+     * @param int $orderId
+     * @param string|null $documentType Overrides the document type from settings (manual generation only)
+     * @param bool $force Create the document even if the order already has one (manual generation only)
+     */
+    public function __construct($orderId, ?string $documentType = null, bool $force = false)
     {
         $this->order = new WC_Order((int)$orderId);
-        $this->documentType = isset($_GET['document_type']) ? sanitize_text_field($_GET['document_type']) : null;
+        $this->force = $force;
+
+        if (!empty($documentType) && array_key_exists($documentType, DocumentTypes::getDocumentTypeForRender())) {
+            $this->documentType = $documentType;
+        }
     }
 
     /**
@@ -143,11 +159,11 @@ class CreateMoloniDocument
      */
     private function checkForWarnings(): void
     {
-        if ((!isset($_GET['force']) || sanitize_text_field($_GET['force']) !== 'true') && $this->isReferencedInDatabase()) {
+        if (!$this->force && $this->isReferencedInDatabase()) {
             $forceUrl = 'admin.php?page=moloni&action=genInvoice&id=' . $this->getOrderID() . '&force=true';
 
             if (!empty($this->documentType)) {
-                $forceUrl .= '&document_type=' . sanitize_text_field($this->documentType);
+                $forceUrl .= '&document_type=' . $this->documentType;
             }
 
             $forceUrl = esc_url(Security::getNonceUrl(admin_url($forceUrl)));

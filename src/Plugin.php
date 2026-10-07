@@ -155,7 +155,10 @@ class Plugin
      */
     private function createDocument(): void
     {
-        $service = new CreateMoloniDocument((int)$_REQUEST['id']);
+        $documentType = sanitize_text_field($_GET['document_type'] ?? '');
+        $force = sanitize_text_field($_GET['force'] ?? '') === 'true';
+
+        $service = new CreateMoloniDocument((int)$_REQUEST['id'], $documentType, $force);
         $orderName = $service->getOrderNumber();
 
         try {
