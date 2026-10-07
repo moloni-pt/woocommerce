@@ -41,7 +41,6 @@ class Product
     protected $exemption_reason;
     public $taxes;
     public $visibility_id = 1;
-    public $fiscalZone;
 
     public $composition_type = 0;
     /** @var false|array */
@@ -402,13 +401,18 @@ class Product
             $productTaxes = $this->product->get_tax_class();
             $taxRates = WC_Tax::get_base_tax_rates($productTaxes);
 
-            if (empty($this->fiscalZone)) {
+            // Catalogue rates come from WooCommerce's base location, so pair them with
+            // that same country, never the order destination (invoice lines handle that).
+            $baseLocation = wc_get_base_location();
+            $fiscalZone = strtoupper($baseLocation['country'] ?? '');
+
+            if ($fiscalZone === '') {
                 $company = Curl::simple('companies/getOne', []);
-                $this->fiscalZone = strtoupper($company['country']['iso_3166_1']);
+                $fiscalZone = strtoupper($company['country']['iso_3166_1']);
             }
 
             foreach ($taxRates as $order => $taxRate) {
-                $moloniTax = Tools::getTaxFromRate((float)$taxRate['rate'], $this->fiscalZone);
+                $moloniTax = Tools::getTaxFromRate((float)$taxRate['rate'], $fiscalZone);
 
                 if (!$moloniTax) {
                     continue;

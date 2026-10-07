@@ -17,7 +17,7 @@
 **Requires PHP:**      7.2  
 **Tested up to:**      7.0  
 **WC tested up to**    10.9.4  
-**Stable tag:**        5.0.12  
+**Stable tag:**        5.0.13  
 **License:**           GPLv2 or later  
 **License URI:**       [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)  
 
@@ -81,6 +81,9 @@ Este plugin pode ser instalado através de FTP ou utilizando o instalador de plu
 
 
 ## Changelog
+### 5.0.13
+* FIX: Ao criar um artigo durante a emissão de um documento para outro país, a taxa do artigo passa a usar o país da loja (deixa de ser criada uma taxa inválida, ex.: "DE 23%")
+
 ### 5.0.12
 * FIX: Ao atualizar um produto, a unidade de medida deixa de ser substituída pela definida nas configurações (mantém a que o produto já tem no Moloni)
 

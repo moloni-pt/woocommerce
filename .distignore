@@ -1,0 +1,15 @@
+/.wordpress-org
+/.git
+/.github
+/.dev
+/.claude
+/docs
+.distignore
+.gitignore
+.editorconfig
+.nvmrc
+AGENTS.md
+CLAUDE.md
+README.md
+dev.md
+docker-compose.yml

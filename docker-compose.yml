@@ -1,0 +1,80 @@
+services:
+  mariadb:
+    container_name: moloni-wc-mariadb
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - wordpress_network
+    volumes:
+      - database:/var/lib/mysql
+
+  wordpress:
+    container_name: moloni-wc-wordpress
+    image: wordpress:php8.2-apache
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: 1
+    networks:
+      - wordpress_network
+    volumes:
+      - site:/var/www/html
+      - .:/var/www/html/wp-content/plugins/moloni
+
+  # One-shot: installs WordPress + WooCommerce and activates the plugin (skipped if already installed)
+  setup:
+    container_name: moloni-wc-setup
+    image: wordpress:cli-php8.2
+    user: "33:33"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    networks:
+      - wordpress_network
+    volumes:
+      - site:/var/www/html
+      - .:/var/www/html/wp-content/plugins/moloni
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        until [ -f /var/www/html/wp-config.php ]; do sleep 2; done
+        wp core is-installed && exit 0
+        wp core install --url=http://localhost:8081 --title="Generic Shop" \
+          --admin_user=admin --admin_password=123456789 --admin_email=user@moloni.pt --skip-email
+        wp plugin install woocommerce --activate
+        wp option update woocommerce_currency EUR
+        wp option update woocommerce_default_country PT
+        wp option update woocommerce_calc_taxes yes
+        wp plugin activate moloni
+
+networks:
+  wordpress_network:
+volumes:
+  site:
+  database:
