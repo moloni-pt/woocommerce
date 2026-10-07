@@ -70,6 +70,9 @@ Moloni.OrdersBulkAction = (function() {
                 url: ajaxurl,
                 data,
                 success: HandleGenInvoiceSuccess,
+                error: function (xhr) {
+                    HandleGenInvoiceSuccess(GetErrorResult(xhr));
+                },
             });
         }, DelayTime)
     }
@@ -140,6 +143,9 @@ Moloni.OrdersBulkAction = (function() {
                 url: ajaxurl,
                 data,
                 success: HandleDiscardInvoiceSuccess,
+                error: function (xhr) {
+                    HandleDiscardInvoiceSuccess(GetErrorResult(xhr));
+                },
             });
         }, DelayTime)
     }
@@ -174,6 +180,12 @@ Moloni.OrdersBulkAction = (function() {
     }
 
     //             Common             //
+
+    function GetErrorResult(xhr) {
+        var message = (xhr && xhr.responseJSON && xhr.responseJSON.data) ? xhr.responseJSON.data : 'Erro no pedido';
+
+        return {'valid': 0, 'message': message};
+    }
 
     function RemoveLastOrder() {
         SelectedOrders = SelectedOrders.slice(1);

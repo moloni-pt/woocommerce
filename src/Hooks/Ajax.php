@@ -366,7 +366,11 @@ class Ajax
             return false;
         }
 
-        return Start::login(true);
+        if (!Start::login(true)) {
+            $this->sendJson(['valid' => 0, 'message' => __('Sessão Moloni inválida. Inicie sessão novamente no plugin.')]);
+        }
+
+        return true;
     }
 
     /**

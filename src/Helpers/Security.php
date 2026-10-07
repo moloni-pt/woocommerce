@@ -8,6 +8,9 @@ class Security
 
     const FORM_NONCE = 'moloni-form-nonce';
 
+    /** Actions that only read data (open/download a document), so they don't need a nonce */
+    const READ_ONLY_ACTIONS = ['getInvoice', 'downloadDocument'];
+
     /**
      * Adds the plugin's nonce to an admin URL (unescaped, escape it for the output context)
      *
@@ -55,8 +58,12 @@ class Security
             return;
         }
 
-        // GET requests only need a nonce when they run an action
-        if (empty($_GET['action'])) {
+        $action = sanitize_text_field($_GET['action'] ?? '');
+
+        // GET requests only need a nonce when they change data (run an action or select a company)
+        $changesData = isset($_GET['company_id']) || (!empty($action) && !in_array($action, self::READ_ONLY_ACTIONS, true));
+
+        if (!$changesData) {
             return;
         }
 
