@@ -21,6 +21,7 @@ $logsContext = [];
 </div>
 
 <form method="post" action='<?= esc_url(admin_url('admin.php?page=moloni&tab=logs')) ?>'>
+    <?php wp_nonce_field(\Moloni\Helpers\Security::FORM_NONCE) ?>
     <table class='wp-list-table widefat striped posts'>
         <thead>
         <tr>
@@ -151,7 +152,7 @@ $logsContext = [];
 <div class="tablenav bottom">
     <div class="alignleft actions">
         <a class="button button-primary"
-           href='<?= esc_url(admin_url('admin.php?page=moloni&tab=logs&action=remLogs')) ?>'>
+           href='<?= esc_url(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&tab=logs&action=remLogs'))) ?>'>
             <?php esc_html_e('Apagar registos com mais de 1 semana') ?>
         </a>
     </div>

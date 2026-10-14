@@ -38,7 +38,14 @@ class Start
             self::$ajax = true;
         }
 
-        if (!empty($username) && !empty($password)) {
+        /**
+         * Login, settings, logout and company selection come only from the plugin page,
+         * which checks the user's capability and the request's nonce before calling this.
+         * Hooks call this with $ajax = true just to check the session, never to handle the request.
+         */
+        $handleRequest = !$ajax;
+
+        if ($handleRequest && !empty($username) && !empty($password)) {
             $loginValid = false;
             $errorMessage = '';
             $errorBag = [];
@@ -62,11 +69,11 @@ class Start
             }
         }
 
-        if ($action === 'save') {
+        if ($handleRequest && $action === 'save') {
             self::saveSettings();
         }
 
-        if ($action === 'logout') {
+        if ($handleRequest && $action === 'logout') {
             Model::resetTokens();
         }
 
@@ -85,7 +92,7 @@ class Start
                 return true;
             }
 
-            if (isset($_GET['company_id'])) {
+            if ($handleRequest && isset($_GET['company_id'])) {
                 $wpdb->update($wpdb->get_blog_prefix() . 'moloni_api', [
                     'company_id' => (int)$_GET['company_id']
                 ],

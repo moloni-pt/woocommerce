@@ -19,6 +19,7 @@ if (!defined('ABSPATH')) {
 
     <div class="login login__wrapper">
         <form class="login-form" method='POST' action='<?= esc_url(admin_url('admin.php?page=moloni')) ?>'>
+            <?php wp_nonce_field(\Moloni\Helpers\Security::FORM_NONCE) ?>
             <div class="login__card">
                 <div class="login__image">
                     <a href="<?= esc_url(Domains::HOMEPAGE) ?>" target="_blank">

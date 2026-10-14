@@ -7,6 +7,7 @@ use Moloni\Start;
 use Moloni\Plugin;
 use Moloni\Storage;
 use Moloni\Helpers\MoloniOrder;
+use Moloni\Helpers\Security;
 
 /**
  * Class OrderList
@@ -104,7 +105,7 @@ class OrderList
             $documentId = MoloniOrder::getLastCreatedDocument($order);
 
             if ($documentId > 0) {
-                $redirectUrl = admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId);
+                $redirectUrl = Security::getNonceUrl(admin_url('admin.php?page=moloni&action=downloadDocument&id=' . $documentId));
 
                 echo '<a class="button" target="_blank" onclick="window.open(\'' . esc_url($redirectUrl) . '\', \'_blank\')">' . esc_html__('Descarregar') . '</a>';
             } else {

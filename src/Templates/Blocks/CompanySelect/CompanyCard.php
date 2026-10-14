@@ -41,7 +41,7 @@ $company = $company ?? [];
     </div>
 
     <button class="ml-button ml-button--primary w-full"
-            onclick="window.location.href = 'admin.php?page=moloni&company_id=<?= (int)$company["company_id"] ?>'">
+            onclick="window.location.href = '<?= esc_js(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&company_id=' . (int)$company["company_id"]))) ?>'">
         <?php esc_html_e('Escolher empresa') ?>
     </button>
 </div>

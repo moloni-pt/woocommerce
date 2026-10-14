@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
         <a href="<?= esc_url(Domains::PLANS) ?>" target="_blank"><?= esc_url(Domains::PLANS) ?></a>
     </div>
 
-    <button class="ml-button ml-button--primary" onclick="window.location.href = 'admin.php?page=moloni&action=logout'">
+    <button class="ml-button ml-button--primary" onclick="window.location.href = '<?= esc_js(\Moloni\Helpers\Security::getNonceUrl(admin_url('admin.php?page=moloni&action=logout'))) ?>'">
         <?php esc_html_e('Voltar ao login') ?>
     </button>
 </div>
