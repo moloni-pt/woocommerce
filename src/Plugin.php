@@ -11,6 +11,7 @@ use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Helpers\Context;
 use Moloni\Helpers\Logger;
+use Moloni\Helpers\Security;
 use Moloni\Hooks\Ajax;
 use Moloni\Models\Logs;
 use Moloni\Services\Documents\DownloadDocument;
@@ -99,6 +100,13 @@ class Plugin
      */
     public function run(): void
     {
+        if (wp_doing_ajax() || !Security::verifyUserCanAccessWc()) {
+            return;
+        }
+
+        /** This is the plugin page entry point, so we check the request's validity here */
+        Security::verifyRequestOrDie();
+
         try {
             $authenticated = Start::login();
 
@@ -147,7 +155,10 @@ class Plugin
      */
     private function createDocument(): void
     {
-        $service = new CreateMoloniDocument((int)$_REQUEST['id']);
+        $documentType = sanitize_text_field($_GET['document_type'] ?? '');
+        $force = sanitize_text_field($_GET['force'] ?? '') === 'true';
+
+        $service = new CreateMoloniDocument((int)$_REQUEST['id'], $documentType, $force);
         $orderName = $service->getOrderNumber();
 
         try {
@@ -175,9 +186,9 @@ class Plugin
         }
 
         if ($service->getDocumentId()) {
-            $adminUrl = admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId());
+            $adminUrl = Security::getNonceUrl(admin_url('admin.php?page=moloni&action=getInvoice&id=' . $service->getDocumentId()));
 
-            $html = ' <a href="' . $adminUrl . '" target="_BLANK">';
+            $html = ' <a href="' . esc_url($adminUrl) . '" target="_BLANK">';
             $html .= '  Ver documento';
             $html .= '</a>';
 
@@ -253,7 +264,7 @@ class Plugin
             add_settings_error(
                 'moloni',
                 'moloni-order-remove',
-                __('Confirma que pretende marcar a encomenda ' . $orderId . " como paga? <a href='" . admin_url('admin.php?page=moloni&action=remInvoice&confirm=true&id=' . $orderId) . "'>Sim confirmo!</a>")
+                __('Confirma que pretende marcar a encomenda ' . $orderId . " como paga? <a href='" . esc_url(Security::getNonceUrl(admin_url('admin.php?page=moloni&action=remInvoice&confirm=true&id=' . $orderId))) . "'>Sim confirmo!</a>")
             );
         }
     }
@@ -285,7 +296,7 @@ class Plugin
             }
         } else {
             add_settings_error(
-                'moloni', 'moloni-order-remove', __("Confirma que pretende marcar todas as encomendas como já geradas? <a href='" . admin_url('admin.php?page=moloni&action=remInvoiceAll&confirm=true') . "'>Sim confirmo!</a>")
+                'moloni', 'moloni-order-remove', __("Confirma que pretende marcar todas as encomendas como já geradas? <a href='" . esc_url(Security::getNonceUrl(admin_url('admin.php?page=moloni&action=remInvoiceAll&confirm=true'))) . "'>Sim confirmo!</a>")
             );
         }
     }

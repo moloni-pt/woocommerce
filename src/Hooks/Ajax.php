@@ -10,6 +10,7 @@ use Moloni\Exceptions\DocumentError;
 use Moloni\Exceptions\DocumentWarning;
 use Moloni\Exceptions\GenericException;
 use Moloni\Helpers\MoloniProduct;
+use Moloni\Helpers\Security;
 use Moloni\Plugin;
 use Moloni\Services\Orders\CreateMoloniDocument;
 use Moloni\Services\Orders\DiscardOrder;
@@ -37,7 +38,9 @@ class Ajax
 
     public function genInvoice()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_shop_orders')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -95,7 +98,9 @@ class Ajax
 
     public function discardOrder()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_shop_orders')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -115,7 +120,9 @@ class Ajax
 
     public function toolsCreateWcProduct()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_products')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -166,7 +173,9 @@ class Ajax
 
     public function toolsUpdateWcStock()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_products')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -231,7 +240,9 @@ class Ajax
 
     public function toolsCreateMoloniProduct()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_products')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -284,7 +295,9 @@ class Ajax
 
     public function toolsUpdateMoloniStock()
     {
-        if (!$this->isAuthed()) {
+        if (!$this->isAuthed('edit_products')) {
+            $this->sendErrorJson();
+
             return;
         }
 
@@ -345,9 +358,19 @@ class Ajax
 
     //             Privates             //
 
-    private function isAuthed(): bool
+    private function isAuthed(string $capability): bool
     {
-        return Start::login(true);
+        Security::verifyAjaxRequestOrDie();
+
+        if (!Security::verifyUserCanAccessWc() || !current_user_can($capability)) {
+            return false;
+        }
+
+        if (!Start::login(true)) {
+            $this->sendJson(['valid' => 0, 'message' => __('Sessão Moloni inválida. Inicie sessão novamente no plugin.')]);
+        }
+
+        return true;
     }
 
     /**
@@ -362,5 +385,15 @@ class Ajax
     {
         wp_send_json($data);
         wp_die();
+    }
+
+    /**
+     * Return error and stop execution afterward.
+     *
+     * @return void
+     */
+    private function sendErrorJson()
+    {
+        wp_send_json_error(__('Sem permissões suficientes.'), 403);
     }
 }
