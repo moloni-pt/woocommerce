@@ -278,6 +278,8 @@ class OrderFees
         $values['taxes'] = $this->taxes;
 
         if ($toInsert) {
+            // Moloni locks a product's name once it has documents, so keep this fixed and leave the fee name on the document line
+            $values['name'] = 'Taxa';
             $values['reference'] = $this->reference;
             $values['type'] = $this->type;
             $values['stock'] = $this->stock;
