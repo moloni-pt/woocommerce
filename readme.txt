@@ -4,7 +4,7 @@ Requires Plugins: woocommerce
 Tags: Invoicing, Orders
 Requires at least: 4.6
 Tested up to: 7.0
-Stable tag: 5.0.14
+Stable tag: 5.0.15
 Requires PHP: 7.2
 WC tested up to: 10.9.4
 License: GPLv2 or later
@@ -76,6 +76,9 @@ Released plugin version 3.
 New plugin version fully re-written
 
 == changelog ==
+= 5.0.15 =
+* UPDATE: Os artigos de portes e de taxas criados automaticamente no Moloni passam a ter um nome fixo ("Portes" / "Taxa"); a linha do documento continua a mostrar o nome do método de envio ou da taxa da encomenda
+
 = 5.0.14 =
 * FIX: Reforçada a segurança das ações administrativas do plugin (pedidos AJAX, ligações e formulários passam a validar as permissões do utilizador e um token de segurança). Agradecimentos a Seongwon LEE
 * FIX: O tipo de documento e a opção de emitir novamente passam a ser aceites apenas na emissão manual pelo administrador
